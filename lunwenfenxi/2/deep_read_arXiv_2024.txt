@@ -1,0 +1,817 @@
+=== Page 1 ===
+Experimental Machine Learning with Classical and Quantum Data
+via NMR Quantum Kernels
+Vivek Sabarad, ∗ Vishal Varma, † and T. S. Mahesh ‡
+Department of Physics and NMR Research Center,
+Indian Institute of Science Education and Research, Pune 411008, India
+Kernel methods map data into high-dimensional spaces, enabling linear algorithms to learn
+nonlinear functions without explicitly storing the feature vectors. Quantum kernel methods promise
+efficient learning by encoding feature maps into exponentially large Hilbert spaces inherent in
+quantum systems. In this work, we implement quantum kernels on a 10-qubit star-topology register
+in a nuclear magnetic resonance (NMR) platform. We experimentally encode classical data in the
+evolution of multiple quantum coherence orders using data-dependent unitary transformations and
+then demonstrate one-dimensional regression and two-dimensional classification tasks. By extending
+the register to a double-layered star configuration, we propose an extended quantum kernel to handle
+non-parametrized operator inputs. Specifically, we set up a kernel for the classification of entangling
+and non-entangling operations and then validate this kernel first numerically by computing it on a
+double-layered star register and then experimentally by computing it on a three-qubit NMR register.
+Our results show that this kernel exhibits an ability to generalize well over unseen data. These results
+confirm that quantum kernels possess strong capabilities in classical as well as quantum machine
+learning tasks.
+I. INTRODUCTION
+Powered by advanced computing hardware and inge-
+nious algorithms, machine learning is recently making
+great strides in several walks of modern civilization,
+from drug discovery to self-driving vehicles. Kernel
+methods are fundamental in classical machine learning,
+particularly in algorithms like support vector machines,
+as they enable the analysis of data in high-dimensional
+feature spaces without explicit transformations [1]. This
+is achieved through the ‘kernel trick’, which involves
+computing inner products in feature spaces, facilitating
+efficient handling of nonlinear relationships in data. In
+classical kernel methods, predefined kernel functions,
+such as the polynomial or Gaussian kernels, compute the
+inner products in feature space [2].
+Quantum machine learning is a promising interdis-
+ciplinary field that combines quantum computing with
+machine learning to address diverse computational chal-
+lenges [3, 4]. A key strategy involves leveraging quantum
+systems to represent data in high-dimensional feature
+spaces that are beyond the reach of classical compu-
+tation. Some notable early contributions to quantum
+machine learning include quantum algorithms for solving
+linear systems [5], quantum principal component analysis
+[6], and quantum support vector machines [7]. Founda-
+tional surveys by Biamonte et al. [8] and Schuld et al. [9]
+offered in-depth overviews, establishing the theoretical
+groundwork of the field. In recent years, progress has
+been made in the development of variational quantum
+algorithms, which have become central to near-term
+∗ vivek.sabarad@students.iiserpune.ac.in
+† vishal.varma@students.iiserpune.ac.in
+‡ mahesh.ts@iiserpune.ac.in
+QML implementations [10–12], and in realizing quantum-
+enhanced feature spaces for classification tasks using
+superconducting quantum devices [13]. Furthermore,
+studies such as [14] have examined the informational
+power of input data to identify scenarios where the
+quantum advantage is achievable. More recent theo-
+retical advances have introduced a unifying framework
+for quantum machine learning models as linear models
+in a quantum feature space, clarifying the relationship
+between parametrized quantum circuits or Quantum
+Neural Networks (QNNs) and Quantum Kernel Methods
+[15].
+Analogous to a classical kernel, a quantum kernel maps
+classical data to quantum states or operators in a high-
+dimensional Hilbert space. Here, the kernel function
+is calculated as the overlap between these states or
+operators. Such a quantum kernel can capture intricate
+data structures that may be challenging for classical
+kernels [16]. The quantum kernel can then be used with
+classical algorithms for supervised machine learning like
+support vector machines (SVMs) [7, 17]. Quantum Ker-
+nel Methods are widely regarded as the QML algorithms
+that can show practical quantum advantage [18, 19].
+The experimental feasibility of quantum kernel machines
+was first demonstrated by Li et al. (2015) [20] in a
+liquid-state NMR experiment for character recognition,
+foreshadowing more advanced implementations like ours.
+Quantum kernels have been realized in various other
+platforms like solid-state NMR systems [21], photonic
+quantum circuits [22] and neutral-atom quantum pro-
+cessors [23]. Quantum kernel methods have shown
+promise for both classical and quantum machine learning
+tasks, with growing theoretical and experimental support
+across diverse domains [14, 24–27]. Additionally, kernel
+methods are also well-regarded for their trainability,
+owing to the convex nature of their loss landscapes [28].
+In this work, we implement quantum kernel methods
+arXiv:2412.09557v2  [quant-ph]  15 Apr 2025
+
+=== Page 2 ===
+2
+on a liquid-state NMR register, specifically using star
+systems [29], drawing inspiration from the solid-state
+NMR quantum kernel of Kusumoto et al. [21]. However,
+our proposed kernel goes beyond earlier works by ex-
+tending it to handle quantum data and perform quantum
+tasks. Theoretical proposals suggest that some learning
+tasks involving “quantum inputs” may be infeasible for
+classical algorithms, yet can be efficiently addressed using
+quantum kernels [30, 31]. Several recent numerical as
+well as experimental studies that use the quantum data
+for the machine learning tasks have been able to show a
+quantum advantage in terms of generalizability of the
+models [30, 32–37]. In this work, we experimentally
+demonstrate the ability of quantum kernels to handle
+quantum data and successfully carry out a quantum
+task, showing a clear ability to generalize well on unseen
+data. We start by using a quantum register with a
+single-layered star topology to experimentally validate
+our kernel by applying it to standard classical machine
+learning tasks with classical inputs and then move on to
+quantum inputs.
+In Sec. II we introduce the theory of kernel methods
+and then explain their quantum analog. In Sec. III we
+describe NMR experiments to extract quantum kernels,
+and demonstrate one-dimensional regression tasks and
+a two-dimensional classification task. We also propose
+and numerically simulate an extended quantum kernel
+that can handle quantum data and perform quantum
+tasks such as entanglement classification while showing
+its experimental implementation on a 3-qubit system by
+simulating one arm of the extended star system. Finally,
+we discuss the results and conclude in Sec. IV.
+II. THEOR Y
+We start with a familiar machine learning model,
+namely linear regression [38]. Consider a dataset
+{(xi, yi)}N
+i=1, where xi ∈ Rd represents the feature vector
+of the i-th observation, and yi ∈ R is the corresponding
+target value. The linear regression model assumes that
+the relationship between the input features and the
+output can be described by a linear function:
+yi = f(xi) + ϵi, (1)
+where f(xi) = w⊤xi + b, w ∈ Rd is the weight vector,
+b ∈ R is the bias term, and ϵi accounts for any noise or
+error in the data. For simplicity, we can represent it,
+˜xi =
+
+1
+xi
+
+, ˜w =
+
+b
+w
+
+, (2)
+which allows us to write the model as
+f(xi) = ˜w⊤˜xi. (3)
+Our objective is to find the optimal weight vector ˜w that
+minimizes the difference between the predicted values
+FIG. 1. Illustrating data (left) and its feature space mapping
+using a higher-dimensional kernel (right).
+ˆyi = f(xi) and the actual target values yi, usually taken
+in the form
+J( ˜w) = 1
+N
+NX
+i=1
+ 
+yi − ˜w⊤˜xi
+2
+. (4)
+Minimization of J with respect to ˜w leads to normal
+equations,
+˜w = ( ˜X⊤ ˜X)−1 ˜X⊤y, (5)
+where ˜X is the design matrix formed by stacking the
+augmented feature vectors ˜xi as rows, and y is the vector
+of target values [38].
+While linear regression is powerful for linearly separa-
+ble data, it struggles with datasets where the relationship
+between features and targets is nonlinear. To address
+this, we can transform the input features into a higher-
+dimensional space wherein linear regression can capture
+the nonlinear patterns in the data.
+A. Kernel Methods
+Kernel methods extend linear algorithms to handle
+nonlinear problems by mapping the input data into a
+high-dimensional feature space using a nonlinear trans-
+formation. However, instead of explicitly performing this
+transformation, kernel methods rely on computing inner
+products in the feature space directly using a kernel
+function (see Fig. 1) [1]. Consider a non-linear map
+ϕ : Rd → F , which transforms the input features into a
+vector space F known as the feature space. The linear
+model of a non-linear function f(x) in the feature space
+is
+f(xi) = w⊤
+ϕ ϕ(xi), (6)
+where wϕ is the weight vector in the feature space. The
+cost function becomes
+J(wϕ) = 1
+N
+NX
+i=1
+ 
+yi − w⊤
+ϕ ϕ(xi)
+2
+. (7)
+Solving for wϕ directly is often computationally expen-
+sive due to the high dimensionality of F. Instead, we
+
+=== Page 3 ===
+3
+leverage the representer theorem [39], which states that
+the optimal solution wϕ can be expressed as a linear
+combination of the transformed training samples
+wϕ =
+NX
+i=1
+αiϕ(xi), (8)
+with scalar coefficients αi. Substituting the above into
+the model in Eq. 6, we obtain
+f(x) =
+NX
+i=1
+αiϕ(xi)⊤ϕ(x) =
+NX
+i=1
+αik(xi, x), (9)
+where k(xi, xj) = ϕ(xi)⊤ϕ(xj) is the kernel function.
+For clarity, let us consider kernel regression without
+regularization. The cost function simplifies to
+J(α) = 1
+N
+NX
+i=1
+
+yi −
+NX
+j=1
+αjk(xj, xi)
+
+
+2
+= 1
+N ∥y − Kα∥2 ,
+(10)
+where Kij = ( xi, xj) are elements of the kernel matrix
+K. Our objective is to find the coefficients α =
+[α1, α2, . . . , αN]⊤ that minimize J(α). Minimizing J(α)
+with respect to α leads to the normal equations
+α = K−1y. (11)
+Once we have α, we can make the prediction for any new
+input x using Eq. 9. Thus, by using kernel functions,
+we can work in very high-dimensional (even infinite-
+dimensional) feature spaces without explicitly computing
+the mapping ϕ(x). Common kernel functions include:
+• Linear kernel: k(xi, xj) = x⊤
+i xj.
+• Polynomial kernel: k(xi, xj) = (x⊤
+i xj + c)d, where
+c is a constant and d is the degree.
+• Gaussian kernel: k(xi, xj) = exp
+
+− ∥xi−xj ∥2
+2σ2
+
+.
+These kernels allow us to capture complex, nonlinear
+relationships in the data using algorithms designed for
+linear models [2].
+B. Quantum Kernel Methods
+Quantum kernel methods extend classical kernel tech-
+niques by utilizing quantum registers to compute kernel
+functions, capturing complex patterns in data that may
+be intractable classically. The principal idea is to map the
+input data into the operator space of the quantum system
+that exploits the rich algebraic structure of quantum
+operators without necessitating a full-scale quantum
+computer [17]. In our work, we employ nuclear spin
+qubits in an NMR setup to experimentally extract the
+quantum kernel.
+FIG. 2. Quantum feature mapping and quantum kernel
+computation protocol. The quantum circuit starts with the
+initial state of ρC
+eq in order to ensure the symmetry of the
+quantum kernel since only the C qubit is measured at the
+end.
+Quantum kernel methods generally consist of two
+key steps: quantum feature mapping and quantum
+kernel computation [40]. The quantum feature mapping
+involves encoding input data points xi into quantum
+operators A(xi). We achieve the encoding by associating
+each data point with a specific unitary transformation
+U(xi) acting on the quantum system
+A(xi) = U(xi)A0U †(xi), (12)
+where A0 is a reference operator in the system. Here,
+U(xi) are designed such that they efficiently explore the
+operator space. However, care must be taken in feature
+map design since overly expressive maps can lead to
+exponentially concentrated kernel values [18], making
+the model effectively independent of the input. The
+quantum kernel is then computed using the Frobenius
+inner product between operators
+k(xi, xj) = Tr [A(xi)A(xj)] . (13)
+This kernel function measures the similarity between
+data points in the operator space, effectively capturing
+intricate relationships inherent in the data. The protocol
+for quantum feature mapping and quantum kernel com-
+putation is illustrated in Fig. 2. Detailed methodologies
+and specific implementations within the NMR framework
+are discussed in the next section.
+III. EXTRACTING QUANTUM KERNELS AND
+IMPLEMENTING ML T ASKS
+A. Quantum Kernel for Classical Data
+Here, we use the star system, namely trimethyl phos-
+phite, whose geometry and molecular structure are shown
+in Fig. 3 (a,b). Here 31P and 1H spins form central
+(C) and (A) ancillary qubits of the star-topology register.
+Given a classical input xi, we design the corresponding
+unitary U(xi) and implement quantum feature map
+A(xi) = U(xi)I C
+z U †(xi), (14)
+
+=== Page 4 ===
+4
+(c)
+(a)
+(b)
+ (d)
+FIG. 3. (a) Geometry of the star-topology register. (b) Molecular structure of trimethyl phosphite, where 31P and 1H spins
+form central (C) and (A) ancillary qubits. Here, the spin-spin coupling constant JPH = 11 .0 Hz. (c) Quantum circuit for
+encoding classical inputs xi and xj in terms of unitaries U(xi) and U(xj), followed by measurement of z magnetization of C
+qubit. Here, helix represents the dephasing operations on x and y magnetization of C-qubit. (d) Experimentally obtained
+kernel function for one-dimensional inputs using the quantum kernel in Eq. 18. Assuming the symmetry of the kernel function,
+the left half is obtained by mirroring the experimentally extracted right half.
+where I C
+z is the z component of the spin angular mo-
+mentum operator of the C-qubit. Starting from thermal
+equilibrium, we destroy the A spin magnetization with
+the help of pulsed-field gradients and retain the central
+spin state in
+ρC
+eq = 1
+2(1 + ϵI C
+z ), (15)
+where ϵ is the central spin purity factor. Using Eqs. 13
+and 14, the NMR kernel can be written as
+kNMR(xi, xj) ∝ Tr(U †(xj)U(xi)ρC
+eqU †(xi)U(xj)I C
+z ),
+(16)
+which can be interpreted as the z-magnetization of C
+spin measured after applying, on ρC
+eq, the unitary U(xi)
+followed by U †(xj). Assuming the input vectors are one-
+dimensional, the encoding unitary transformation used
+for input data is given by
+U(xi) = e−ixiI A
+z UeeixiI A
+z , (17)
+where Ue is the entangling unitary that generates mul-
+tiple quantum coherences in the system. This idea is
+motivated by previous work on quantum kernels realized
+in a solid-state system by Kusumoto et al. [21].
+The complete quantum circuit for the process is de-
+picted in Fig. 3 (c). Here, the local gates of the circuit
+are realized using RF pulses, while the CNOT gates are
+realized with the help of indirect spin-spin coupling JP H.
+Noting that the Z rotations only add a phase to the
+ρC
+eq and I C
+z operators, the one-dimensional kernel can be
+written as
+kNMR(xi, xj) ∝
+Tr(U †
+e e−i(xi−xj )I A
+z UeρC
+eqU †
+e ei(xi−xj )I A
+z UeI C
+z ). (18)
+Clearly, kNMR(xi, xj) is a function of the difference be-
+tween the input data points xi and xj. The experimental
+kernel obtained for the one-dimensional inputs is shown
+in Fig. 3 (d), which is used for the machine learning tasks
+described in the following.
+1. One-dimensional regression task
+Using the experimentally obtained kernel, we can now
+perform a one-dimensional regression task via the kernel
+ridge regression method. We choose two examples. In
+the first example, we choose the target function as a sine
+curve over one period with a regularly placed training
+dataset of size 15. Fig. 4 (a) shows the successful
+regression with an RMS error 0.88%. In the second
+example, we choose a seventh-degree polynomial y =
+
+=== Page 5 ===
+5
+(a)
+(b)
+(c)
+ (d)
+FIG. 4. Regression of (a) sine function with 15 training data
+points and (b) a seventh-degree polynomial function with 42
+training data points. (c) and (d) show the percentage RMSE
+as a function of the number of training points used for the
+sine function and the polynomial function, respectively.
+(x −3)(x −2)(x −1)x(x+1)( x+2)( x+3) with a training
+dataset of size 40. Fig. 4 (b) shows a successful regression
+with an RMS error of 1.15%.
+2. Two-dimensional classification task
+Suppose the input data points are n-dimensional, i.e.,
+xi ∈ Rn such that xi = ( x(1)
+i , x(2)
+i , . . . , x(n)
+i ). The
+data-dependent unitary for each input data point of n
+dimensions is constructed as
+U(xi) =
+nY
+j=1
+V (x(j)
+i ) =
+nY
+j=1
+e−ix(j)
+i Iz Ueeix(j)
+i Iz , (19)
+where we identify V (x(j)
+i ) as the encoding unitary for
+the j-the dimension of the input data point xi. Using
+the above encoding scheme, we now extract the two-
+dimensional kernel function using Eq. 16 and accord-
+ingly, a generalization of the circuit shown in Fig. 3 (c).
+Since this kernel satisfies the symmetry [21]
+k({x(1)
+i , x(2)
+i }, {x(1)
+j , x(2)
+j }) =
+k({x(1)
+i − x(2)
+j , x(2)
+i − x(2)
+j }, {x(1)
+i − x(2)
+i , 0}), (20)
+we can set x(2)
+j = 0, and extract the kernel for two-
+dimensional inputs with only three independent param-
+eters, x(1)
+i , x(2)
+i and x(1)
+j . Fig. 5 (a) shows the x(1)
+j slices
+of the experimental kernel.
+Using the above experimental kernel, we performed
+two-dimensional classification tasks using a support vec-
+tor machine (SVM) classifier. Again, we take two
+different examples of classification, a circular dataset
+(Fig. 5 (b)) and a moons dataset (5 (c)). In Figs. 5 (b,c),
+circles and squares show two classes of training datasets.
+The decision functions learned by the SVM are shown by
+the backgrounds of Figs. 5 (b,c). The hinge loss values,
+which quantify errors in these classifications, are 0.15 and
+0.08, respectively. These results show that the choice of
+the protocol to compute the kernel is fairly reliable and
+has the potential to carry out standard ML tasks. In
+the following, we explore the possibility of extending the
+kernel method to quantum inputs, which enables us to
+perform specific quantum tasks.
+B. Quantum Kernel for Quantum Data
+As an example for a quantum ML task, we take up the
+task of determining whether a given unitary transforma-
+tion U entangles any given initial mixed state ρ. The
+entanglement classification task is a binary classification
+problem where the input data is a unitary transformation
+and the output is a binary label indicating whether the
+transformation is entangling or not for a particular initial
+mixed state. It is a nontrivial problem, which is discussed
+by Serrano-Ens´ astiga and Martin [41].
+We now approach the above problem using the quan-
+tum kernel method by taking a set of unitary transfor-
+mation U as the quantum input data. Quantum data
+offers significant advantages over classical data. Firstly,
+unitary transformations do not require parameterization
+(except for training), as they can be fed directly into
+the kernel model. Secondly, the quantum kernels with
+quantum inputs have the ability to predict the labels of
+inputs that are categorically different from the training
+
+=== Page 6 ===
+6
+(a)
+(b) (c)
+FIG. 5. (a) The x(1)
+j slices of the experimentally obtained kernel for two-dimensional input. (b,c) Two-dimensional classifications
+for (b) circles dataset and (c) moons dataset. In both classifications, the squares and circles represent the training data points
+belonging to two different classes. The background represents the decision function obtained after training.
+inputs (generalizability). To handle a quantum input, we
+propose a quantum kernel
+k(Ui, Uj) = Tr(A(Ui)A(Uj)), (21)
+where A(Ui) = V (Ui)A0V †(Ui) is the quantum feature
+map for the unitary Ui with the encoding unitary
+V (Ui) = UiUeU †
+i and A0 is a suitable reference operator
+in the system. The kernel function k(Ui, Uj) measures
+the similarity between the unitaries Ui and Uj in the
+operator space. We now assume a quantum register of
+the geometry shown in Fig. 6 (a). The central qubit C is
+connected to A qubits, and each A qubit is connected
+to a B qubit. The input unitaries Ui act on A and
+B qubits as shown in Fig. 6 (c), and then Ue is a
+CNOT-like operation that entangles A qubits with C
+qubit after a Hadamard on C. The quantum kernel for
+
+=== Page 7 ===
+7
+(a)
+ (b)
+(c)
+ (d)
+ (e)
+(f)
+ (g)
+ (h)
+FIG. 6. (a) The geometry of the spin register used for the entanglement classification task. (b) The molecular structure of the
+Dibromofluoromethane (DBFM) used to realize one branch of the register in (a). (c) Quantum circuit for encoding unitaries
+Ui parametrized by θ and α. (d) Numerical Quantum kernel classification of entangling vs. non-entangling unitaries. The
+background indicates the actual classification of entangling (inside elliptical patches) and non-entangling (outside elliptical
+patches) when acted on the thermal equilibrium state ρ0 in Eq. 22. The circles represent 30 training unitary operators, and
+the triangles are the test unitary operators. The accuracy of the classification is 95%. (e) Same as (d), except with a classical
+Gaussian kernel trained on the parameter space (θ, α). Note that the quantum kernel in (c) recognizes the upper entangling zone
+even without a single training point there, while the classical kernel in (d) completely fails to recognize the upper entangling
+zone. (f) Accuracy of the quantum kernel SVM versus the number of training unitaries. (g) Accuracy versus the delay time
+τ used in the entangling unitary Ue. Both saturate at around 95%. (h) Experimental quantum kernel classification carried
+out using the kernel computed by experimentally simulating one arm of the register in (a) using DBFM shown in (b). The
+description of the symbols is the same as in (d). The accuracy of the classification is 91%.
+the entanglement classification task is computed using
+Eq. 16 with the new encoding scheme described above.
+We classify the unitary operators acting on the thermal
+equilibrium state
+ρ0 = e−βHZ /4, (22)
+of a two spin- 1
+2 particles subject to Hamiltonian HZ =
+−0.5 · (σ(1)
+z + σ(2)
+z ) and maintained at an inverse tem-
+perature β = 1 .5. The input unitaries Ui(α, β) acting
+on the above state either entangle it or not depending
+on (α, β). By using logarithmic negativity as the entan-
+glement witness for the resulting states, we obtain the
+entanglement label for each input unitary [42]. This set
+of unitaries and their corresponding labels form the data
+for our entanglement classification task.
+The numerical results of the classification are shown in
+Fig. 6 (d), where the background shades represent the
+actual entanglement labels of the operators. The training
+is done with 30 operators, chosen from only the lower
+part of the parameter space as indicated by circles. The
+kernel model is then tested on 196 operators uniformly
+distributed over the entire parameter space. The model is
+found to classify the operators with an accuracy of 95%.
+Interestingly, we observe an extrapolation ability of the
+proposed kernel model beyond the training area. This
+is because a kernel with quantum inputs measures the
+similarity of the inputs directly in the quantum operator
+space and not in the classical parameter space [43]. We
+now replace the quantum kernel with a classical Gaussian
+
+=== Page 8 ===
+8
+kernel that takes in parameters ( θ, α) as inputs [44].
+The classification results with the classical kernel with
+the same training points (as in the quantum case) are
+shown in Fig. 6 (e). Note that while the classical
+kernel is able to recognize the lower entangling area
+where training points are located, it completely fails
+to recognize the upper entangling area. This example
+illustrates the power of quantum kernels over classical
+kernels, especially for quantum tasks. 6 (f) and (g) show
+the accuracy of the quantum kernel SVM vs. the number
+of training unitaries and accuracy vs. the delay time τ
+used in the entangling unitary Ue, respectively. Both
+saturate at around 95%. Furthermore, to experimentally
+validate the proposed quantum kernel, we use the DBFM
+molecule shown in Fig. 6(b) to experimentally simulate
+one arm of the register in Fig. 6 (a). The experimental
+results are shown in Fig. 6 (h). The accuracy of the
+classification is found to be 91%. The reduction in
+accuracy, as compared to the numerical results, can be
+attributed to the fact that the DBFM molecule is not
+a perfect realization of the star topology register and to
+the imperfections in pulses used in realizing the unitary
+operators. However, the results are still quite promising
+and show that the quantum kernel can be used to classify
+unitaries acting on quantum states.
+Additionally, as mentioned before, unlike classical
+kernels, the quantum kernel can also handle non-
+parameterized unitaries. We tested the above quantum
+kernel (trained on the same set as above) with 100 non-
+parameterized random unitary operators. We found it
+to correctly classify up to 84% of the random unitary
+operators, once again confirming its ability to handle
+quantum data directly.
+IV. CONCLUSIONS
+Quantum kernels offer a practical approach for ex-
+ploring the high-dimensional feature spaces inherent in
+quantum systems. In this work, we have demonstrated
+the implementation of quantum kernel methods using
+NMR-based spin registers. By leveraging the symmetries
+of a 10-qubit star-topology NMR system, we encoded
+classical data into multiple-quantum coherence orders
+through data-dependent unitary transforms and com-
+puted the kernel function through experimental measure-
+ments. Our results show that the quantum kernel method
+can effectively perform classical machine learning tasks
+such as one-dimensional regression and two-dimensional
+classification. Furthermore, by extending the register
+to a double-layered star configuration, we introduced a
+quantum kernel capable of handling non-parametrized
+unitary operator inputs, which can then perform quan-
+tum classification tasks and be validated experimentally.
+We illustrated the power of the quantum kernel by
+successfully classifying unitary operators depending on
+whether they generate entanglement or not when acting
+on a thermal state. When a large set of high-dimensional
+unitaries needs to be classified, the standard method of
+tomography is no longer feasible. In such a scenario,
+a well-trained quantum kernel can be far more efficient
+in classification. This work opens new possibilities for
+processing quantum data directly, marking a step toward
+realizing fully quantum machine learning systems. Our
+findings underscore the potential of quantum kernels
+in advancing quantum machine learning, providing a
+promising avenue for future research in more complex
+quantum tasks and larger-scale implementations. One
+future direction could be to adopt automated kernel
+construction approaches [45] to systematically improve
+the NMR kernel’s performance by adding optimal gates.
+Investigating how to encode non-unitary quantum maps
+and compute kernels between them can also lead to
+deeper insights into the structure of the LOCC class
+and contribute to the development of improved quantum
+communication protocols.
+V. ACKNOWLEDGEMENTS
+The authors gratefully acknowledge discussions with
+Prof. Sreejith G. J, Arijit Chatterjee, and Ke-
+shav V. ChatGPT helped generate simulation codes
+for this study. T.S.M. acknowledges funding from
+DST/ICPS/QuST/2019/Q67 and I-HUB QTF.
+[1] B. Sch¨ olkopf and A. J. Smola, Learning with Kernels:
+Support Vector Machines, Regularization, Optimization,
+and Beyond (MIT Press, 2002).
+[2] J. Shawe-Taylor and N. Cristianini, Kernel Methods for
+Pattern Analysis (Cambridge University Press, 2004).
+[3] M. Cerezo, G. Verdon, H.-Y. Huang, L. Cincio, and P. J.
+Coles, Challenges and opportunities in quantum machine
+learning, Nature Computational Science 2, 567 (2022).
+[4] S. Mangini, F. Tacchino, D. Gerace, D. Bajoni, and
+C. Macchiavello, Quantum computing models for arti-
+ficial neural networks, EPL (Europhysics Letters) 134,
+10002 (2021).
+[5] A. W. Harrow, A. Hassidim, and S. Lloyd, Quantum
+algorithm for linear systems of equations, Phys. Rev.
+Lett. 103, 150502 (2009).
+[6] S. Lloyd, M. Mohseni, and P. Rebentrost, Quantum
+principal component analysis, Nature Phys. 10, 631
+(2014).
+[7] P. Rebentrost, M. Mohseni, and S. Lloyd, Quantum
+support vector machine for big data classification, Phys.
+Rev. Lett. 113, 130503 (2014).
+[8] J. Biamonte, P. Wittek, N. Pancotti, P. Rebentrost,
+N. Wiebe, and S. Lloyd, Quantum machine learning,
+Nature 549, 195 (2017).
+
+=== Page 9 ===
+9
+[9] M. Schuld, I. Sinayskiy, and F. Petruccione, An intro-
+duction to quantum machine learning, Contemporary
+Physics 56, 172 (2015).
+[10] M. Cerezo, A. Arrasmith, R. Babbush, S. C. Benjamin,
+S. Endo, K. Fujii, J. R. McClean, K. Mitarai, X. Yuan,
+L. Cincio, and P. J. Coles, Variational quantum algo-
+rithms, Nature Reviews Physics 3, 625 (2021).
+[11] F. Tacchino, S. Mangini, P. K. Barkoutsos, C. Macchi-
+avello, D. Gerace, I. Tavernelli, and D. Bajoni, Varia-
+tional learning for quantum artificial neural networks,
+IEEE Transactions on Quantum Engineering 2, 1 (2021).
+[12] L. Banchi, J. Pereira, and S. Pirandola, Generalization
+in quantum machine learning: A quantum information
+standpoint, PRX Quantum 2, 040321 (2021).
+[13] V. Havl´ ıˇ cek, A. D. C´ orcoles, K. Temme, A. W. Harrow,
+A. Kandala, J. M. Chow, and J. M. Gambetta, Super-
+vised learning with quantum-enhanced feature spaces,
+Nature 567, 209 (2019).
+[14] H.-Y. Huang, M. Broughton, M. Mohseni, R. Babbush,
+H. Neven, and J. R. McClean, Power of data in quan-
+tum machine learning, Nature Communications 12, 2631
+(2021).
+[15] S. Jerbi, L. J. Fiderer, H. Poulsen Nautrup, J. M. K¨ ubler,
+H. J. Briegel, and V. Dunjko, Quantum machine learning
+beyond kernel methods, Nature Communications 14,
+10.1038/s41467-023-36159-y (2023).
+[16] M. Schuld and N. Killoran, Quantum machine learning
+in feature hilbert spaces, Phys. Rev. Lett. 122, 040504
+(2019).
+[17] M. Schuld, Quantum models as kernel methods, in
+Machine Learning with Quantum Computers (Springer,
+Cham, 2021) pp. 125–144.
+[18] S. Thanasilp, S. Wang, M. Cerezo, A. T. Sornborger,
+P. J. Coles, K. Sharma, and Z. Holmes, Exponential
+concentration in quantum kernel methods, Nature Com-
+munications 15, 5200 (2024).
+[19] J. J¨ ager and R. V. Krems, Universal expressiveness of
+variational quantum classifiers and quantum kernels for
+support vector machines, Nature Communications 14,
+576 (2023).
+[20] Z. Li, X. Liu, N. Xu, and J. Du, Experimental realization
+of a quantum support vector machine, Phys. Rev. Lett.
+114, 140504 (2015).
+[21] T. Kusumoto, K. Mitarai, K. Fujii, M. Kitagawa, and
+M. Negoro, Experimental quantum kernel trick with
+nuclear spins in a solid, npj Quantum Information 7, 94
+(2021).
+[22] K. Bartkiewicz, C. Gneiting, A. ˇCernoch, K. Jir´ akov´ a,
+K. Lemr, and F. Nori, Experimental kernel-based quan-
+tum machine learning in finite feature space, Scientific
+Reports 10, 12356 (2020).
+[23] B. Albrecht, C. Dalyac, L. Leclerc, L. Ortiz-Guti´ errez,
+S. Thabet, M. D’Arcangelo, J. R. K. Cline, V. E. Elfving,
+L. Lassabli` ere, H. Silv´ erio, B. Ximenez, L.-P. Henry,
+A. Signoles, and L. Henriet, Quantum feature maps for
+graph machine learning on a neutral atom quantum
+processor, Phys. Rev. A 107, 042615 (2023).
+[24] Z. Krunic, F. F. Fl¨ other, G. Seegan, N. D. Earnest-
+Noble, and O. Shehab, Quantum kernels for real-world
+predictions based on electronic health records, IEEE
+Transactions on Quantum Engineering 3, 1 (2022).
+[25] E. Peters, J. Caldeira, A. Ho, S. Leichenauer,
+M. Mohseni, H. Neven, P. Spentzouris, D. Strain, and
+G. N. Perdue, Machine learning of high dimensional data
+on a noisy quantum processor, npj Quantum Information
+7, 161 (2021).
+[26] T. Sancho-Lorente, J. Rom´ an-Roche, and D. Zueco,
+Quantum kernels to learn the phases of quantum matter,
+Phys. Rev. A 105, 042432 (2022).
+[27] Y. Wu, B. Wu, J. Wang, and X. Yuan, Quantum Phase
+Recognition via Quantum Kernel Methods, Quantum 7,
+981 (2023).
+[28] G. Gentinetta, A. Thomsen, D. Sutter, and S. Woerner,
+The complexity of quantum support vector machines,
+Quantum 8, 1225 (2024).
+[29] T. S. Mahesh, D. Khurana, K. V. R, S. G. J, and
+S. Kumar, Star-topology registers: Nmr and quantum
+information perspectives, Journal of Physics: Condensed
+Matter 33 (2021).
+[30] H.-Y. Huang, M. Broughton, J. Cotler, S. Chen,
+J. Li, M. Mohseni, H. Neven, R. Babbush, R. Kueng,
+J. Preskill, and J. R. McClean, Quantum advantage in
+learning from experiments, Science 376, 1182 (2022).
+[31] M. C. Caro, H.-Y. Huang, N. Ezzell, J. Gibbs, A. T.
+Sornborger, L. Cincio, P. J. Coles, and Z. Holmes,
+Out-of-distribution generalization for learning quantum
+dynamics, Nature Communications 14, 3751 (2023).
+[32] L. Nagano, A. Miessen, T. Onodera, I. Tavernelli,
+F. Tacchino, and K. Terashi, Quantum data learning for
+quantum simulations in high-energy physics, Phys. Rev.
+Res. 5, 043250 (2023).
+[33] A. Bisio, G. Chiribella, G. M. D’Ariano, S. Facchini,
+and P. Perinotti, Optimal quantum learning of a unitary
+transformation, Phys. Rev. A 81, 032324 (2010).
+[34] K. Beer, D. Bondarenko, T. Farrelly, T. J. Osborne,
+R. Salzmann, D. Scheiermann, and R. Wolf, Training
+deep quantum neural networks, Nature Communications
+11, 808 (2020).
+[35] J. Gibbs, Z. Holmes, M. C. Caro, N. Ezzell, H.-Y. Huang,
+L. Cincio, A. T. Sornborger, and P. J. Coles, Dynamical
+simulation via quantum machine learning with provable
+generalization, Phys. Rev. Res. 6, 013241 (2024).
+[36] A. V. Uvarov, A. S. Kardashin, and J. D. Biamonte,
+Machine learning phase transitions with a quantum
+processor, Phys. Rev. A 102, 012415 (2020).
+[37] M. C. Caro, H.-Y. Huang, M. Cerezo, K. Sharma,
+A. Sornborger, L. Cincio, and P. J. Coles, Generalization
+in quantum machine learning from few training data,
+Nature Communications 13, 4919 (2022).
+[38] D. C. Montgomery, E. A. Peck, and G. G. Vining, In-
+troduction to Linear Regression Analysis, 5th ed. (Wiley,
+2012).
+[39] B. Sch¨ olkopf, R. Herbrich, and A. J. Smola, A generalized
+representer theorem, in Computational Learning The-
+ory: 14th Annual Conference on Computational Learning
+Theory, Lecture Notes in Computer Science, Vol. 2111,
+edited by D. Helmbold and B. Williamson (Springer,
+Berlin, Germany, 2001) pp. 416–426.
+[40] Q. L. Wang, Y. Jin, X. H. Li, et al. , An advanced
+quantum support vector machine for power quality dis-
+turbance detection and identification, EPJ Quantum
+Technology 11, 70 (2024).
+[41] E. Serrano-Ens´ astiga and J. Martin, Maximum entangle-
+ment of mixed symmetric states under unitary transfor-
+mations, SciPost Physics 15, 120 (2023).
+[42] M. B. Plenio, Logarithmic negativity: A full entangle-
+ment monotone that is not convex, Physical Review
+Letters 95, 090503 (2005).
+
+=== Page 10 ===
+10
+[43] V. Markov, V. Rastunkov, and D. Fry, Quantum time
+series similarity measures and quantum temporal kernels
+(2024), arXiv:2312.01602 [quant-ph].
+[44] F. Pedregosa, G. Varoquaux, A. Gramfort, V. Michel,
+B. Thirion, O. Grisel, M. Blondel, P. Prettenhofer,
+R. Weiss, V. Dubourg, J. Vanderplas, A. Passos, D. Cour-
+napeau, M. Brucher, M. Perrot, and E. Duchesnay,scikit-
+learn: Machine Learning in Python - Gaussian Process ,
+Scikit-learn Developers (2024).
+[45] E. Torabian and R. V. Krems, Compositional optimiza-
+tion of quantum circuits for quantum kernels of support
+vector machines, Phys. Rev. Research 5, 013211 (2023).

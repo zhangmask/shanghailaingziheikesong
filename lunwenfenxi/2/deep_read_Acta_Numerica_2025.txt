@@ -1,0 +1,1549 @@
+=== Page 1 ===
+Acta Numerica (2025), pp. 123–291
+doi:10.1017/S0962492924000060
+Ensemble Kalman methods:
+A mean-field perspective
+Edoardo Calvello
+California Institute of Technology, Pasadena, CA 91125, USA
+E-mail: e.calvello@caltech.edu
+Sebastian Reich
+Institut f¨ur Mathematik, Universit¨at Potsdam, D-14476 Potsdam, Germany
+E-mail: sebastian.reich@uni-potsdam.de
+Andrew M. Stuart
+California Institute of Technology, Pasadena, CA 91125, USA
+E-mail: astuart@caltech.edu
+Ensemble Kalman methods, introduced in 1994 in the context of ocean state estim-
+ation, are now widely used for state estimation and parameter estimation (inverse
+problems) in many arenae. Their success stems from the fact that they take an under-
+lying computational model as a black box to provide a systematic, derivative-free
+methodology for incorporating observations; furthermore the ensemble approach
+allows for sensitivities and uncertainties to be calculated. Analysis of the accuracy
+of ensemble Kalman methods, especially in terms of uncertainty quantification, is
+lagging behind empirical success; this paper provides a unifying mean-field-based
+framework for their analysis. Both state estimation and parameter estimation prob-
+lems are considered, and formulations in both discrete and continuous time are
+employed. For state estimation problems, both the control and filtering approaches
+are considered; analogously for parameter estimation problems, the optimization and
+Bayesian perspectives are both studied. As well as providing an elegant framework,
+the mean-field perspective also allows for the derivation of a variety of methods used
+in practice. In addition it unifies a wide-ranging literature in the field and suggests
+open problems.
+2020 Mathematics Subject Classification: 35, 37, 60, 62, 65, 93
+© The Author(s), 2025. Published by Cambridge University Press.
+This is an Open Access article, distributed under the terms of the Creative Commons Attribution
+licence (http://creativecommons.org/licenses/by/4.0/), which permits unrestricted re-use, distribution,
+and reproduction in any medium, provided the original work is properly cited.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 2 ===
+124 E. Calvello, S. Reich and A. M. Stuart
+CONTENTS
+1 Introduction 124
+2 State estimation: discrete time 129
+3 State estimation: continuous time 172
+4 Inverse problems: discrete time 196
+5 Inverse problems: continuous time 223
+6 Conclusions and open problems 249
+A Pseudo-code 252
+B Lorenz ’96 models 257
+C Mean-field maps 260
+D Stochastic calculus considerations 270
+E Flows in the Gaussian manifold 278
+References 280
+1. Introduction
+The ensemble Kalman methodology comprises an innovative and flexible set of
+tools which can be used for both state estimation in dynamical systems and para-
+meter estimation for generic inverse problems. It has primarily been developed by
+practitioners in the geophysical sciences, with notable impact on the fields of ocean-
+ography, oil reservoir simulation and weather forecasting. Despite its widespread
+adoption in the geosciences over several decades, firm theoretical foundations are
+only recently starting to emerge; the methodology is hard to analyse. The purpose
+of this article is twofold: (a) to introduce a mathematical framework for the ana-
+lysis of ensemble Kalman methods, describing what is known and highlighting the
+many open mathematical challenges in the field, (b) to provide a literature survey
+which bridges the domain-specific development of the methodology with emer-
+ging mathematical analyses. In so doing we will also highlight the flexibility of the
+methodology for use in widespread applications, beyond its historical development
+in the geosciences.
+The material is organized around the two separate themes of state estimation and
+inverse problems; within each, both discrete-time and continuous-time approaches
+are explained. The novel perspective which underlies all of this material is the
+derivation of ensemble Kalman methods as particle approximations of carefully
+designed mean-field models. The relationship of these mean-field models to exact
+transport models, for Gaussian problems, serves to motivate their form.
+In Section 1.1 we give an overview of the history of ensemble Kalman methods.
+Section 1.2 describes the organization of the paper. In Section 1.3 we make brief
+remarks about the pseudo-code that we make available as a supplementary resource.
+The introduction concludes, in Section 1.4, with a summary of the notation that we
+adopt throughout.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 3 ===
+Ensemble Kalman methods: A mean-field perspective 125
+1.1. Historical context
+The Kalman filter (KF) is arguably the first setting in which the systematic integra-
+tion of observational data with a dynamical system was considered, leading to both
+discrete-time (Kalman 1960) and continuous-time (Kalman and Bucy 1961) for-
+mulations; see Welch and Bishop (1995) for an overview. The Kalman filter applies
+only in the setting of linear Gaussian dynamics and observations. In this setting it
+computes the distribution of the state of the dynamical system, given observations,
+exactly; this Bayesian perspective on the filter was highlighted in Ho and Lee (1964)
+subsequent to the original derivation in Kalman (1960), which proceeded by com-
+puting the best linear predictor of the state, given data. The extended Kalman filter
+(historically denoted EKF, but the acronym ExKF is also used and is useful) was
+introduced in order to extend Kalman’s ideas to nonlinear problems; see the books
+by Jazwinski (2007) and Anderson and Moore (2012) for overviews. The extended
+Kalman approach is based on a linearization approximation; it hence fails to exactly
+compute the distribution of the state of the dynamical system, given observations,
+in general. Furthermore, it requires propagation of covariance matrices, which can
+be very large for applications arising in the geosciences (Ghil et al. 1981).
+The ensemble Kalman filter (EnKF) was introduced in the celebrated paper by
+Evensen (1994), which made the consequential observation that if an ensemble of
+state estimators is employed then it can also be used to make an approximation of
+the covariance. In geosciences applications this circumvents the computation of
+large covariances, replacing them instead with low-rank approximations, with rank
+determined by the number of ensemble members. The original paper developed the
+idea in the context of ocean models, but was rapidly and concurrently developed
+in a variety of geoscience application domains (van Leeuwen and Evensen 1996,
+Burgers, van Leeuwen and Evensen 1998, Houtekamer and Mitchell 1998); van
+Leeuwen (2020) provides a historical overview. These methods are sometimes
+referred to as the stochastic EnKF: they require simulation of random variables to
+implement. A different class of ensemble methods, known collectively asensemble
+square root filters, was subsequently developed (Anderson 2001, Whitaker and
+Hamill 2002, Bishop, Etherton and Majumdar 2001, Hunt, Kostelich and Szunyogh
+2007, Tippett et al. 2003, Sakov and Oke 2008). These methods are a form
+of deterministic EnKF : they do not require simulation of random variables to
+implement.
+Central to our mathematical presentation of Kalman-based methods is the adop-
+tion of mean-field and transport perspectives on the subject. The incorporation of
+data within filtering constitutes (possibly approximate) application of Bayes’ the-
+orem; Daum, Huang and Noushin (2010), Reich (2011), El Moselhy and Marzouk
+(2012) and the survey by Cotter and Reich (2013) introduce novel approaches to
+Bayesian inversion, rooted in transport and mean-field models. While El Moselhy
+and Marzouk (2012) and Spantini, Baptista and Marzouk (2022) propose a direct
+numerical approximation of the underlying optimal transport problem, Daumet al.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 4 ===
+126 E. Calvello, S. Reich and A. M. Stuart
+(2010) and Reich (2011) pursue a homotopy approach. We note that the homotopy
+approach is closely related to iterative implementations of the EnKF, as first con-
+sidered by Li and Reynolds (2009), Gu and Oliver (2007) and Sakov, Oliver and
+Bertino (2012); these homotopy approaches lead to continuous-time formulations
+of the EnKF in the limit of infinitely many iterations, as first considered by Berge-
+mann and Reich (2010 a,b). Directly starting from the continuous-time filtering
+perspective, mean-field models have been introduced independently in Crisan and
+Xiong (2010) and Yang, Mehta and Meyn (2013).
+The key connection between mean-field models and ensemble methods is that
+the latter can be derived as particle approximations of the mean-field limit; this
+viewpoint will play a guiding role in our presentation of the subject of ensemble
+methods in this paper. In this context it is notable that the field of optimiza-
+tion, which is linked to Bayesian sampling through MAP estimation (Kaipio and
+Somersalo 2006), has also seen recent development using mean-field models; see
+Carrillo, Choi, Totzeck and Tse (2018) for an overview and unifying mathematical
+framework.
+The methods covered in this survey provide only approximate solutions to the
+underlying filtering, inference and/or optimization problem, in the mean-field limit.
+The approximations invoked are based on assuming linear Gaussian structure,
+where the mean-field models are exact, but applying the resulting methodology
+outside this regime. In the context of the optimization and Bayesian approaches
+to inversion, affine-invariant algorithms (introduced in Goodman and Weare 2010)
+play an important conceptual role in understanding the power of ensemble Kalman
+methods: affine invariance can be used to show universal convergence rates for
+the class of all linear Gaussian problems. Empirically the affine invariance confers
+advantages when ensemble Kalman methods are applied beyond the linear Gaussian
+setting. In practice, this benefit must be weighed against the error resulting from
+using ensemble Kalman methods outside the linear Gaussian setting.
+Alternative methods, such as sequential Monte Carlo, can be designed to be
+consistent with the underlying nonlinear filtering problem, and do not rely on being
+exact only for linear Gaussian problems. Doucet, De Freitas and Gordon (2001)
+and Chopin and Papaspiliopoulos (2020) survey the use of sequential Monte Carlo
+methods for general discrete-time filtering and inference problems; Del Moral
+(1997) and Del Moral and Guionnet (2001) prove convergence of sequential Monte
+Carlo methods, including in some specific cases over long time horizons. However,
+sequential Monte Carlo methods suffer from the curse of dimensionality and are
+currently not directly applicable to high-dimensional problems as arising, for ex-
+ample, from geophysical applications. This issue with the curse of dimensionality
+provides an important motivation for the ensemble methods covered in this survey.
+See Snyder, Bengtsson, Bickel and Anderson (2008), Bickel, Li and Bengtsson
+(2008), Rebeschini and Van Handel (2015) and Agapiou, Papaspiliopoulos, Sanz-
+Alonso and Stuart (2017) for detailed discussion of these issues. Related issues
+also arise for Monte Carlo Markov chain (MCMC) when studying Bayesian inverse
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 5 ===
+Ensemble Kalman methods: A mean-field perspective 127
+problems (Kaipio and Somersalo 2006). See Hairer, Stuart and Vollmer (2014)
+for an analysis of the degeneration of performance of standard MCMC methods in
+high dimensions, as well as analysis of special MCMC methods tailored to infinite-
+dimensional problems; the subject is reviewed in Cotter, Roberts, Stuart and White
+(2013).
+This completes our chronological overview of the historical context for the
+development of ensemble Kalman methods, and the specific mathematical context
+which will be our focus. Each of the four subsequent sections concludes with a
+bibliographical subsection in which a deeper literature review is given.
+1.2. Overview
+Section 2 is devoted to the problem of state estimation for discrete-time (possibly
+stochastic) dynamical systems, given noisy, and possibly indirect, observations.
+We formulate the problem from the perspectives of both control theory and prob-
+ability, and we provide a unifying approach to algorithms for these problems; the
+approach rests on transport of measures and mean-field stochastic dynamical sys-
+tems. Ensemble Kalman methods are then derived as particle approximations of
+the mean-field models. Section 3 adopts a perspective that parallels the previous
+section, but in the continuous-time setting. Ordinary differential equations (ODEs)
+and stochastic differential equations (SDEs) are used to describe the state and
+its observation process, and mean-field SDEs and ODEs, and related (stochastic)
+partial differential equations ((S)PDEs), are used to provide the underpinnings of
+algorithms; particle approximations of the mean-field systems give rise to interact-
+ing systems of SDEs which describe ensemble Kalman methods. The formulation
+in continuous time is useful both because in some applications state estimation
+problems are most naturally formulated this way, and because they provide insight
+into discrete-time algorithms, giving rise to cleaner analysis of phenomena present
+in both discrete and continuous time.
+Sections 4 and 5 are devoted to the use of ensemble Kalman methods for inverse
+problems, including parameter estimation, demonstrating how a useful change of
+perspective opens up the use of state estimation in this broader setting. Sections 4
+and 5 consider discrete and continuous time respectively, and each parallels the
+ideas developed for state estimation in Sections 2 and 3 respectively. Sections 2,
+3, 4 and 5 are all organized according to the flow of ideas displayed in Figure 1.1.
+Indeed, starting from a probabilistic perspective, which describes the evolution
+of the filtering distribution, it is possible to formulate mean-field maps whose
+sample paths on state space are equal in law to the filtering evolution. Since it is
+typically not tractable to identify these maps explicitly, it is of interest to determine
+mean-field maps whose sample paths are only approximately equal in law to the
+filtering evolution. This leads to the idea of second-order mean-field models whose
+sample paths have law with first- and second-order moments which match those
+of a Gaussian approximation of the Bayesian data incorporation step. Particle
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 6 ===
+128 E. Calvello, S. Reich and A. M. Stuart
+Figure 1.1. Organizational flow employed in each of Sections 2 (discrete time)
+and 3 (continuous time), concerning state estimation. Sections 4 and 5 apply this
+methodology to inverse problems, in discrete and continuous time respectively, by
+formulating them as state estimation problems.
+approximations of these second-order mean-field maps are then used to derive
+implementable numerical algorithms which are the ensemble Kalman methods
+implemented in practice.
+Section 6 concludes the article, and in particular highlights open problems in the
+area, of potential interest to the mathematical community. Appendix A is devoted
+to pseudo-code for the algorithms introduced in this paper. Appendix B contains
+background on the underlying Lorenz ’96 model problems that we use throughout
+the paper in a number of illustrative numerical experiments. Appendices C and D
+provide foundational material on mean-field maps and on stochastic integration.
+Appendix E contains some observations linking different flows, in the manifold of
+Gaussian probability measures, that arise in the main body of the text.
+1.3. Pseudo-code
+Pseudo-code describing several of the algorithms that we present and deploy in this
+paper is given in Appendix A. 1 The reader is encouraged to consult Algorithms 1
+and 2, 3DV AR and the ensemble Kalman filter (EnKF) respectively, in the context
+of the problem of state estimation for discrete-time dynamical systems presented
+in Section 2. The scheme 3DV AR is employed in Examples 2.3, 2.5 and 2.16. The
+ensemble Kalman filter is applied in Example 2.16. Ensemble Kalman methods
+for inversion, as shown in Algorithms 3, 4 and 5, are presented in Section 4 and
+applied in Examples 4.22 and 4.23.
+1.4. Notation
+Throughout we denote the positive integers and non-negative integers by N =
+{1, 2, . . .} and Z+ = {0, 1, 2, . . .} respectively, and the notation R = (−∞, ∞) and
+R+ = [0, ∞) for the reals and the non-negative reals. We let ⟨·, ·⟩, | · | denote the
+Euclidean inner product and norm, noting that |𝑣 |2 = ⟨𝑣, 𝑣 ⟩. We also use | · | to
+denote the resulting induced norm on matrices. We use : to denote the Frobenius
+inner product between matrices, and | · |F the induced norm on matrices. For any
+function 𝑔 : R𝑑1 ↦→ R𝑑2, we let 𝐷𝑔 (𝑣) ∈ R𝑑2 ×𝑑1 denote the Jacobian matrix of
+1 The code is available at https://github.com/EdoardoCalvello/EnsembleKalmanMethods/.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 7 ===
+Ensemble Kalman methods: A mean-field perspective 129
+first derivatives at𝑣 ∈ R𝑑1, and let 𝐷2𝑔(𝑣)[·, ·] denote the symmetric bilinear form
+induced by second derivatives. We also use ∇, ∇· and Δ to denote the gradient,
+divergence and Laplacian operations respectively.
+Throughout the article we will distinguish operators acting on infinite-dimen-
+sional spaces by using a calligraphic font. For example, G will denote the operator
+acting on probability measures effecting a projection onto the nearest Gaussian;
+in contrast, 𝐺 : R𝑑𝑢 → R𝑑𝑤 will denote the forward model in a generic inverse
+problem. We will use themathsf font to distinguish matrices and functions between
+Euclidean spaces that arise in continuous time from their discrete-time counterparts.
+For example, Σ will denote a covariance arising in continuous time, whilst Σ will
+denote a covariance arising in discrete time; and h will denote a function defining
+the observation process in continuous time, whilstℎ will be the analogous function
+in discrete time.
+We use E and P to denote expectation and probability under the prevailing
+probability measure; if we wish to make clear that measure 𝜋 is the prevailing
+probability measure then we write E 𝜋 and P 𝜋. For a measure 𝜋 we let 𝑇 ♯𝜋 denote
+the pushforward measure induced by the map𝑇. We use Law(rv) to denote the law
+of random variable rv. We let 𝔓 = 𝔓 (R𝑑) denote the set of probability measures
+on R𝑑. Under the assumptions made in this article we are mostly able to work with
+measures that have density with respect to Lebesgue measure, and so will blur the
+distinction between measures and their densities. However, use of Dirac masses
+will occasionally be useful.
+We let 𝛿𝑢 denote the Dirac mass on R𝑑, centred at point 𝑢 ∈ R𝑑. The notation
+N(𝑚, 𝐶) denotes the distribution of a Gaussian random variable with mean 𝑚 and
+covariance 𝐶. We let 𝔊 = 𝔊 (R𝑑) denote the set of Gaussian probability measures
+on R𝑑 (including indefinite covariances and hence all Dirac masses).
+In the following let𝐴, 𝐵, 𝐶 be symmetric matrices. We write 𝐴 ≻ 𝐵 when 𝐴 − 𝐵
+is positive definite and 𝐴 ⪰ 𝐵 when 𝐴 − 𝐵 is positive semi-definite. We will also
+write 𝐴 ≺ 𝐵 when 𝐵 − 𝐴 ≻ 0 and 𝐴 ⪯ 𝐵 when 𝐵 − 𝐴 ⪰ 0. For 𝐶 ≻ 0 (and
+therefore a covariance matrix) we define ⟨·, ·⟩𝐶 and | · |𝐶, the covariance-weighted
+Euclidean inner product and norm, by ⟨𝑢, 𝑣 ⟩𝐶 = ⟨𝑢, 𝐶 −1𝑣⟩ and |𝑣 |2
+𝐶 = ⟨𝑣, 𝑣 ⟩𝐶.
+2. State estimation: discrete time
+In Section 2.1 we provide the set-up for the problem of state estimation in discrete
+time. Section 2.2 introduces an algorithm for this problem based on a control-
+theoretic perspective. Section 2.3 describes the Bayesian probabilistic perspective;
+in this subsection algorithms are not presented but foundations for the creation
+of algorithms are laid through the decomposition of the filtering cycle into an
+iteration which alternates prediction and the assimilation of data. In Section 2.4
+we introduce the important idea of Gaussian projection, and the resulting Gaussian
+projected filter. Section 2.5 introduces various mean-field dynamical systems
+which approximate the filtering cycle; a unifying transport map perspective is
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 8 ===
+130 E. Calvello, S. Reich and A. M. Stuart
+adopted. This leads, in Section 2.6, to definitions of the ensemble Kalman filter,
+the ensemble adjustment filter and the ensemble transform filter, all derived as
+particle approximations of specific mean-field models. We conclude in Section 2.7
+with bibliographical notes in which we review relevant literature, and include
+discussion of a variety of other algorithms for state estimation, relating them to the
+perspective we adopt here.
+We emphasize that all the mean-field methods we derive in this section for the
+solution of filtering problems, and their continuous-time counterparts in Section 3,
+are exact only in the linear Gaussian setting. They may be implemented beyond
+this setting, however, and are empirically found to work well for many problems.
+Theory to justify this observation is very much needed. Our exposition provides a
+framework for such a theory.
+2.1. Set-up
+The objective of sequential data assimilation is to iteratively update the state of
+a (possibly stochastic) dynamical system based on (possibly noisy, nonlinear and
+indirect) observations and knowledge of the dynamical and observational processes;
+we refer to this as state estimation. The typical setting is one in which the initial
+condition is uncertain, but this uncertainty is compensated for by (typically noisy)
+observations of a (possibly nonlinear and indirect) function of the state. These
+observations often live in a space of lower dimension than the dimension of the
+state space, meaning that the goal of state estimation goes beyond denoising, and
+into the realm of control-theoretic considerations such as observability.
+A useful starting point is to consider a stochastic dynamical system in which the
+evolution of the state, and the relationship between the observations (which we also
+refer to as data) and the state, are defined, respectively, by the equations
+𝑣 𝑛+1 = Ψ(𝑣 𝑛) + 𝜉𝑛,
+𝑦𝑛+1 = ℎ(𝑣 𝑛+1) + 𝜂𝑛+1,
+(2.1a)
+(2.1b)
+taken to hold for all 𝑛 ∈ Z+. We assume that for each fixed 𝑛 ∈ Z+, the state
+𝑣 𝑛 ∈ R𝑑𝑣 and the observations 𝑦𝑛 ∈ R𝑑𝑦. The maps Ψ(·) and ℎ(·) describe the
+systematic, deterministic components of the dynamics and observation processes,
+and are assumed to be known measurable functions (with respect to the Borel
+algebra), bounded on compact sets. The initial condition for𝑣 0 is assumed random
+and the systematic components of the model are subjected to mean zero noise, 𝜉𝑛
+and 𝜂𝑛+1. To be concrete we assume that 𝑣 0, {𝜉𝑛}𝑛∈Z+ and {𝜂𝑛}𝑛∈N are mutually
+independent Gaussians defined by
+𝑣 0 ∼ N(𝑚0, 𝐶0), 𝜉 𝑛 ∼ N(0, Σ) i.i.d., 𝜂 𝑛 ∼ N(0, Γ) i.i.d. (2.2)
+In practice we will have available to us the observation coordinates of a specific
+true realization of the random dynamical system (2.1), from which we wish to
+recover the specific true realization of the state that gave rise to these observations.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 9 ===
+Ensemble Kalman methods: A mean-field perspective 131
+We denote the true realizations of the state of the system by the sequence{𝑣 †
+𝑛}𝑛∈Z+,
+and the observed data by {𝑦†
+𝑛}𝑛∈N. These are generated by 𝑣 †
+0, {𝜉†
+𝑛}𝑛∈Z+ and
+{𝜂†
+𝑛}𝑛∈N, specific realizations of the initial condition and state and observational
+noise from the distribution defined by (2.2).
+We let 𝑌 †
+𝑛 = {𝑦†
+ℓ }1≤ℓ ≤𝑛. Our objective is to estimate the state 𝑣 †
+𝑛 at time 𝑛
+from data 𝑌 †
+𝑛. Specifically, it is natural to think about this design objective in two
+different ways.
+Objective 1. Design an algorithm producing output 𝑣 𝑛 from 𝑌 †
+𝑛 so that {𝑣 𝑛}𝑛∈Z+
+estimates {𝑣 †
+𝑛}𝑛∈Z+, the true state generated by (2.1a).
+Objective 2. Design an algorithm which estimates the distribution of random vari-
+able 𝑣 𝑛|𝑌 †
+𝑛, the conditional distribution defined by (2.1).
+In both cases we are interested in Markovian formulations which update the
+estimate 𝑣 𝑛, or the distribution𝑣 𝑛|𝑌 †
+𝑛, sequentially as the data is acquired. In the next
+two subsections we describe control-theoretic and probabilistic approaches to this
+problem which, respectively, provide the basis for algorithms addressing Objectives
+1 and 2. We note that fulfilling Objective 2 immediately implies resolution of
+Objective 1, for example by taking the mean of 𝑣 𝑛|𝑌 †
+𝑛 as state estimator; but the
+reverse is not typically true. However, Objective 1 is easier to address and is
+especially relevant when noise levels are small; furthermore, its failure modes
+serve to motivate approaches which are used to address Objective 2.
+2.2. Control theory perspective
+A very natural idea from control theory underlies ensemble Kalman filtering and
+is encapsulated in the following algorithmic approach. This way of attacking state
+estimation is most appropriate when |𝐶0|, |Γ| and |Σ| are small so that the state
+and observations are close to deterministic. To understand this setting we will first
+study algorithms in which the covariances Γ and Σ are set to zero, and then return
+to the inclusion of noise later.
+The algorithmic idea works as follows: from current state estimate 𝑣 𝑛, given
+𝑌 †
+𝑛, predict the outcome of the model and data, denoted by (b𝑣 𝑛+1,bℎ𝑛+1), using the
+update equations (2.1), but ignoring the noise; then correct the state estimate by
+nudging the prediction using the mismatch between observed and predicted data
+(𝑦†
+𝑛+1,bℎ𝑛+1). This results in a deterministic map 𝑣 𝑛 ↦→ 𝑣 𝑛+1, assumed to hold for
+all 𝑛 ∈ Z+, of the following form:
+b𝑣 𝑛+1 = Ψ(𝑣 𝑛),
+bℎ𝑛+1 = ℎ(b𝑣 𝑛+1),
+𝑣 𝑛+1 = b𝑣 𝑛+1 + 𝐾(𝑦†
+𝑛+1 −bℎ𝑛+1).
+(2.3a)
+(2.3b)
+(2.3c)
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 10 ===
+132 E. Calvello, S. Reich and A. M. Stuart
+Equations (2.3a) and (2.3b) create predicted state and data from current estimate
+𝑣 𝑛 of the state. The difference between the predicted data bℎ𝑛+1 and the true data
+𝑦†
+𝑛+1, the latter found from a fixed realization of (2.1), is then used to correct the
+predicted state resulting in (2.3c). We can write the algorithm compactly in the
+form
+𝑣 𝑛+1 = Ψ(𝑣 𝑛) + 𝐾
+ 
+𝑦†
+𝑛+1 − ℎ(Ψ(𝑣 𝑛))
+
+. (2.4)
+Choice of the gain matrix 𝐾 completes definition of an algorithm which we refer
+to as 3DV AR.
+Remark 2.1. The nomenclature ‘3DV AR’ was coined in the geophysics com-
+munity, and stands for three-dimensional variational data assimilation. This is
+natural for algorithms which incorporate spatially distributed data sequentially in
+time, in the context where the state variable𝑣 varies across three spatial coordinates.
+In our setting the state variable 𝑣 is not required to have any spatial structure, but
+the control formulation (2.4) reproduces the 3DV AR algorithm from the geophys-
+ics community when it does. Hence we still refer to it as 3DV AR. We also note
+that the method is perhaps more properly termed cycled 3DV AR: ‘3DV AR’ refers
+to the assimilation of data at each observation time, and ‘cycled’ refers to doing
+this sequentially in time as successive observations are acquired. Pseudo-code for
+3DV AR may be found as Algorithm 1 in Appendix A. The variant on 3DV AR which
+uses data distributed over several time steps is known as 4DV AR; see Section 2.7.
+We note that the difference between the observed value 𝑦†
+𝑛+1 and its estimator
+bℎ𝑛+1 = ℎ(Ψ(𝑣 𝑛)) is often referred to as the innovation, and for this we introduce
+the notation
+ℑ𝑛 = 𝑦†
+𝑛+1 −bℎ𝑛+1. (2.5)
+To illustrate 3DV AR we consider the linear setting.
+Example 2.2. Assume that for matrices 𝑀, 𝐻 of appropriate dimensions,
+Ψ(·) ≔ 𝑀·, ℎ (·) = 𝐻· (2.6)
+and consider the setting in which there is no noise present. The 3DV AR algorithm
+(2.4) is appropriate in this setting and reduces to
+𝑣 𝑛+1 = 𝑀𝑣 𝑛 + 𝐾
+ 
+𝑦†
+𝑛+1 − 𝐻 𝑀𝑣 𝑛
+
+. (2.7)
+Since there is no noise present, it follows that 𝑦†
+𝑛+1 = 𝐻𝑣 †
+𝑛+1 = 𝐻 𝑀𝑣 †
+𝑛, and hence
+that
+𝑣 †
+𝑛+1 = 𝑀𝑣 †
+𝑛 + 𝐾
+ 
+𝑦†
+𝑛+1 − 𝐻 𝑀𝑣 †
+𝑛
+
+. (2.8)
+Subtracting (2.8) from (2.7) and defining 𝑒𝑛 = 𝑣 𝑛 − 𝑣 †
+𝑛, we find that
+𝑒𝑛+1 = (𝐼 − 𝐾 𝐻)𝑀𝑒 𝑛.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 11 ===
+Ensemble Kalman methods: A mean-field perspective 133
+Figure 2.1. Graph of function 𝑚 appearing in Lorenz ’96 model (2.9).
+Since the goal of data assimilation is to recover the true state from partial obser-
+vations, we wish to drive 𝑒𝑛 to zero as 𝑛 → ∞ . Thus a key question, for given
+forward dynamical model 𝑀 and observation operator 𝐻, is whether it is possible
+to design 𝐾 to ensure that the spectrum of ( 𝐼 − 𝐾 𝐻)𝑀 is inside the unit circle.
+Such questions are at the heart of the theory of linear control. Thus the subject of
+control theory is fundamentally aligned with Objective 1.
+In the following example we illustrate ideas similar to those from the preceding,
+linear, example but within the nonlinear context. In subsequent subsections we will
+show how the ideas can be generalized to an adaptive gain matrix 𝐾𝑛, leading us
+to the ensemble Kalman methodology and to addressing both Objectives 1 and 2.
+Example 2.3. To illustrate the 3DV AR algorithm (2.4) for state estimation, we
+consider the Lorenz ’96 (single-scale) model from Appendix B. The unknown
+𝑣 ∈ 𝐶(R+, R𝐿) satisfies the equations
+¤𝑣 ℓ = −𝑣 ℓ −1(𝑣 ℓ −2 − 𝑣 ℓ+1) − 𝑣 ℓ + 𝐹 + ℎ𝑣 𝑚(𝑣 ℓ), ℓ = 1 . . . 𝐿, (2.9a)
+𝑣 ℓ+𝐿 = 𝑣 ℓ, ℓ = 1 . . . 𝐿. (2.9b)
+Here we set 𝐿 = 9, ℎ𝑣 = −0.8 and 𝐹 = 10. Function 𝑚 is shown in Figure 2.1.2
+We let Ψ denote the solution operator for (2.9) over the observation time interval
+𝜏, omitting the explicit dependence on𝜏 for notational convenience. We emphasize
+that at the parameter values we have chosen, the solution to (2.9) is chaotic and
+exhibits sensitivity to perturbations. Prediction is thus challenging. But we will
+show that use of data enables accurate prediction.
+2 We note that setting ℎ𝑣 = 0 in (2.9) leads to the standard single-scale Lorenz ’96 model. We have
+ℎ𝑣 ≠ 0 leading to a non-standard version of the model. However, the specific choice of function
+𝑚(·) does not make any material difference to what is presented in this example; many functions
+𝑚(·) for which the equation is well-posed will lead to similar conclusions. However, the specific
+choice of 𝑚(·) shown in Figure 2.1 is relevant within Example B.1.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 12 ===
+134 E. Calvello, S. Reich and A. M. Stuart
+We consider observations {𝑦†
+𝑛}𝑛∈Z+ arising from the model
+𝑣 †
+𝑛+1 = Ψ(𝑣 †
+𝑛) + 𝜉†
+𝑛,
+𝑦†
+𝑛+1 = ℎ(𝑣 †
+𝑛+1) + 𝜂†
+𝑛+1,
+where {𝜉†
+𝑛}𝑛∈Z+, {𝜂†
+𝑛}𝑛∈N are mutually independent Gaussian sequences defined
+by
+𝜉†
+𝑛 ∼ N(0, 𝜎2𝐼) i.i.d., 𝜂 †
+𝑛 ∼ N(0, 𝛾2𝐼) i.i.d.
+Because of the chaotic nature of the dynamical system defined by iteration ofΨ, a
+key question concerning the problem of determining the state𝑣 †
+𝑛 from 𝑌 †
+𝑛 is whether
+the observations compensate for the sensitive dependence of the state evolution,
+enabling accurate recovery of the state; and whether there is then a choice of 𝐾 in
+3DV AR which enables this data to be used to accurately recover the state.
+We assume that the observation function is linear: ℎ(𝑣) = 𝐻𝑣 for matrix
+𝐻 : R9 → R6 defined by
+𝐻𝑣 = (𝑣 1, 𝑣2, 𝑣4, 𝑣5, 𝑣7, 𝑣8)⊤. (2.10)
+The 3DV AR algorithm (2.3) reduces, in the setting of this example, to the mapping
+𝑣 𝑛+1 = (𝐼 − 𝐾 𝐻)Ψ(𝑣 𝑛) + 𝐾 𝑦†
+𝑛+1. (2.11)
+We define the filter by choosing gain𝐾 : R6 → R9 to be
+𝐾𝑤 = (𝑤1, 𝑤2, 0, 𝑤3, 𝑤4, 0, 𝑤5, 𝑤6, 0)⊤. (2.12)
+To interpret the algorithm, and motivate the choice of 𝐾, given 𝐻, notice that
+𝐾 𝐻𝑣 = (𝑣 1, 𝑣2, 0, 𝑣4, 𝑣5, 0, 𝑣7, 𝑣8, 0)⊤, (2.13a)
+(𝐼 − 𝐾 𝐻)𝑣 = (0, 0, 𝑣3, 0, 0, 𝑣6, 0, 0, 𝑣9)⊤, (2.13b)
+𝐻𝐾 = 𝐼. (2.13c)
+Applying the observation map 𝐻 to the recursion (2.11) and using (2.13c), we find
+that
+𝐻𝑣 𝑛+1 = 𝑦†
+𝑛+1 = 𝐻
+ 
+Ψ(𝑣 †
+𝑛) + 𝜉†
+𝑛
+
++ 𝜂†
+𝑛+1.
+Assuming that 𝜎2 and 𝛾2 are small and neglecting the noise contributions shows
+that
+𝑦†
+𝑛+1 ≈ 𝐻Ψ(𝑣 †
+𝑛) ≈ 𝐻𝑣 †
+𝑛+1.
+Thus, ignoring small noise perturbations, 𝑦†
+𝑛+1 ≈ 𝐻𝑣 †
+𝑛+1. Thus (2.11) gives
+𝑣 𝑛+1 ≈ (𝐼 − 𝐾 𝐻)Ψ(𝑣 𝑛) + 𝐾 𝐻𝑣†
+𝑛+1. (2.14)
+Then, using (2.13a), (2.13b) and (2.14),we see that the algorithm (2.11) has the very
+natural (approximate) interpretation of iterating using the model Ψ to update the
+unobserved components and using the observed true state to update the observed
+components. This explains why the specific choice of 𝐾 is reasonable.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 13 ===
+Ensemble Kalman methods: A mean-field perspective 135
+(a)
+(b)
+Figure 2.2. In both (a) and (b) the estimates of𝑣 ≔ 𝑣 3 in time produced by 3DV AR
+using observation time interval 𝜏 = 10−3 are displayed and compared with dns. In
+(a) 𝜎 and 𝛾 are set to 10 −3, while in (b) they are set to 10 −1. The acronym ‘dns’
+refers to direct numerical simulation of a true trajectory of the chaotic dynamical
+system. In both cases, it is noteworthy that 3DV AR is able to synchronize with
+the dns even though it is initialized far from the true initial condition. This is an
+example of data assimilation overcoming sensitive dependence in a chaotic system.
+Because of this interpretation it is natural to study the 3DV AR algorithm, for this
+example, by displaying the output of 3DV AR on one of the unobserved components,
+and comparing with the truth; the key question is whether the observed components
+induce synchronization of 3DV AR with the truth in the unobserved components.
+Thus, in the following numerical experiments, we display component 𝑣 ≔ 𝑣 3.
+Figure 2.2 illustrates the foregoing intuition about the behaviour of 3DV AR in
+experiments conducted with the choice 𝜏 = 10−3. For small noise with standard
+deviations of size 10 −3, we observe in Figure 2.2(a) the phenomenon of near-
+perfect synchronization of the 3DV AR output with the truth. Although not shown
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 14 ===
+136 E. Calvello, S. Reich and A. M. Stuart
+(a)
+(b)
+Figure 2.3. In both (a) and (b) the noise standard deviations 𝜎 and 𝛾 are set to
+10−3. In (a) we display the estimates of 𝑣 ≔ 𝑣 3 in time produced by 3DV AR
+using observation time interval 𝜏 = 5 × 10−1, compared with dns; (b) displays the
+estimates obtained at unit time using assimilation at 𝜏 = 5 × 10−1 and 𝜏 = 100.
+Again the acronym ‘dns’ refers to direct numerical simulation of the true chaotic
+dynamics. 3DV AR successfully synchronizes with the dns at the smaller value of
+𝜏 but fails to do as well when the observation time interval 𝜏 is larger.
+here, this synchronization occurs in all components of the solution, observed and
+unobserved, and thus the entire state of 3DV AR synchronizes with the truth, up to
+a small error on the scale of the noise. The algorithm thus produces an accurate
+estimate of the true state. In Figure 2.2(b) larger state and observational noise, of
+standard deviation 10 −1, is considered. In this scenario 3DV AR still captures the
+correct trend of the true dynamics, but there are clear overshoots and undershoots
+in the estimates; this occurs because the noise is larger than in Figure 2.2(a) and
+because noise is not accounted for in the 3DV AR algorithm.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 15 ===
+Ensemble Kalman methods: A mean-field perspective 137
+It is intuitive that the synchronization phenomena studied above will depend not
+only on the size of the noise, but also on the observation time intervals𝜏. Figure 2.3
+illustrates the effect of varying 𝜏, in the setting where the noise standard deviation
+is 10 −3. The simulations show that for the larger value of 𝜏, 3DV AR does not
+estimate the true state as accurately as for the smaller value.
+Remark 2.4. A common source of error in application of data assimilation al-
+gorithms in practice arises from the fact that the data is not produced by the
+mathematical model used for assimilation. This is known as model misspecifica-
+tion. For the majority of this paper we will make the perfect model assumption,
+avoiding the model misspecification issue. However, we do illustrate model mis-
+specification in Example B.1. In that example we assimilate data produced from
+the Lorenz ’96 multiscale model, but we use the Lorenz ’96 single-scale model
+(2.9) as the basis for 3DV AR; thus the model used for assimilation differs from (but
+is close to) the model generating the data. The relationship between the multiscale
+and single-scale models is detailed in Appendix B, where Example B.1 may also
+be found.
+The control-theoretic approach of 3DV AR addresses Objective 1. However,
+when |𝐶0|, |Γ| and |Σ| are no longer necessarily small, so that the state and ob-
+servations are subject to noise, it is natural to try and generalize the approach to
+address Objective 2, taking account of non-zero covariances; Figure 2.2(b) from
+Example 2.3 shows that this may indeed be needed when the noise is larger. A
+natural stochastic generalization of the observer approach is as follows: from cur-
+rent state estimate 𝑣 𝑛, given 𝑌 †
+𝑛, predict the outcome of the model and data from
+the update equations (2.1), which we denote by (b𝑣 𝑛+1,b𝑦𝑛+1); then correct the state
+estimate by nudging the mean of the prediction using the mismatch between ob-
+served and predicted data (𝑦†
+𝑛+1,b𝑦𝑛+1). Given 𝑣 𝑛 computed from 𝑌 †
+𝑛, this results in
+state estimate 𝑣 𝑛+1 from 𝑌 †
+𝑛+1 defined through the following stochastic dynamical
+system, assumed to hold for all 𝑛 ∈ Z+:
+b𝑣 𝑛+1 = Ψ(𝑣 𝑛) + 𝜉𝑛,
+b𝑦𝑛+1 = ℎ(b𝑣 𝑛+1) + 𝜂𝑛+1,
+𝑣 𝑛+1 = b𝑣 𝑛+1 + 𝐾𝑛
+ 
+𝑦†
+𝑛+1 − b𝑦𝑛+1
+
+.
+(2.15a)
+(2.15b)
+(2.15c)
+Here 𝑣 0, 𝜉𝑛 and 𝜂𝑛+1 are random variables given by the known distributions in
+(2.2). Note that the innovation ℑ𝑛 is now modified from (2.5) to read
+ℑ𝑛 = 𝑦†
+𝑛+1 − b𝑦𝑛+1. (2.16)
+The data {𝑦†
+𝑛+1}𝑛∈Z+ is a fixed realization of (2.1). Given this data, equations
+(2.15) then define a random map 𝑣 𝑛 ↦→ 𝑣 𝑛+1 which uses knowledge of the model
+and the observed data to update our state estimate. The predicted state and data
+(b𝑣 𝑛+1,b𝑦𝑛+1) are also referred to as the simulated state and data. Choice of the gain
+matrix 𝐾𝑛 will complete definition of an algorithm. The key question we proceed
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 16 ===
+138 E. Calvello, S. Reich and A. M. Stuart
+to study in subsequent sections concerns the choice of {𝐾𝑛}𝑛∈Z+ when addressing
+Objective 2. Before doing so we build on Example 2.3, studying the effect of
+noise on the 3DV AR algorithm, which is aimed at addressing Objective 1, and for
+which 𝐾𝑛 = 𝐾 is constant. The resulting Example 2.5 demonstrates the need for
+an adaptive choice of𝐾𝑛 when noise is significant; it serves to motivate algorithms
+which address Objective 2.
+Example 2.5. We return to the setting of Example 2.3 and consider the effect of
+including noise in 3DV AR as in (2.15). We again study the Lorenz ’96 single-scale
+model (2.9) for unknown 𝑣 ∈ 𝐶(R+, R𝐿), with 𝐿 = 9, ℎ𝑣 = −0.8 and 𝐹 = 10. We
+let Ψ denote the solution operator for (2.9) over the observation time interval𝜏 and
+consider observations {𝑦†
+𝑛}𝑛∈Z+ defined by
+𝑣 †
+𝑛+1 = Ψ(𝑣 †
+𝑛) + 𝜉†
+𝑛,
+𝑦†
+𝑛+1 = ℎ(𝑣 †
+𝑛+1) + 𝜂†
+𝑛+1,
+where {𝜉†
+𝑛}𝑛∈Z+, {𝜂†
+𝑛}𝑛∈N are mutually independent Gaussian sequences
+𝜉†
+𝑛 ∼ N(0, 𝜎2𝐼) i.i.d., 𝜂 †
+𝑛 ∼ N(0, 𝛾2𝐼) i.i.d.,
+with 𝜎 = 0.1 and 𝛾 = 0.1. We again assume that the observation function is linear:
+ℎ(𝑣) = 𝐻𝑣 for matrix 𝐻 : R9 → R6 defined by (2.10). As in Example 2.3 we
+choose fixed gain 𝐾𝑛 ≡ 𝐾 with 𝐾 : R6 → R9 defined by (2.12).
+Figure 2.4 illustrates that this version of noisy 3DV AR produces trajectories that
+resemble the true signal better than noise-free 3DV AR (2.11). However, the noisy
+3DV AR does not perform better than the noise-free 3DV AR, in this setting where
+true state and true observation noise levels are high, in a quantitative sense. To
+demonstrate this, we compute the mean squared error between the estimates arising
+from the 3DV AR algorithm (2.11) and the true states, and the mean squared error
+between the estimates obtained using noisy 3DV AR algorithm (2.15) and the true
+states. Given either method the error 𝑒 is computed using the following formula,
+in which, recall, {𝑣 †
+𝑛} is the truth and {𝑣 𝑛} is the output of the 3DV AR or noisy
+3DV AR algorithm:
+𝑒 = 1
+𝑁 · 𝑑𝑣
+𝑁∑︁
+𝑛=1
+𝑣 †
+𝑛∗+𝑛 − 𝑣 𝑛∗+𝑛
+2. (2.17)
+Time 𝑡∗ = 𝑛∗𝜏 is chosen to remove error from the incorrect initialization, and focus
+on quantifying error in the statistical steady state, after synchronization. Here 𝑁 is
+such that (𝑛∗ + 𝑁)𝜏 = 𝑇 and 𝑇 − 𝑡∗ is chosen large enough to allow time-averaging
+over a long enough window to capture the statistical steady state. In this case, we
+compute this average for the estimates obtained after time𝑡∗ = 3, up to 𝑇 = 20, and
+find errors 𝑒3DV AR= 1.65 × 100 and 𝑒noisy3DV AR= 3.30 × 100. Clearly use of noisy
+3DV AR does not improve the error, in comparison with noise-free 3DV AR.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 17 ===
+Ensemble Kalman methods: A mean-field perspective 139
+Figure 2.4. In this experiment we set the noise levels 𝜎 = 10−1, 𝛾 = 10−1. Again
+the acronym ‘dns’ refers to direct numerical simulation. We display the estimates
+of 𝑣 ≔ 𝑣 3 in time produced by noisy 3DV AR against the true dynamics using
+observation time interval 𝜏 = 10−3. This should be compared with Figure 2.2(b),
+in which the noise-free 3DV AR is deployed to solve the same problem. Notice
+that adding noise to 3DV AR has not improved the recovery of the true trajectory.
+However, qualitatively the output of 3DV AR now resembles the true signal more
+closely.
+Example 2.5 highlights the need to quantify uncertainty and pass to a probabilistic
+interpretation (Objective 2) of the filtering problem; and, in particular, to make
+an informed choice of adaptive gain matrices 𝐾𝑛. We turn to the probabilistic
+interpretation in the next subsection; in later subsections we derive algorithms,
+leading in particular to a specific choice of adaptive gain matrices.
+2.3. Probabilistic perspective
+We have shown that the 3DV AR methodology can recover the state of a (possibly
+chaotic) dynamical system, even though the initial condition is not known, by
+exploiting the observations. However, 3DV AR does not quantify uncertainty in
+the state estimate; it is derived from a purely control-theoretic perspective. We
+now introduce a probabilistic perspective which enables us to address the issue
+of uncertainty quantification. Section 2.3.1 discusses the unconditioned dynamics
+from the perspective of evolution of probability densities. In Section 2.3.2 we
+define the filtering distribution and describe this from the perspective of evolution
+of probability densities. Section 2.3.3 introduces the sample-path perspective on
+algorithms for filtering, a central idea in this paper. In Section 2.3.4 we establish
+some notation, used henceforth, that is important for the reader to internalize.
+2.3.1. Unconditioned dynamics
+To open our development of the probabilistic perspective we first consider the
+unconditioned dynamics on state {𝑣 𝑛}𝑛∈Z+ defined by (2.1a). We refer to{𝑣 𝑛}𝑛∈Z+
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 18 ===
+140 E. Calvello, S. Reich and A. M. Stuart
+defined by (2.1a) as a Markov process. We let 𝑟𝑛 denote the probability density
+of random variable 𝑣 𝑛 and derive an evolution equation for 𝑟𝑛. Irrespective of
+whether the evolution of the state{𝑣 𝑛}𝑛∈Z+ defined by (2.1a) is linear, the evolution
+of {𝑟𝑛}𝑛∈Z+ is linear. Furthermore, the evolution of the state and its probability
+density are uncoupled from one another. The evolution of the probability density
+implied by (2.1a) is given by
+𝑟𝑛+1 = P𝑟𝑛, (2.18a)
+(P𝑟)(d𝑣) =
+∫
+𝑢∈R𝑑𝑣
+𝑝(𝑢, 𝑣)𝑟(d𝑢)
+
+d𝑣, (2.18b)
+𝑝(𝑢, 𝑣) = 1
+(2𝜋)𝑑𝑣/2√det(Σ)
+exp
+
+−1
+2 |𝑣 − Ψ(𝑢)|2
+Σ
+
+. (2.18c)
+Thus, in particular, 𝑟𝑛 evolves in time 𝑛 through application of a linear integral
+operator. The situation when we condition the state on observations is different,
+leading to nonlinear evolution of densities.
+2.3.2. The filtering distribution
+Here we introduce the filtering distribution with density 𝜇𝑛: the distribution of the
+conditioned random variable 𝑣 𝑛|𝑌 †
+𝑛. This captures the knowledge of the state of
+the system, and uncertainties in the state, given the observations. To understand
+how uncertainty in estimates of the state evolves, it is thus important to understand
+how 𝜇𝑛 evolves with 𝑛. Unlike the unconditioned dynamics, this conditioned
+dynamics has anonlinear structure. Nonlinear evolution equations arise in filtering
+through the incorporation of data. This nonlinearity renders filtering a challenging
+mathematical and computational problem. To define this evolution, we first define
+the linear operator
+(Q𝜇)(d𝑣, d𝑦) = 𝑞(𝑣, 𝑦 )𝜇(d𝑣) d𝑦, (2.19a)
+𝑞(𝑣, 𝑦 ) = 1
+(2𝜋)𝑑𝑦/2√det(Γ)
+exp
+
+−1
+2 |𝑦 − ℎ(𝑣)|2
+Γ
+
+. (2.19b)
+Then we define the 𝑛-dependent family of two nonlinear operators
+B𝑛(𝜋)(d𝑣) =
+∫
+𝑦 ∈R𝑑𝑦
+𝛿𝑦†
+𝑛+1
+(𝑦)𝜋(d𝑣, d𝑦)
+∫
+(𝑣, 𝑦)∈R𝑑𝑣 ×R𝑑𝑦
+𝛿𝑦†
+𝑛+1
+(𝑦)𝜋(d𝑣, d𝑦)
+
+,
+(2.20)
+L𝑛(𝜇)(d𝑣) = 𝑞
+ 
+𝑣, 𝑦 †
+𝑛+1
+
+𝜇(d𝑣)
+∫
+𝑣 ∈R𝑑𝑣
+𝑞
+ 
+𝑣, 𝑦 †
+𝑛+1
+
+𝜇(d𝑣)
+
+. (2.21)
+The nonlinear map 𝜇𝑛 ↦→ 𝜇𝑛+1 is most easily described by first introducingb𝜇𝑛+1,
+the distribution of 𝑣 𝑛+1|𝑌 †
+𝑛, and 𝜋𝑛+1, the distribution of (𝑣 𝑛+1, 𝑦𝑛+1)|𝑌 †
+𝑛. The map
+from 𝜇𝑛 to b𝜇𝑛+1 is determined by equation (2.1a) and is linear, as a map from
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 19 ===
+Ensemble Kalman methods: A mean-field perspective 141
+the space of probability measures defined on R𝑑𝑣 into itself, as discussed in the
+preceding subsection; the map from b𝜇𝑛+1 to 𝜋𝑛+1 is defined by (2.1b) and is also
+linear, now as a map from the space of probability measures defined on R𝑑𝑣 into
+the space of probability measures defined on R𝑑𝑣+𝑑𝑦; the map from 𝜋𝑛+1 to 𝜇𝑛+1
+is defined by conditioning 𝜋𝑛+1 on 𝑦†
+𝑛+1 and is nonlinear, as a map from the space
+of probability measures defined on R𝑑𝑣+𝑑𝑦 into the space of probability measures
+defined on R𝑑𝑣. Using the preceding definitions of linear and nonlinear operators,
+we have
+b𝜇𝑛+1 = P 𝜇𝑛,
+𝜋𝑛+1 = Qb𝜇𝑛+1,
+𝜇𝑛+1 = B𝑛(𝜋𝑛+1).
+(2.22a)
+(2.22b)
+(2.22c)
+Concatenating, we find that
+𝜇𝑛+1 = B𝑛(QP 𝜇𝑛), 𝜇 0 = N(𝑚0, 𝐶0). (2.23)
+This map defines an inhomogeneous nonlinear map on the space of probability
+measures on R𝑑𝑣. The map B𝑛(QP·) may be decomposed into two maps: (i) the
+prediction P, which represents application of the dynamical model (2.1a); and (ii)
+application ofBayes’ theorem3 through operatorL𝑛· ≔ B𝑛(Q·), which corresponds
+to use of likelihood defined by the observation model (2.1b). With this notation we
+thus obtain
+b𝜇𝑛+1 = P 𝜇𝑛,
+𝜇𝑛+1 = L𝑛(b𝜇𝑛+1).
+(2.24a)
+(2.24b)
+We refer to iteration of (2.24) as the filtering cycle. The cycle involves iterative
+interleaving of prediction, using the dynamical model, a linear operation on meas-
+ures, and Bayes’ theorem, using the observation model, a nonlinear operation on
+measures.
+It is important to appreciate that there is, in general, no closed-form expression
+for 𝜇𝑛 defined by the iteration (2.24); thus (2.24) does not constitute an algorithm.
+However, ifΨ and ℎ are linear then, since𝜇0 = N(𝑚0, 𝐶0) is Gaussian, it follows that
+b𝜇𝑛+1, 𝜋𝑛+1, 𝜇𝑛+1 are all Gaussian for all𝑛 ∈ Z+, and closed-form expressions, based
+on dynamical updates of means and covariances, are available. This linear Gaussian
+setting is discussed in the following example, and linear Gaussian examples will
+be used throughout the paper. However, the main thrust of the paper concerns
+nonlinear and non-Gaussian problems; for these problems further ideas, which we
+will explain in subsections below, are required to make actionable algorithms from
+the iteration (2.24).
+3 Often referred to as the analysis step in the geophysical data assimilation community. Bayes’
+theorem is discussed in more detail in Section 4.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 20 ===
+142 E. Calvello, S. Reich and A. M. Stuart
+Example 2.6. To define the Kalman filter we consider the setting (2.6), where
+Ψ(·) and ℎ(·) are both linear. Then (2.1) becomes
+𝑣 𝑛+1 = 𝑀𝑣 𝑛 + 𝜉𝑛, (2.25a)
+𝑦𝑛+1 = 𝐻𝑣 𝑛+1 + 𝜂𝑛+1. (2.25b)
+For this problem the mapping (2.24) may be solved explicitly. In fact𝜇𝑛 and b𝜇𝑛 are
+both Gaussian, and we write their mean–covariance pairs as (𝑚𝑛, 𝐶𝑛) and (b𝑚𝑛, b𝐶𝑛)
+respectively. Then b𝜇𝑛+1 is determined from 𝜇𝑛 by the formulae
+b𝑚𝑛+1 = 𝑀𝑚 𝑛, (2.26a)
+b𝐶𝑛+1 = 𝑀𝐶 𝑛 𝑀 ⊤ + Σ, (2.26b)
+the prediction step. Measure 𝜇𝑛+1 is determined from b𝜇𝑛 by the application of
+a Bayesian update, solving the inverse problem defined by (2.25b); this inverse
+problem is for 𝑣 𝑛+1 given fixed realization of data𝑦𝑛+1 = 𝑦†
+𝑛+1 generated by (2.25).
+Since the prior and posterior are Gaussian, we may complete the square to solve
+the Bayesian inverse problem to give the following update formulae for the mean
+and precision (inverse covariance):
+𝐶 −1
+𝑛+1𝑚𝑛+1 = b𝐶 −1
+𝑛+1b𝑚𝑛 + 𝐻⊤Γ−1𝑦†
+𝑛+1, (2.27a)
+𝐶 −1
+𝑛+1 = b𝐶 −1
+𝑛+1 + 𝐻⊤Γ−1𝐻. (2.27b)
+By use of the Woodbury matrix identity, we obtain the following formulae, ex-
+pressed in terms of covariances rather than precisions:
+𝑚𝑛+1 = b𝑚𝑛+1 + b𝐶𝑛+1𝐻⊤(𝐻 b𝐶𝑛+1𝐻⊤ + Γ)−1 
+𝑦†
+𝑛+1 − 𝐻b𝑚𝑛+1
+
+, (2.28a)
+𝐶𝑛+1 = b𝐶𝑛+1 − b𝐶𝑛+1𝐻⊤(𝐻 b𝐶𝑛+1𝐻⊤ + Γ)−1𝐻 b𝐶𝑛+1. (2.28b)
+The update equations (2.26) simply represent propagation of a Gaussian under the
+linear dynamics defined by (2.25a); (2.28) corresponds to application of Bayes’
+theorem, and in this particular linear setting to conditioning a Gaussian, using
+the observations defined by (2.25b) with 𝑦𝑛+1 = 𝑦†
+𝑛+1. The Kalman filter update
+equations (2.26) and (2.28) are well-defined if Γ ≻ 0.
+The Gaussian setting of the preceding example is very special. But the idea of
+making a Gaussian approximation will play a central role in ensemble Kalman
+methods, and as a consequence the explicit calculations in the example will be
+generally useful. The perspective of invoking Gaussian approximations is intro-
+duced in Section 2.4; it is subsequently developed to form the backbone of the
+methodology highlighted in this paper.
+2.3.3. The sample-path perspective
+In Section 2.3.1 we demonstrated that the (typically nonlinear) state space evolution
+of {𝑣 𝑛}𝑛∈Z+ defined by (2.1a) may be alternatively viewed in terms of the linear
+evolution of probability density functions𝑟𝑛 defined by (2.18). In Section 2.3.2 we
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 21 ===
+Ensemble Kalman methods: A mean-field perspective 143
+showed that, when conditioned on observations, the evolution of the probability
+density function becomes nonlinear and is defined by (2.22) or (2.24). In this section
+we address the question of finding an evolution in state space that is consistent
+with this nonlinear evolution of densities defined by (2.22) or (2.24). Our aim is
+to generalize the control-theoretic data assimilation algorithm given by (2.15) in
+order to find such an evolution.
+Throughout this subsection let 𝑣 𝑛 be a random variable distributed according
+to Law(𝑣 𝑛), let b𝑣 𝑛+1 be a random variable with Law(b𝑣 𝑛+1) = P Law(𝑣 𝑛) and let
+(b𝑣 𝑛+1,b𝑦𝑛+1) be a random variable with law Q Law(b𝑣 𝑛+1). Using Law avoids a
+proliferation of notation for the different measures arising from the use of various
+different algorithms to approximate the filtering cycle.
+All of the algorithms that we will introduce in what follows are based on a
+prediction of state, and possibly observation, from Law(𝑣 𝑛). To this end, recall
+(2.15), and for all 𝑛 ∈ Z+,
+b𝑣 𝑛+1 = Ψ(𝑣 𝑛) + 𝜉𝑛, (2.29a)
+b𝑦𝑛+1 = ℎ(b𝑣 𝑛+1) + 𝜂𝑛+1. (2.29b)
+The distributions ofb𝑣 𝑛+1 and (b𝑣 𝑛+1,b𝑦𝑛+1) given by these equations defineP Law(𝑣 𝑛)
+and Q Law(b𝑣 𝑛+1), respectively. A common theme in this paper is to augment these
+equations for the predicted state and data with a final map, to generalize (2.15c), of
+the form
+(b𝑣 𝑛+1,b𝑦𝑛+1) ↦→ 𝑣 𝑛+1 (2.30)
+or
+b𝑣 𝑛+1 ↦→ 𝑣 𝑛+1. (2.31)
+These maps are chosen, respectively, to mimic (2.22) or (2.24). To be precise,
+if 𝑣 𝑛 ∼ 𝜇𝑛, the maps are designed so that 𝑣 𝑛+1 ∼ 𝜇𝑛+1, where 𝜇𝑛 and 𝜇𝑛+1 are
+related by the filtering update (2.22) or, equivalently, (2.24). A key observation
+is that these maps will necessarily depend on the distributions of b𝑣 𝑛+1 and b𝑦𝑛+1
+rendering the associated Markov processes of mean-field type. Thus, in contrast
+to the unconditioned dynamics, the state space evolution does not decouple from
+the evolution of the associated probability density function; rather, it depends on
+it. The resulting state space evolution is said to define anonlinear Markov process.
+Note that once (2.29) is augmented with either (2.30) or (2.31), we have a state
+space evolution that describes the filtering process via the probability distribution
+of 𝑣 𝑛; the state space evolution can then be used as the basis for algorithms. Thus
+the key question for such a program is the identification of either (2.30) or (2.31).
+The existence of transport maps or, more generally, couplings, which define the
+steps (2.30) or (2.31), follows under quite general conditions. But finding them
+explicitly is generally difficult. Furthermore, the maps (2.30) and (2.31) are not
+uniquely defined, in general. As a consequence of the difficulty in identifying
+mean-field transport maps, the algorithms we study will be based on identifying
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 22 ===
+144 E. Calvello, S. Reich and A. M. Stuart
+maps (2.30) or (2.31), which onlyapproximatelyachieve the filtering update (2.22).
+However, all formulations considered in this survey will be of mean-field type.
+In summary, we refer to equations (2.29), (2.30) or (2.29a), (2.31) as providing
+a sample-path perspective. The resulting algorithms update state 𝑣 𝑛 ↦→ 𝑣 𝑛+1 and
+are designed to exactly (in theory), and approximately (in practice), reproduce the
+probabilistic perspective encapsulated in the three steps of (2.22), or the two steps
+of (2.24). These algorithms result in a sample path {𝑣 ℓ }𝑛
+ℓ=0 with the property that
+(possibly only approximately)Law(𝑣 ℓ) = 𝜇ℓ. This idea is central to the algorithmic
+developments in the paper.
+2.3.4. Important frequently used notation
+The approximations we develop will be based on matching first- and second-order
+moments. In the service of designing these approximations, it is useful to define
+various first- and second-order statistics computed under the law of ( b𝑣 𝑛+1,b𝑦𝑛+1).
+First define the mean and covariance ofb𝑣 𝑛+1:
+b𝑚𝑛+1 = Eb𝑣 𝑛+1,
+b𝐶𝑛+1 = E((b𝑣 𝑛+1 − b𝑚𝑛+1) ⊗ (b𝑣 𝑛+1 − b𝑚𝑛+1)).
+(2.32a)
+(2.32b)
+Then define the mean of the predicted data, cross-covariance from predicted data
+to state and covariance of the data:
+b𝑜𝑛+1 = Eb𝑦𝑛+1,
+b𝐶 𝑣 𝑦
+𝑛+1 = E((b𝑣 𝑛+1 − b𝑚𝑛+1) ⊗ (b𝑦𝑛+1 − b𝑜𝑛+1)),
+b𝐶 𝑦 𝑦
+𝑛+1 = E((b𝑦𝑛+1 − b𝑜𝑛+1) ⊗ (b𝑦𝑛+1 − b𝑜𝑛+1)).
+(2.33a)
+(2.33b)
+(2.33c)
+From these covariances we define the matrix
+𝐾𝑛 = b𝐶 𝑣 𝑦
+𝑛+1
+ b𝐶 𝑦 𝑦
+𝑛+1
+−1. (2.34)
+This particular choice of 𝐾𝑛, known as the Kalman gain, plays a central role in the
+mean-field maps which underpin ensemble Kalman methods through their particle
+approximations. Note that if b𝐶 𝑦 𝑦
+𝑛+1 is not invertible, then its action may still be
+defined through a pseudo-inverse.
+It is sometimes useful to express the Kalman gain 𝐾𝑛 in terms of the variable
+bℎ𝑛+1 = ℎ(b𝑣 𝑛+1) and without reference to predicted data b𝑦𝑛+1. For this purpose we
+define the following correlation matrices, computed under the law ofb𝑣 𝑛+1:
+b𝑜𝑛+1 = Eℎ(b𝑣 𝑛+1),
+b𝐶 𝑣ℎ
+𝑛+1 = E((b𝑣 𝑛+1 − b𝑚𝑛+1) ⊗ (bℎ𝑛+1 − b𝑜𝑛+1)),
+b𝐶 ℎℎ
+𝑛+1 = E((bℎ𝑛+1 − b𝑜𝑛+1) ⊗ (bℎ𝑛+1 − b𝑜𝑛+1)),
+(2.35a)
+(2.35b)
+(2.35c)
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 23 ===
+Ensemble Kalman methods: A mean-field perspective 145
+Then, in place of (2.33) and (2.34), we have
+b𝐶 𝑣 𝑦
+𝑛+1 = b𝐶 𝑣ℎ
+𝑛+1, b𝐶 𝑦 𝑦
+𝑛+1 = b𝐶 ℎℎ
+𝑛+1 + Γ,
+𝐾𝑛 = b𝐶 𝑣ℎ
+𝑛+1
+ b𝐶 ℎℎ
+𝑛+1 + Γ
+−1.
+(2.36a)
+(2.36b)
+Note that if Γ ≻ 0, 𝐾𝑛 is well-defined without recourse to the use of the pseudo-
+inverse.
+Example 2.7. In the setting of the linear and Gaussian Example 2.6, we have
+b𝐶 𝑣 𝑦
+𝑛+1 = b𝐶𝑛+1𝐻⊤,
+b𝐶 𝑦 𝑦
+𝑛+1 = 𝐻 b𝐶𝑛+1𝐻⊤ + Γ,
+and the mean update (2.28a) may be written as
+𝑚𝑛+1 = b𝑚𝑛+1 + 𝐾𝑛
+ 
+𝑦†
+𝑛+1 − 𝐻b𝑚𝑛+1
+
+.
+In particular, only the single covariance b𝐶𝑛+1 needs to be computed. Note the
+similarity of the resulting algorithm to the 3DV AR algorithm (2.8), in the linear
+Gaussian setting, since in this linear case b𝑚𝑛+1 = 𝑀𝑚 𝑛. It differs only through
+having a time-varying gain matrix 𝐾𝑛.
+This linear Gaussian setting provides some motivation for the Kalman gain. The
+origin of this key concept in the more general nonlinear and non-Gaussian setting
+will be described in the next subsection.
+2.4. Gaussian projected filtering distribution
+The Gaussian projected filter gives a Gaussian approximation of the true filtering
+distribution. It is defined by the following three steps:
+(i) taking input Gaussian at time 𝑛 as Law(𝑣 𝑛) and pushing this measure forward
+under (2.29) to find (typically non-Gaussian) measure Law(b𝑣 𝑛+1,b𝑦𝑛+1);
+(ii) projecting this joint measure onto the nearest Gaussian (in a sense that we
+will make precise);
+(iii) conditioning this Gaussian on the data 𝑦†
+𝑛+1 to find output Gaussian at time
+𝑛 + 1.
+We note that conditioning a Gaussian random variable on linear functionals of the
+random variable returns another Gaussian. Thus the algorithm maps Gaussians
+to Gaussians. The resulting approximation of the filtering distribution plays an
+important role in motivating the mean-field maps, introduced in Section 2.5, that
+underlie ensemble Kalman methods. It is also of interest as a method in its own
+right.
+In what follows in this subsection we introduce the Gaussian projected approx-
+imation to the evolution (2.23). In the case where Ψ(·) and ℎ(·) are linear, the
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 24 ===
+146 E. Calvello, S. Reich and A. M. Stuart
+resulting formulae deliver exact solutions of the filtering cycle (2.23), leading to
+the Kalman filter as given in Example 2.6. The Gaussian projected filter also leads
+to a derivation of the Kalman gain (2.34), beyond the linear Gaussian setting; an
+alternative derivation, using the minimum variance approach, may be found in
+Appendix C.3.
+To describe the Gaussian projected approximation to the filtering distribution,
+we define the map G, definition of which uses 𝔓 = 𝔓 (R𝑑) and 𝔊 = 𝔊 (R𝑑) defined
+in Section 1.4.
+Definition 2.8. Define G : 𝔓 ↦→ 𝔊 by
+G 𝜇 = N(𝑚 𝜇, 𝐶𝜇), 𝑚 𝜇 = E𝜇𝑢, 𝐶 𝜇 = E𝜇((𝑢 − E𝜇𝑢) ⊗ (𝑢 − E𝜇𝑢)),
+where 𝑢 ∼ 𝜇.
+Thus the map G applied to measure 𝜇 simply computes the Gaussian with mean
+and covariance calculated with respect to the typically non-Gaussian measure 𝜇.
+Notice that G is the identity on Gaussians. Furthermore, G ◦ G = G. We refer to
+this as a projection onto Gaussians because it corresponds to finding the closest
+point to given measure 𝜇, with respect to a Kullback–Leibler divergence:4
+G 𝜇 = argmin𝜋 ∈𝔊𝑑KL(𝜇|| 𝜋). (2.37)
+We now use mapping G to find an approximation to the evolution (2.22) which
+generates measures remaining Gaussian; intuitively this will be a good approxima-
+tion whilst the measures {𝜇𝑛} evolving under (2.23) remain close to Gaussian. To
+this end we consider random variable 𝑣 𝑛 ∼ 𝜇𝐺
+𝑛 , where the probability measure 𝜇𝐺
+𝑛
+evolves according to
+𝜇𝐺
+𝑛+1 = B𝑛(GQP 𝜇𝐺
+𝑛 ), 𝜇 𝐺
+0 = N(𝑚0, 𝐶0). (2.38)
+This may be decomposed as follows:
+b𝜇𝐺
+𝑛+1 = P 𝜇𝐺
+𝑛 ,
+𝜋𝐺
+𝑛+1 = Qb𝜇𝐺
+𝑛+1,
+𝜇𝐺
+𝑛+1 = B𝑛
+ 
+G𝜋𝐺
+𝑛+1
+
+.
+(2.39a)
+(2.39b)
+(2.39c)
+Map (2.38) defines a nonlinear Markov process, similarly to (2.23). It also maps
+Gaussians into Gaussians. This fact follows from the fact that the nonlinear map
+B𝑛(·), which represents conditioning, maps Gaussians into Gaussians. The map
+𝜇𝐺
+𝑛 ↦→ 𝜇𝐺
+𝑛+1 hence defines a deterministic mapping from the mean 𝑚𝑛 and covari-
+ance 𝐶𝑛 of 𝜇𝐺
+𝑛 into the mean 𝑚𝑛+1 and covariance 𝐶𝑛+1 of 𝜇𝐺
+𝑛+1. We now identify
+this map explicitly.
+For 𝑣 𝑛 ∼ 𝜇𝐺
+𝑛 we introduce the random variablesb𝑣 𝑛+1,b𝑦𝑛+1 defined by (2.29). It
+then follows thatb𝑣 𝑛+1 ∼ b𝜇𝐺
+𝑛+1 = P 𝜇𝐺
+𝑛 and that (b𝑣 𝑛+1,b𝑦𝑛+1) ∼ 𝜋𝐺
+𝑛+1 = QP 𝜇𝐺
+𝑛 . Note
+4 For details see Section 2.7.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 25 ===
+Ensemble Kalman methods: A mean-field perspective 147
+also that b𝜇𝐺
+𝑛+1 and 𝜋𝐺
+𝑛+1 are not Gaussian, but are defined by the Gaussian 𝜇𝐺
+𝑛 and
+hence completely determined by 𝑚𝑛 and 𝐶𝑛. Thus the mean and covariance under
+b𝜇𝐺
+𝑛+1 are (b𝑚𝑛+1, b𝐶𝑛+1) given by (2.32). Furthermore, G𝜋𝐺
+𝑛+1 is defined by
+G𝜋𝐺
+𝑛+1 = N
+ b𝑚𝑛+1
+b𝑜𝑛+1
+
+,
+"
+b𝐶𝑛+1 b𝐶 𝑣 𝑦
+𝑛+1 b𝐶 𝑣 𝑦
+𝑛+1
+⊤ b𝐶 𝑦 𝑦
+𝑛+1
+#!
+, (2.40)
+where all relevant quantities are defined in Section 2.3.4.
+We now condition the Gaussian G𝜋𝐺
+𝑛+1, on the second component of the vector
+taking value 𝑦†
+𝑛+1. From this we find the Gaussian measure 𝜇𝐺
+𝑛+1 = B𝑛
+ 
+G𝜋𝐺
+𝑛+1
+
+characterized by mean 𝑚𝑛+1 and covariance 𝐶𝑛+1 given by the following lemma.
+Lemma 2.9. Assume that Γ ≻ 0. Let 𝑚𝑛 and 𝐶𝑛 denote the mean and covariance
+under the Gaussian projected filter. Consider equations (2.29) initialized at 𝑣 𝑛 ∼
+N(𝑚𝑛, 𝐶𝑛), and then (b𝑚𝑛+1, b𝐶𝑛+1) defined by (2.32); furthermore, define the mean
+of the observed data and covariances given by (2.33). Thenb𝐶 𝑦 𝑦
+𝑛+1 ≻ 0 for all 𝑛 ∈ Z+
+and
+𝑚𝑛+1 = b𝑚𝑛+1 + b𝐶 𝑣 𝑦
+𝑛+1
+ b𝐶 𝑦 𝑦
+𝑛+1
+−1 
+𝑦†
+𝑛+1 − b𝑜𝑛+1
+
+,
+𝐶𝑛+1 = b𝐶𝑛+1 − b𝐶 𝑣 𝑦
+𝑛+1
+ b𝐶 𝑦 𝑦
+𝑛+1
+−1 b𝐶 𝑣 𝑦
+𝑛+1
+⊤,
+(2.41a)
+(2.41b)
+where {𝑦†
+𝑛} arises from a fixed realization of (2.1). ^
+Proof. We first note that b𝐶 𝑦 𝑦
+𝑛+1 ≻ 0. Indeed, since by assumption Γ ≻ 0 and by
+definition b𝐶 ℎℎ
+𝑛+1 ⪰ 0, then b𝐶 ℎℎ
+𝑛+1 + Γ ≻ 0. Hence by (2.36) we have that b𝐶 𝑦 𝑦
+𝑛+1 ≻ 0.
+Now consider the distribution of the GaussianG𝜋𝐺
+𝑛+1 given by (2.40). Conditioning
+the resulting joint random variable on (𝑣, 𝑦 ) ∈ R𝑑𝑣 × R𝑑𝑦 on 𝑦 = 𝑦†
+𝑛+1, it is possible
+to conclude from standard formulae for conditioned Gaussians that 𝑚𝑛+1 and 𝐶𝑛+1
+are given by the expressions in (2.41).
+Equations (2.29), (2.32), (2.33) and (2.41) define a mapping from 𝜇𝐺
+𝑛 , charac-
+terized by ( 𝑚𝑛, 𝐶𝑛), into 𝜇𝐺
+𝑛+1, characterized by ( 𝑚𝑛+1, 𝐶𝑛+1). They comprise an
+explicit set of formulae for the mapping (2.38): since Gaussians are determined by
+mean and covariance, the map on measures is completely determined by the map
+from (𝑚𝑛, 𝐶𝑛) to (𝑚𝑛+1, 𝐶𝑛+1).
+We note that (2.41) can also be rewritten as
+𝑚𝑛+1 = b𝑚𝑛+1 + b𝐶 𝑣ℎ
+𝑛+1
+ b𝐶 ℎℎ
+𝑛+1 + Γ
+−1 
+𝑦†
+𝑛+1 − b𝑜𝑛+1
+
+,
+𝐶𝑛+1 = b𝐶𝑛+1 − b𝐶 𝑣ℎ
+𝑛+1
+ b𝐶 ℎℎ
+𝑛+1 + Γ
+−1 b𝐶 𝑣ℎ
+𝑛+1
+⊤.
+(2.42a)
+(2.42b)
+Equations (2.29), (2.32), (2.35) and (2.42) then also define the mapping from 𝜇𝐺
+𝑛
+into 𝜇𝐺
+𝑛+1 and also comprise an explicit set of formulae for the updates of the mean
+and covariance which characterize mapping (2.38).
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 26 ===
+148 E. Calvello, S. Reich and A. M. Stuart
+Finally we note that, using the definition (2.34) of Kalman gain, we can rewrite
+(2.41) as
+𝑚𝑛+1 = b𝑚𝑛+1 + 𝐾𝑛
+ 
+𝑦†
+𝑛+1 − b𝑜𝑛+1
+
+,
+𝐶𝑛+1 = b𝐶𝑛+1 − 𝐾𝑛
+ b𝐶 𝑣 𝑦
+𝑛+1
+⊤.
+Thus we see how the Kalman gain arises naturally within the context of this
+Gaussian projected filter.
+Remark 2.10. The preceding explicit formulae for (2.38) involve the computa-
+tion of expectations under the non-Gaussian measure Law(b𝑣 𝑛+1,b𝑦𝑛+1). For this
+reason they do not constitute an algorithm. A possible approach to algorithmic
+implementations involves quadrature to approximate the expectations, leading, for
+example, to the unscented Kalman filter approach; details may be found in Sec-
+tion 2.7. However, the formulation of explicit maps on Gaussians plays another,
+important, role in this paper: we use it as a way of explaining the sense in which
+the distribution of our mean-field models approximate evolution of measures under
+the true filtering distribution; see Section 2.5.6. The explicit map on means and
+covariances can also be used to derive the Kalman filter, which applies in the linear
+Gaussian setting and is presented above in Example 2.6.
+2.5. Mean-field maps
+In the previous section we did not adopt the sample-path perspective, but rather
+chose to represent the evolution of the filtering distribution, approximately, as
+the evolution of Gaussians. In this subsection we introduce our first explicit
+instance of the sample-path perspective, finding an evolution in state space which
+approximately captures the evolution of the filtering distribution. Like the Gaussian
+projected filter it uses a Gaussian ansatz, but in a different way, leading to a state
+space evolution that is not Gaussian.
+Note that elements of𝔓(R𝑑) areinfinite-dimensionalobjects, for any𝑑. Thus the
+filtering distribution defines a nonlinear evolution in an infinite-dimensional space.
+This fact goes to the heart of the computational challenges faced when solving
+the filtering problem. These computational challenges are further exacerbated
+when 𝑑 ≫ 1. The manifold of Gaussians 𝔊(R𝑑) is finite-dimensional, because
+it is parametrized by the mean and covariance and hence has dimension 1
+2 𝑑(𝑑 +
+3). The preceding subsection provides explicit finite-dimensional maps for the
+mean and covariance which characterize the Gaussian projected filter𝜇𝐺
+𝑛 ↦→ 𝜇𝐺
+𝑛+1,
+an approximation which is (intuitively) accurate when the true filter is close to
+Gaussian. Nonetheless, if 𝑑 ≫ 1 this method can still be prohibitive because the
+algorithm acts on a space of dimension that grows quadratically in 𝑑.
+To address the issue that the Gaussian projected filter may not be efficient if
+𝑑 ≫ 1, in this section we introduce a more ambitious aim: to find maps on
+finite-dimensional spaces of dimension 𝑑 with the property that (possibly only
+approximately) their output is equal in law to the map on measures 𝜇𝑛 ↦→ 𝜇𝑛+1
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 27 ===
+Ensemble Kalman methods: A mean-field perspective 149
+given by the filtering cycle. We achieve this by studying transport maps that achieve
+(2.30) or (2.31); we then weaken this requirement and ask only for transport maps
+that approximately achieve (2.30) or (2.31) in a manner that we will make precise.
+When combined with (2.29), either (2.30) or (2.31) gives a sample-path evolution
+that can be used as the basis of algorithms to solve the filtering problem. This
+transport map viewpoint leads us to the subject of mean-field maps, namely random
+maps that depend on the law of the state being mapped. When approximated by
+particle methods, these maps lead to methods that scale linearly with𝑑, in contrast
+to the Gaussian projected filter, which scales quadratically.
+This section is organized as follows. We start in Section 2.5.1 with an introduc-
+tion to transport maps. Section 2.5.2 describes two distinct transport approaches
+which effect exact filtering: one based on the conditioning component of the
+overall Bayesian inference step, a transport between probability measures on dif-
+ferent spaces; and the other based on the prior-to-posterior map that constitutes
+the Bayesian inference step of filtering, a transport between probability measures
+on the same space. We refer to these maps which effect exact filtering as perfect
+transport.5 Sections 2.5.4 and 2.5.5 are concerned with approximations of these
+two perfect transports, and are motivated in Section 2.5.3 with an explicit example.
+In these approximations the pushforward under the transport map is designed to
+match only the first- and second-order moments of the target measure. Hence these
+approximations are closely related to, but different from, the previously defined
+Gaussian projected filter; we elaborate on this connection in Section 2.5.6. That
+subsection also includes Example 2.15, in which we identify mean-field formu-
+lations of the Kalman filter; recall that this filter applies only to linear Gaussian
+systems, and is defined in Example 2.6.
+2.5.1. Transport maps
+We start by setting up notation used throughout. Consider probability measures 𝜋
+and 𝜋′ on R𝑑 and R𝑑′
+respectively, and recall from Section 1.4 the definition of
+pushforward of a measure under under 𝑇 : R𝑑 → R𝑑′
+: the statement 𝜋′ = 𝑇 ♯𝜋 is
+a succinct way of stating that if Law(𝑣) = 𝜋 and 𝑣 ′ = 𝑇(𝑣), then Law(𝑣 ′) = 𝜋′. A
+transport 𝑇 : R𝑑 → R𝑑′
+from 𝜋 to 𝜋′ is a map with the property that the pushforward
+of probability measure 𝜋 under 𝑇, 𝑇 ♯𝜋, is equal to probability measure 𝜋′. In the
+following we refer to𝜋 as the source measureand 𝜋′ as the target measuredefining
+the transport. In our setting, 𝜋′ will be uniquely determined by 𝜋 and an observed
+piece of finite-dimensional data. Thus 𝑇 depends on 𝜋, and so we may view𝑇 as a
+mapping R𝑑 × 𝔓 → R𝑑′
+, suppressing, for the moment, explicit dependence on the
+5 Perfect transport should not be confused with optimal transport , which identifies among all
+(perfect) transport maps the one minimizing a certain cost functional such as that leading to the
+Wasserstein distance. See Section 2.7, and Theorem C.6, for more details. We use perfect here
+to distinguish from the approximate transport maps, based only on matching first and second
+moment; these approximate transport maps underpin ensemble Kalman methods.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 28 ===
+150 E. Calvello, S. Reich and A. M. Stuart
+observed data. We can compute the pushforward under𝑇 on any measure in𝔓; but
+when we compute the pushforward on𝜋 we obtain 𝜋′. We emphasize that transport
+maps are not uniquely defined by their source and target measures, and require
+certain conditions for their existence, which we assume here to be satisfied. The
+underlying mathematical concept is that of coupling of measures. See Section 2.7
+for discussion of transport, optimal transport and coupling.
+We will also consider classes of approximate transport maps which do not
+achieve transport from 𝜋 to 𝜋′, but instead match first- and second-order moment
+information (we will be precise below). Such maps will also depend on 𝜋.
+We now clarify an important notational issue. The dependence of (possibly
+approximate) transport 𝑇 on a measure in 𝔓 does not affect the definition of push-
+forward; we employ the following general definition of pushforward for measure-
+dependent maps, taken to hold for all𝜋1, 𝜋2 regardless of any assumed relationship
+between them:
+𝑇(·; 𝜋1)♯𝜋2 = 𝑇(·;e𝜋)♯𝜋2
+
+e𝜋= 𝜋1
+; (2.43)
+in particular,
+𝑇(·; 𝜋)♯𝜋 = 𝑇(·;e𝜋)♯𝜋
+
+e𝜋= 𝜋
+, (2.44a)
+𝑇(·; 𝜋)♯(G𝜋) = 𝑇(·;e𝜋)♯(G𝜋)
+
+e𝜋= 𝜋
+. (2.44b)
+In the preceding, pushforward under e𝜋-dependent map 𝑇(·, e𝜋) denotes regular
+pushforward with no relationship assumed betweene𝜋 and the measure being pushed
+forward. Note that we may define T : 𝔓(R𝑑) → 𝔓(R𝑑) by T (𝜋) = 𝑇(·; 𝜋)♯𝜋. The
+(approximate) transport maps just identified can be recast as mean-field maps when
+used in the context where source 𝜋 is the distribution of the input to 𝑇.
+2.5.2. Perfect transport
+Consider the idea of finding a transport map that acts on the joint space of state
+and data, to effect conditioning with respect to the observed data. To this end we
+consider the dynamical system, assumed to hold for all 𝑛 ∈ Z+:
+b𝑣 𝑛+1 = Ψ(𝑣 𝑛) + 𝜉𝑛,
+b𝑦𝑛+1 = ℎ(b𝑣 𝑛+1) + 𝜂𝑛+1,
+𝑣 𝑛+1 = 𝑇 𝑆 
+b𝑣 𝑛+1,b𝑦𝑛+1; 𝜋𝑛+1, 𝑦†
+𝑛+1
+
+,
+(2.45a)
+(2.45b)
+(2.45c)
+where {𝑦†
+𝑛} arises from a fixed realization of (2.1). Recall that 𝜇𝑛 = Law(𝑣 𝑛),
+b𝜇𝑛+1 = Law(b𝑣 𝑛+1) and 𝜋𝑛+1 = Law(b𝑣 𝑛+1,b𝑦𝑛+1).
+This is an example of the sample-path perspective, and (2.29), (2.30) in particular.
+The first two equations, which coincide with (2.29), effect the mappings from 𝜇𝑛
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 29 ===
+Ensemble Kalman methods: A mean-field perspective 151
+to b𝜇𝑛+1 and from b𝜇𝑛+1 to 𝜋𝑛+1. Map 6 𝑇 𝑆
+𝑛 (·, ·) ≔ 𝑇 𝑆(·, ·; 𝜋𝑛+1, 𝑦†
+𝑛+1) is then an
+explicit example of (2.30) defined to effect the desired conditioning of 𝜋𝑛+1 on
+𝑦†
+𝑛+1 in order to obtain 𝜇𝑛+1. The letter 𝑆 in 𝑇 𝑆 denotes the dependence of the map
+on the stochastic data b𝑦𝑛+1. Thus equations (2.45) define a mean-field stochastic
+dynamical system mapping 𝑣 𝑛 to 𝑣 𝑛+1: stochastic because of the noise in (2.45a)
+and (2.45b), mean-field because the map 𝑇 𝑆 in (2.45c) depends on the law 𝜋𝑛+1 of
+(b𝑣 𝑛+1,b𝑦𝑛+1), and hence on 𝜇𝑛. The three update steps in this mean-field stochastic
+dynamical system lead to the following maps on measures:
+b𝜇𝑛+1 = P 𝜇𝑛,
+𝜋𝑛+1 = Qb𝜇𝑛+1,
+𝜇𝑛+1 = (𝑇 𝑆
+𝑛 )♯𝜋𝑛+1.
+(2.46a)
+(2.46b)
+(2.46c)
+This is simply a restatement of (2.22), noting that ( 𝑇 𝑆
+𝑛 )♯ has been chosen so
+that pushforward corresponds to conditioning 𝜋𝑛+1 on data 𝑦†
+𝑛+1 to obtain 𝜇𝑛+1.
+In particular, T 𝑆
+𝑛 (𝜋𝑛+1) ≔ (𝑇 𝑆
+𝑛 )♯𝜋𝑛+1 has property T 𝑆
+𝑛 (𝜋𝑛+1) = B𝑛(𝜋𝑛+1). Note
+that the implied map from 𝜇𝑛 to 𝜇𝑛+1 is a nonlinear Markov process, because
+of the dependence of 𝑇 𝑆
+𝑛 on 𝜋𝑛+1 and hence on 𝜇𝑛. Furthermore, we have that
+Law(𝑣 ℓ) = 𝜇ℓ for all ℓ ∈ Z+. The important takeaway is that (2.45) defines a
+sample-path picture of the evolution of the filtering distribution: it provides a map
+in state space with law governed by the filter. We emphasize again that such a
+sample-path representation is not uniquely defined.
+Now consider a different approach to transport for filtering: we seek a transport
+map that acts on the state space only to effect Bayes’ theorem, i.e. mapping prior
+b𝜇𝑛+1 to posterior 𝜇𝑛+1. To this end we consider the dynamical system
+b𝑣 𝑛+1 = Ψ(𝑣 𝑛) + 𝜉𝑛,
+𝑣 𝑛+1 = 𝑇 𝐷 
+b𝑣 𝑛+1; b𝜇𝑛+1, 𝑦†
+𝑛+1
+
+,
+(2.47a)
+(2.47b)
+again assumed to hold for all 𝑛 ∈ Z+. The first equation maps 𝑣 𝑛 ∼ 𝜇𝑛 to
+b𝑣 𝑛+1 ∼ b𝜇𝑛+1, thus giving a sample-path realization of (2.24a). In the second
+equation, the map 𝑇 𝐷
+𝑛 (·) ≔ 𝑇 𝐷(·; b𝜇𝑛+1, 𝑦†
+𝑛+1) is chosen so that if b𝑣 𝑛+1 ∼ b𝜇𝑛+1
+then 𝑣 𝑛+1 ∼ 𝜇𝑛+1, thus giving a sample-path realization of (2.24b). Thus we have
+another instance of the sample-path perspective, and (2.29a), (2.31) in particular.
+Equation (2.47) constitutes another mean-field stochastic dynamical system:
+stochastic because of the noise in (2.47a); mean-field because the map𝑇 𝐷 in (2.47b)
+depends on the law of b𝑣 𝑛+1 itself, and hence on 𝜇𝑛. The symbol 𝐷 distinguishes
+map 𝑇 𝐷 from map 𝑇 𝑆: map 𝑇 𝐷 is deterministic in the sense that it does not require
+6 It is convenient to use both the notation 𝑇 𝑆(·, ·; 𝜋𝑛+1, 𝑦†
+𝑛+1), to be explicit about important de-
+pendencies in 𝑇 𝑆, and to use the notation 𝑇 𝑆𝑛 , for succinct statement of certain formulae when
+dropping explicit dependence of 𝑇 𝑆 on 𝜋𝑛+1 and 𝑦†
+𝑛+1. We will use analogous notation for other
+mean-field maps in what follows.
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press
+
+=== Page 30 ===
+152 E. Calvello, S. Reich and A. M. Stuart
+stochastic datab𝑦𝑛+1, in contrast to 𝑇 𝑆. Therefore we again have that Law(𝑣 ℓ) = 𝜇ℓ
+for all ℓ ∈ Z+, where the probability measure 𝜇𝑛 evolves according to
+b𝜇𝑛+1 = P 𝜇𝑛,
+𝜇𝑛+1 = (𝑇 𝐷
+𝑛 )♯b𝜇𝑛+1.
+(2.48a)
+(2.48b)
+This is simply a restatement of (2.24), noting that (𝑇 𝐷
+𝑛 )♯ has been chosen so that the
+pushforward corresponds to the application of Bayes’ theorem to incorporate data
+𝑦†
+𝑛+1. In particular, T 𝐷
+𝑛 (b𝜇𝑛+1) ≔ (𝑇 𝐷
+𝑛 )♯b𝜇𝑛+1 has property T 𝐷
+𝑛 (b𝜇𝑛+1) = L𝑛(b𝜇𝑛+1).
+The evolution (2.48) is another nonlinear Markov process, now because of the
+dependence of 𝑇 𝐷
+𝑛 on b𝜇𝑛+1. Again, the underlying sample-path representation
+(2.47) is not uniquely defined.
+The two transport maps 𝑇 𝑆 and 𝑇 𝐷 introduce an important conceptual approach
+to algorithms for filtering, but determining the maps can be as hard as, or harder
+than, solving the filtering problem itself. Thus, in the next two subsections, we
+turn to relaxations of the perfect transport effected by𝑇 𝑆 and 𝑇 𝐷. We instead seek
+mean-field maps which match only first- and second-order moment information;
+this relaxation allows for approximate transport maps with simple affine forms (in
+senses to be made precise). The perspective of matching first- and second-order
+moments naturally suggests working with Gaussians, and hence we also relate the
+approximate transport to the Gaussian projected filter.
+2.5.3. Second-order transport: motivation
+To motivate the more general ideas behind second-order transport, we first study
+an explicit example. It is well known how to transform samples from a unit centred
+Gaussian random variable onR into samples from a Gaussian random variable with
+mean 𝑚 ≠ 0 and variance 𝜎 ≠ 1 by a simple scaling and shifting operation. An
+appropriate generalization of such a procedure suggests consideration of the map
+b𝑣 𝑛+1 = Ψ(𝑣 𝑛) + 𝜉𝑛,
+b𝑦𝑛+1 = ℎ(b𝑣 𝑛+1) + 𝜂𝑛+1,
+𝑣 𝑛+1 = 𝑚𝑛+1 + 𝐶1/2
+𝑛+1
+b𝐶 −1/2
+𝑛+1 (b𝑣 𝑛+1 − Eb𝑣 𝑛+1),
+(2.49a)
+(2.49b)
+(2.49c)
+where 𝑚𝑛+1, b𝐶𝑛+1 and 𝐶𝑛+1 are determined by (2.32), (2.33) and (2.41), using
+(2.49a) and (2.49b). Here {𝑦†
+𝑛} arises again from a fixed realization of (2.1). This
+is a specific instance of the sample-path perspective, and (2.29), (2.31) in particular.
+In this case the sample-path evolution of 𝑣 𝑛 has law which only approximates the
+true filtering law.
+The map 𝑣 𝑛 ↦→ 𝑣 𝑛+1 defined by (2.49) is a mean-field map because of the depend-
+ence of 𝑚𝑛+1, 𝐶𝑛+1 and b𝐶𝑛+1 on Q Law(𝑣 𝑛). It may be viewed as an approximation
+to (2.45) which is exact whenQ Law(𝑣 𝑛) is Gaussian. To demonstrate exactness on
+Gaussians it suffices to show that we obtain the desired mean and covariance after
+https://doi.org/10.1017/S0962492924000060 Published online by Cambridge University Press

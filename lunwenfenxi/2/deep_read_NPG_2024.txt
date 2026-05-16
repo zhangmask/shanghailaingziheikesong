@@ -1,0 +1,829 @@
+=== Page 1 ===
+Nonlin. Processes Geophys., 31, 237–245, 2024
+https://doi.org/10.5194/npg-31-237-2024
+© Author(s) 2024. This work is distributed under
+the Creative Commons Attribution 4.0 License.
+NPG Letters
+Quantum data assimilation: a new approach to solving
+data assimilation on quantum annealers
+Shunji Kotsuki1,2,3, Fumitoshi Kawasaki 4, and Masanao Ohashi 2
+1Institute for Advanced Academic Research, Chiba University, Chiba, Japan
+2Center for Environmental Remote Sensing, Chiba University, Chiba, Japan
+3Research Institute of Disaster Medicine, Chiba University, Chiba, Japan
+4Graduate School of Science and Engineering, Chiba University, Chiba, Japan
+Correspondence: Shunji Kotsuki (shunji.kotsuki@chiba-u.jp)
+Received: 18 July 2023 – Discussion started: 8 August 2023
+Revised: 27 January 2024 – Accepted: 16 April 2024 – Published: 7 June 2024
+Abstract. Data assimilation is a crucial component in the Earth science ﬁeld, enabling the integration of ob-
+servation data with numerical models. In the context of numerical weather prediction (NWP), data assimilation
+is particularly vital for improving initial conditions and subsequent predictions. However, the computational de-
+mands imposed by conventional approaches, which employ iterative processes to minimize cost functions, pose
+notable challenges in computational time. The emergence of quantum computing provides promising opportuni-
+ties to address these computation challenges by harnessing the inherent parallelism and optimization capabilities
+of quantum annealing machines.
+In this investigation, we propose a novel approach termed quantum data assimilation, which solves the data
+assimilation problem using quantum annealers. Our data assimilation experiments using the 40-variable Lorenz
+model were highly promising, showing that the quantum annealers produced an analysis with comparable accu-
+racy to conventional data assimilation approaches. In particular, the D-Wave Systems physical quantum anneal-
+ing machine achieved a signiﬁcant reduction in execution time.
+1 Introduction
+Data assimilation is a mathematical discipline that inte-
+grates numerical models and observation data to improve
+the interpretation and predictions of dynamical systems (Re-
+ichle, 2008; Evensen, 2009). In particular, data assimilation
+has been intensively investigated in numerical weather pre-
+diction (NWP) during the past 2 decades to provide op-
+timal initial conditions by combining model forecasts and
+observation data (Kalnay, 2003; Houtekamer and Zhang,
+2016). Among data assimilation methods, variational and
+ensemble–variational data assimilation methods, which it-
+eratively reduce cost functions via gradient-based optimiza-
+tion, are widely used in most operational NWP centers such
+as the European Centre for Medium-Range Weather Fore-
+casts (ECMWF), the United Kingdom Met Ofﬁce (Met Of-
+ﬁce), the National Oceanic, Atmospheric Administration of
+the United States (NOAA) and the Japan Meteorological
+Agency (JMA). However, data assimilation methods require
+vast computational resources in NWP systems because of the
+iterations needed for sufﬁcient cost function reduction. For
+example, in JMA’s global forecast system, data assimilation
+requires about 25 times more computational resources than
+forecast computations.
+In recent years, quantum computing has attracted research
+interest as a new paradigm of computational technologies
+since it has a large potential to overcome computational chal-
+lenges of conventional approaches through quantum effects
+such as tunneling, superposition and entanglement. In par-
+ticular, quantum annealing machines (Kadowaki and Nishi-
+mori, 1998), such as D-Wave Systems quantum anneal-
+ers (Johnson et al., 2011), are powerful and feasible tools
+for solving optimization problems. Since the quantum an-
+nealer 2000Q was released by D-Wave Systems in 2017,
+quantum computing research has rapidly progressed in var-
+Published by Copernicus Publications on behalf of the European Geosciences Union & the American Geophysical Union.
+
+=== Page 2 ===
+238 S. Kotsuki et al.: Quantum data assimilation
+ious applications, such as for machine learning (Hu et al.,
+2019; Willsch et al., 2020), graph partitioning (Ushijima-
+Mwesigwa et al., 2017), clustering (O’Malley et al., 2018),
+and model predictive control (Inoue et al., 2021).
+In this study, we design a data assimilation method for the
+quantum annealing machines. Although quantum machines
+have been used in several engineering applications, to our
+knowledge, this is the ﬁrst study to apply quantum anneal-
+ing to data assimilation problems. We focus on the four-
+dimensional variational data assimilation (4DV AR) since it is
+the most widely used data assimilation method in operational
+NWP systems. We reformulate 4DV AR into a quadratic un-
+constrained binary optimization (QUBO) problem, which
+can be solved by quantum annealers. We subsequently ap-
+ply the proposed method for a series of 4DV AR experiments
+using a low-dimensional chaotic Lorenz 96 model (Lorenz,
+1996; Lorenz and Emanuel, 1998), which has been widely
+used in theoretical data assimilation studies (e.g., Anderson,
+2011; Whitaker and Hamill, 2002; Miyoshi, 2011; Kotsuki et
+al., 2017).
+The original 4DV AR cost function is, as elaborated in
+Sect. 2.1, a quadratic unconstrained optimization (QUO)
+problem including a nonlinear operator with respect to the
+analysis increment (NL-QUO). To solve 4DV AR using quan-
+tum annealers, we ﬁrst approximate the problem so as to
+include only linear operations with respect to the analysis
+(L-QUO), which is then reformulated to a be quadratic un-
+constrained binary optimization (L-QUBO) problem. The
+L-QUBO problem is solved using the D-Wave Advantage
+physical quantum annealer (Phy-QA) and the Fixstars Am-
+plify simulated quantum annealer (Sim-QA). We also em-
+ploy the conventionally used quasi-Newton method with
+the Broyden–Fletcher–Goldfarb–Shanno formula (BFGS) to
+solve the NL-QUO and L-QUO, which are denoted as NL-
+BFGS and L-BFGS hereafter. Numerical techniques and
+practical implementations speciﬁcally tailored to quantum
+data assimilation are also presented.
+The rest of paper is organized as follows. Section 2 pro-
+vides the method of quantum data assimilation, and Sect. 3
+provides results and discussion. Finally, a summary is pre-
+sented in Sect. 4.
+2 Methodology and experiments
+2.1 Conventional data assimilation
+This study focuses on the four-dimensional variational data
+assimilation (4DV AR), which is among the most widely used
+data assimilation methods in operational NWP centers such
+as ECMWF, Met Ofﬁce, NOAA, and JMA. 4DV AR assimi-
+lates observations over a time window to produce an analysis
+trajectory that minimizes its cost function (Fig. 1). The cost
+function of 4DV AR is derived from Bayes’ theorem and is
+given by
+J (δx0)=δxT
+0 Q−1
+0 δx0+ dT
+1:LR−1
+1:Ld1:L, (1)
+where δx0= x0− xf
+0 (∈RN ) is the analysis increment, Q
+(∈RN×N ) is the background error covariance, d1:L (∈RPL )
+is the observation departure, andR1:L (∈RPL×PL ) is the ob-
+servation error covariance. The superscript f represents the
+forecast, the subscript 0 denotes time t= 0 of the time win-
+dow, and 1:L indicates observation time slots from t= 1 to
+t=L. Here,N is the system size,L is the number of obser-
+vation time slots, and P is the number of observations per
+time slot. The observation departure is given by
+dT
+1:L=
+[
+dT
+1,..., dT
+k,..., dT
+L
+]
+, (2)
+dk= yo
+k− HMk|0
+(
+xf
+0+δx0
+)
+, (3)
+where yo
+k (∈RP ) is the observation at time k, and Mk|0() is
+the nonlinear model forecast from time t= 0 to k, and H
+(∈RP×N ) is the linear observation operator. The superscript
+o denotes the observation. Conventional 4DV AR iteratively
+updates the analysis increment, δx0, by reducing the cost
+function using the quasi-Newton method based on the gra-
+dient
+∂J (δx0)/∂δ x0= 2Q−1
+0 δx0− 2MT
+1:LHT
+1:LR−1
+1:Ld1:L, (4)
+where
+HT
+1:L=
+
+
+HT O
+...
+O H T
+
+ (5)
+and O is the zero matrix. The adjoint model MT
+1:L (∈
+RN×NL ) is given by
+MT
+1:L|0=
+[
+MT
+1|0,..., MT
+k|0,..., MT
+L|0
+]
+, (6)
+MT
+k|0=
+∏k
+l=1MT
+l|l−1, (7)
+where Ml|l−1 (∈ RN×N ) is the tangent liner model that ap-
+proximates
+Ml|l−1
+(
+Ml−1|0
+(
+xf
+0+δx0
+)
++ ε
+)
+≃Ml|0
+(
+xf
+0+δx0
+)
++ Ml|l−1ε, (8)
+where ε (∈RN ) is the vector with very small real numbers
+and ε= 10−5× [1,···,1]T is used in this study. This opti-
+mization minimizes the quadratic cost function (Eq. 1), in-
+cluding the nonlinear operator with respect to the analysis in-
+crement (Eq. 3), and is referred to as NL-QUO in this study.
+In NL-QUO, the tangent linear model, M, and its adjoint
+model, MT , are updated at every iteration based on the latest
+analysis; x0= xf
+0+δx0.
+Nonlin. Processes Geophys., 31, 237–245, 2024 https://doi.org/10.5194/npg-31-237-2024
+
+=== Page 3 ===
+S. Kotsuki et al.: Quantum data assimilation 239
+Figure 1. Conceptual image of 4DV AR data assimilation. Green and red lines indicate the trajectories of the ﬁrst guess and updated analysis,
+respectively. Blue circles with error bars represent observations.
+As an intermediate step toward QUBO, the original cost
+function is approximated as follows:
+J (δx0)≃˜J (δx0)=δxT
+0 Q−1
+0 δx0+˜dT
+1:LR−1
+1:L˜d1:L, (9)
+where
+˜dT
+1:L=
+[
+˜dT
+1,..., ˜dT
+k,..., ˜dT
+L
+]
+, (10)
+dk≃˜dk= yo
+k− Hxf
+k− H˜Mk|0δx0, (11)
+˜Mk|0=
+∏k−1
+l=0
+˜Ml|l−1. (12)
+Here, xf
+k=Mk|0
+(
+xf
+0
+)
+, and the tilde indicates linear approxi-
+mations. Unlike NL-QUO, this optimization retains the same
+tangent linear model and its adjoint model during the it-
+eration. Namely, the tangent linear model is expanded not
+around the trajectory from the latest analysis ( xf
+0+δx0) but
+around the trajectory from the ﬁrst guess (xf
+0) as follows:
+Ml|l−1
+(
+Ml−1|0
+(
+xf
+0
+)
++ ε
+)
+≃Ml|0
+(
+xf
+0
+)
++˜Ml|l−1ε. (13)
+The substitution of Eqs. (10)–(12) into Eq. (9) gives the
+following quadratic unconstraint optimization (L-QUO) that
+has only linear operations with respect to the analysis incre-
+ment as follows:
+˜J (δx0)=δxT
+0
+(
+Q−1
+0 +˜MT
+1:L|0HT
+1:LR−1
+1:LH1:L˜M1:L|0
+)
+·δx0− 2sT
+1:LR−1
+1:LH1:L˜M1:L|0δx0+C, (14)
+where the constantC is
+C= sT
+1:LR−1
+1:Ls1:L, (15)
+sT
+1:L=
+[
+sT
+1,..., sT
+k,..., sT
+L
+]
+, (16)
+sk= yo
+k− Hxf
+k. (17)
+The gradient of ˜J is given by
+∂˜J (δx0)
+∂δ x0
+= 2
+(
+Q−1
+0 +˜MT
+1:L|0HT
+1:LR−1
+1:LH1:L˜M1:L|0
+)
+·δx0− 2˜MT
+1:L|0HT
+1:LR−1
+1:Ls1:L. (18)
+2.2 Quantum data assimilation
+Quantum annealers require only the cost function in contrast
+to conventional 4DV AR that requires the cost function and its
+gradient. However, the cost function should be represented
+by binary variables (i.e., 0 or 1) for quantum annealers. In
+this study, we represent a real number withZ qubits, whereZ
+is a natural number. In accordance with the method of Inoue
+et al. (2021), a mapping matrix,G (∈RN×NZ ), is used in this
+study.
+δx0≃ 1
+α Gb= 1
+α
+
+
+gT 0
+. . .
+0 g T
+
+ b, (19)
+gT=
+[
+−2Z−1,2Z−2,2Z−3,..., 21,20
+]
+, (20)
+whereα is the tunable scaling parameter, b (∈RNZ ) is the
+binary vector whose elements are all either 0 or 1, and 0 is
+the vector whose elements are all 0. Thus, Eq. (14) is refor-
+mulated into QUBO as follows:
+˜J (δx0)≃H (b)= bT Ab+ uT b+C, (21)
+whereH is the Hamiltonian. A (∈RNZ×NZ ) and u (∈RNZ )
+are given as follows:
+A= 1
+α2 GT
+(
+Q−1
+0 +˜MT
+1:L|0HT
+1:LR−1
+1:LH1:L˜M1:L|0
+)
+G, (22)
+uT=− 2
+α sT
+1:LR−1
+1:LH1:L˜M1:L|0G. (23)
+Note that the constant C is irrelevant to the minimiza-
+tion problem. Quantum annealers solve the QUBO problem
+(Eq. 21) by inputting A and u into the solvers.
+2.3 Experiments with the Lorenz 96 model
+This study performs twin idealized experiments using the 40-
+variable Lorenz 96 model, which has been used widely in
+theoretical data assimilation studies (e.g., Anderson, 2011;
+https://doi.org/10.5194/npg-31-237-2024 Nonlin. Processes Geophys., 31, 237–245, 2024
+
+=== Page 4 ===
+240 S. Kotsuki et al.: Quantum data assimilation
+Table 1. Experiments conducted in this study. Outer loop indicates that the trajectory is updated during 4DV AR. Inner loop indicates that the
+analysis increments are computed iteratively by the quasi-Newton method with the BFGS formula.
+Experiments Cost function Solver Outer loop Inner loop
+NL-BFGS NL-QUO Quasi-Newton with BFGS × ×
+L-BFGS L-QUO Quasi-Newton with BFGS ×
+Sim-QA L-QUBO Simulated QA
+Phy-QA L-QUBO Physical QA
+Whitaker and Hamill, 2002; Miyoshi, 2011; Kotsuki et al.,
+2017). The Lorenz 96 model is deﬁned as follows:
+dxi
+dt = (xi+1−xi−2)xi−1−xi+F, i= 1,2,...,N, (24)
+where the boundary is cyclic (i.e., xi=xi+N=xi−N ) and
+the model dimension, N, is 40. The forcing is ﬁxed at F=
+8.0, which makes the model behave chaotically. The model
+is integrated using a fourth-order Runge–Kutta scheme with
+a non-dimensional time step of 0.05. A time step of 0.05 is
+considered to be 6 h, following Lorenz and Emanuel (1998).
+This study uses the identity matrix for the observation error
+covariance such that variance of the uncorrelated observa-
+tion error is 1.0. We ﬁrst employed the nature run by run-
+ning the Lorenz 96 model, and observation data were gener-
+ated based on the nature run every 6 h (0.05 time units). All
+grid points are observed. The background error covariance
+is tuned to be Q= 0.15I. As in conventional 4DV AR, NL-
+QUO and L-QUO are solved using the quasi-Newton method
+with Broyden–Fletcher–Goldfarb–Shanno (BFGS) formula
+(Table 1). In our BFGS-based 4DV AR experiments, we use
+the AMD Ryzen 7 5800U with a Radeon graphics card as
+the CPU. All source codes are written in the Python v3.8.10.
+The NumPy and SciPy libraries are used for numerical com-
+putations. We ﬁrst conducted NL-QUO 4DV AR data assimi-
+lation cycles 50 times over a period of 100 d, with a 2 d time
+window. Then, we preserved the 50 pieces of ﬁrst-guess data,
+which were subsequently used for the other three approaches:
+L-QUO by BFGS and L-QUBO by simulated and physical
+quantum annealers. Namely, our experiments purely com-
+pare the optimization processes of data assimilation among
+the four approaches.
+2.4 Quantum annealers
+As the experimental environment of the Phy-QA, we use D-
+Wave Advantage System 4.1 which consists of 5627 physical
+qubits and 177 logical qubits, respectively (D-Wave, 2022).
+Because the D-Wave Advantage performs computations us-
+ing the logical qubits, the 177 logical qubits are available
+for computations. Because of this limitation, we represent
+a real number (an analysis increment for one variable of
+the Lorenz 96 model) with four logical qubits ( Z= 4) to
+limit the size of binary vector b less than 177 logical qubits
+(i.e.,N×Z= 40× 4= 160≤ 177). The computational time
+of the D-Wave optimizations are measured using the execu-
+tion_time function. Quantum annealers give b as a solution
+of the QUBO problem by submitting input parametersA and
+u to the solvers (Eq. 21). Here, it is essential to emphasize
+that physical quantum annealers do not employ traditional
+algorithms to solve QUBO problems; instead, they obtain so-
+lution b as a result of quantum effects. Additional details on
+quantum annealers can be found in Appendix A.
+For the simulated quantum annealer, we use the Fixstars
+Amplify simulated quantum annealer (Fixstars Amplify An-
+nealing Engine), which incorporates ≥ 65 536 physical and
+logical qubits (Matsuda, 2020). The simulated quantum an-
+nealer emulates quantum effects via digital computations us-
+ing the graphics processing unit (GPU). Although the simu-
+lated quantum annealers cannot cause real quantum effects,
+they are applicable to large-scale calculations due to their
+logical qubits being larger than those of Phy-QA. The com-
+putational time is also measured by the execution_time func-
+tion for Sim-QA. Despite the larger number of logical qubits
+available in the Fixstars Amplify Sim-QA, we use four log-
+ical qubits for a real number ( Z= 4) in numerical experi-
+ments to compare with the D-Wave Phy-QA. Consequently,
+we use 160 logical qubits for both of Sim-QA and Phy-QA
+experiments.
+3 Results and discussion
+3.1 Performance of quantum data assimilation
+Figure 2a and b show a comparison of the mean analysis and
+2 d forecast root mean square errors (RMSEs) with respect
+to the nature run for the four different approaches. As antic-
+ipated, the NL-BFGS achieved the lower RMSEs as it did
+not approximate the original cost function. Approximating
+the nonlinear operations of the original cost function led to
+a slight increase in the analysis and forecast RMSEs, as ob-
+served in L-BFGS. Solving QUBO using the quantum an-
+nealers resulted in reduced analysis errors compared to the
+ﬁrst guess, as demonstrated by the Sim-QA and Phy-QA.
+Here, tunable parameters for quantum annealers, namely the
+scaling factor, α, and num_reads, were calibrated prior to
+experiments and are discussed in the following subsection
+(Sect. 3.2). Although Phy-QA successfully reduced analysis
+errors when compared to the ﬁrst guess, it exhibited a slightly
+larger analysis RMSE than the other three approaches. The
+Nonlin. Processes Geophys., 31, 237–245, 2024 https://doi.org/10.5194/npg-31-237-2024
+
+=== Page 5 ===
+S. Kotsuki et al.: Quantum data assimilation 241
+Figure 2. (a) Mean analysis root mean square errors (RMSEs) at the initial time of the 4DV AR data assimilation window (a-
+RMSE), (b) mean 2 d forecast RMSEs (f-RMSE), and (c) mean execution time (s) over 50 data assimilations for NL-BFGS (a-
+RMSE= 0.2109; f-RMSE= 0.2520; 13.18 s; blue), L-BFGS (a-RMSE= 0.2120; f-RMSE= 0.2554; 0.129 s; red), Fixstars Amplify Sim-QA
+(a-RMSE= 0.2105; f-RMSE= 0.2531; 0.057 s; orange), and D-Wave Phy-QA (a-RMSE= 0.2209; f-RMSE= 0.3101; 0.028 s; magenta).
+The dashed green lines in(a) and (b) indicate the ﬁrst guess prior to data assimilation (a-RMSE= 0.2530; f-RMSE= 0.5267). The num_reads
+of Phy-QA was set to 50. The scaling factor,α, was set to 20 and 50 for Sim-QA and Phy-QA, respectively.
+larger RMSE of Phy-QA is intensiﬁed when we see the 2 d
+forecast RMSE. This discrepancy could be attributed to the
+stochastic quantum effects inherent in D-Wave’s quantum an-
+nealer, as discussed in detail in the next subsection.
+On the other hand, Phy-QA demonstrated the fastest ex-
+ecution time among the four approaches (Fig. 2c). Here,
+NL-BFGS exhibited the longest computation time due to
+the iterative updates of the trajectory and its tangent linear
+and adjoint models. In contrast, L-BFGS, which retains the
+ﬁrst-guess-based trajectory, was signiﬁcantly faster than NL-
+BFGS. Sim-QA required a longer execution time than Phy-
+QA, presumably because GPU-based simulated quantum an-
+nealers involve computations for the artiﬁcial emulation of
+quantum effects. The D-Wave Phy-QA obtained a signiﬁcant
+reduction in computation time compared to the other three
+approaches (NL-BFGS, L-BFGS, and Sim-QA), taking less
+than 0.05 s to ﬁnd a solution.
+It should be noted that there are slight differences in anal-
+ysis and forecast RMSEs between NL-BFGS and L-BFGS
+in Fig. 2a and b. The degradations of L-BFGS with respect
+to NL-BFGS would be more pronounced for stronger non-
+linear cases, such as those with longer time windows of
+4DV AR, since Eqs. (9)–(13) directly simplify the nonlinear
+operator in 4DV AR to a linear operator. Here, our quantum
+data assimilation solves the QUBO problem (Eq. 21), which
+is an approximation of the cost function solved in L-BFGS
+(Eq. 14). Therefore, Sim-QA and Phy-QA would worsen too
+for stronger nonlinear cases.
+Figure 3 provides an arbitrarily selected data assimilation
+example, where the cost functions of NL-QUO and L-QUO
+are depicted by blue and red contour lines, respectively. Note
+that Fig. 3 shows an example of analysis while Fig. 2a pro-
+vides the mean RMSEs averaged over 50 data assimilations.
+The BFGS-based 4DV AR (NL-BFGS and L-BFGS) gradu-
+ally converged towards their respective analyses through it-
+erative updates. Consequently, both NL-BFGS and L-BFGS
+yielded analyses that are closer to the minima of their re-
+spective cost functions compared to the ﬁrst guess (blue and
+red triangles in Fig. 3). In contrast, Sim-QA and Phy-QA
+produced a single analysis each as they do not involve it-
+erations. In this speciﬁc example, Sim-QA, aiming to mini-
+mize L-QUBO, generated an analysis (as a yellow triangle)
+that was distant from the bottom of L-QUO. Conversely, the
+analysis produced by Phy-QA (a magenta triangle) is closer
+to the minima of NL-QUO. Notably, despite solving the same
+L-QUBO problem, Sim-QA and Phy-QA yielded greatly dif-
+ferent analyses in this example. This discrepancy is presumed
+to be a result of stochastic quantum effects, which will be fur-
+ther investigated in the next subsection.
+3.2 Sensitivity to tunable parameters
+It is important to mention that the D-Wave physical quantum
+annealer produces non-deterministic outputs due to stochas-
+tic quantum effects. Therefore, the quantum annealer in-
+cludes a tunable parameter called num_reads, which deﬁnes
+the number of states (output solutions) to be read from the
+solver. Generally, a larger value of num_reads increases the
+probability of obtaining a better solution. Here, the better
+solution, which results in smaller Hamiltonian H (Eq. 21),
+is expected to yield smaller analysis RMSEs. In this study,
+we investigated the sensitivity of Phy-QA to the num_reads
+parameter. Figure 4 illustrates the sensitivity of the analy-
+sis RMSE and the mean computational time with respect
+to the num_reads parameter. For each num_reads value, we
+repeated 50 data assimilations 10 times. The mean RMSE
+and standard deviation over the 10 samples are presented in
+Fig. 4a. Increasing the value of num_reads generally resulted
+in a reduction in the analysis RMSE. While the execution
+time exhibited a linear increase with respect to num_reads
+https://doi.org/10.5194/npg-31-237-2024 Nonlin. Processes Geophys., 31, 237–245, 2024
+
+=== Page 6 ===
+242 S. Kotsuki et al.: Quantum data assimilation
+Figure 3. An illustration of data assimilations from an arbitrarily selected ﬁrst guess. The black star and the green circle indicate the
+truth and the ﬁrst guess, respectively. Blue, red, orange, and magenta triangles are the analyses of NL-BFGS, L-BFGS, Sim-QA, and Phy-
+QA, respectively. Blue and red lines represent the analysis updates over iterations for NL-BFGS and L-BFGS, whose internal analyses are
+indicated by the cross marks. Red and blue contours show the cost functions with and without the linearization (L-QUO and NL-QUO),
+respectively. These cost functions were computed in a grid search for 2 variables ( x2 andx3) of the Lorenz 96 model, with true data used
+for the other 38 variables. Since the BFGS-based 4DV AR algorithm updates 40 variables, analyses of NL-QUO and L-QUO (blue and red
+circles) are not exactly placed at the minima of their cost functions. The num_reads of Phy-QA was set to 50. The scaling factorα was set to
+20 and 50 for Sim-QA and Phy-QA, respectively.
+Figure 4. Sensitivity of (a) analysis RMSE and (b) mean execution time to the tunable parameter num_reads in D-Wave Phy-QA. We
+conducted 50 data assimilations 10 times, and their means and standard deviations over 10 samples are represented by bars and error bars.
+The scaling factorα is set to 50.
+(Fig. 4b), reading out solutions from the solver multiple
+times proved beneﬁcial in achieving stable and improved
+analyses. Importantly, the standard deviation of the mean
+RMSE was found to be insensitive to the num_reads param-
+eter. This observation indicates that even if we read out the
+output from the solver over 100 times, the stochastic effects
+persist and cannot be eliminated for Phy-QA.
+The scaling factorα is an important parameter for regulat-
+ing analysis accuracy in quantum annealers (see Eq. 19). Due
+to the limited number of available logical qubits for Phy-QA,
+this study represented real numbers using only four logical
+qubits. In other words, both our Phy-QA and Sim-QA could
+only represent 2 4= 16 distinct real numbers. For instance,
+a scaling factor of α= 20 indicates that numerical experi-
+ments can handle real numbers ranging from −0.40 to 0.35
+in increments of 0.05. Our sensitivity experiments to the scal-
+ing factor,α, revealed similar increasing trends for Phy-QA
+and Sim-QA when α≥ 50 (Fig. 5). Increasing the scaling
+Nonlin. Processes Geophys., 31, 237–245, 2024 https://doi.org/10.5194/npg-31-237-2024
+
+=== Page 7 ===
+S. Kotsuki et al.: Quantum data assimilation 243
+Figure 5. Sensitivity of analysis RMSEs to the scaling factorα for
+Sim-QA (orange) and Phy-QA (magenta). The dashed green line in
+(a) represents the ﬁrst-guess RMSE prior to data assimilation. The
+parameter num_reads of Phy-QA is set to 50.
+factor,α, resulted in degraded analysis accuracy, approach-
+ing the RMSE of the ﬁrst guess. This is because excessively
+large scaling factors can lead to slight changes in the anal-
+ysis increment. For instance, when α= 500, the minimum
+and maximum analysis increments are−0.016 and 0.014, re-
+spectively. It indicates that whenα= 500, Phy-QA and Sim-
+QA can manage a limited increment (from−0.016 to 0.014);
+as a result, their RMSEs approach the RMSE of the ﬁrst
+guess. Interestingly, noticeable discrepancies were observed
+between Phy-QA and Sim-QA for α≤ 20, presumably due
+to the stochastic quantum effects speciﬁc to Phy-QA. As ob-
+served in Fig. 4, we cannot eliminate stochastic effects for
+Phy-QA even if we read out output from the solver over 100
+times. For smaller scaling factors, a stochastic change in a
+single qubit can induce larger changes in the analysis incre-
+ment. Consequently, the optimal scaling factor for Phy-QA
+was found to be larger than that for Sim-QA. Based on the re-
+sults of the sensitivity experiments, scaling factors ofα= 20
+andα= 50 were used for Sim-QA and Phy-QA in Sect. 3.1.
+These sensitivity experiments also indicate that the optimal
+scaling factor may differ between Sim-QA and Phy-QA.
+4 Summary
+This study proposed the quantum data assimilation which
+solves data assimilation problems on quantum annealing ma-
+chines. The main results of this investigation are as follows:
+1. We reformulated the data assimilation problem into the
+quadratic unconstrained binary optimization (QUBO)
+problem so that quantum annealing machines can solve
+data assimilation.
+2. Using the 40-variable Lorenz model, we succeeded in
+solving data assimilation on quantum annealers for the
+ﬁrst time. The results of our experiments were highly
+promising, demonstrating that the quantum annealers
+can yield an analysis whose accuracy is comparable
+to the conventional quasi-Newton-based iterative ap-
+proach.
+3. The D-Wave physical quantum annealing machine
+needed an execution time of less than 0.05 s, which is
+signiﬁcantly smaller than conventional approaches.
+4. Since the D-Wave physical quantum annealer produces
+non-deterministic outputs due to stochastic quantum ef-
+fects, reading out solutions multiple times was beneﬁ-
+cial in achieving stable and improved analyses.
+5. The scaling factor for quantum data assimilation is an
+important parameter for regulating analysis accuracy in
+our conﬁguration. Due to the stochastic quantum ef-
+fects, the optimal scaling factor for D-Wave’s physical
+quantum annealing machine was different from the sim-
+ulated quantum annealer.
+At the time of writing this paper, the number of logical qubits
+in the physical quantum annealer (O
+(
+102)
+) is far from meet-
+ing the large-scale computation requirements of practical
+NWP models (>O
+(
+108)
+). To extend our approach to high-
+dimensional models such as NWP models, employing di-
+mensional reduction would be necessary and helpful. Dimen-
+sional reduction techniques have been used in data assim-
+ilations such as operational 4DV ARs that solve the inverse
+problem in spectral space (e.g., Bonavita et al., 2016). Fur-
+thermore, recent studies proposed solving data assimilation
+in low-dimensional latent space spanned by deep-learning-
+based nonlinear functions (e.g., Peyron et al., 2021). A multi-
+dimensional inverse problem can be converted into a unitless
+and normalized inverse problem using these dimensional re-
+duction techniques. Therefore, these dimensional techniques
+are also beneﬁcial for avoiding tuning the scaling parameter,
+α, for each variable. Future research is necessary to explore
+how to integrate these dimensional reduction methods with
+quantum data assimilation.
+We anticipate that our ﬁndings will inspire future develop-
+ments in the application of quantum technologies to advance
+data assimilation to reach a deeper understanding and im-
+proved predictions of real-world complex systems in NWP
+and beyond. In addition, our work would advance the prac-
+tical applications of quantum annealing machines in solving
+complex optimization problems in Earth science.
+Appendix A: Quantum annealer
+This Appendix describes how quantum annealers reach the
+solutions of the QUBO problems. First of all, it should
+be noted that there are two kinds of quantum computers
+https://doi.org/10.5194/npg-31-237-2024 Nonlin. Processes Geophys., 31, 237–245, 2024
+
+=== Page 8 ===
+244 S. Kotsuki et al.: Quantum data assimilation
+Figure A1. A conceptual image of the quantum annealing, showing (a) how users submit jobs to quantum annealers through an application
+programming interface (API), (b) a schematic image of the control device, quantum processing unit (QPU), and measuring device in the
+D-Wave quantum annealers, and(c) a schematic image of quantum annealing from an initial state with quantum superposition to a ﬁnal state
+to be read out. Blue and red arrows in (c) represent the upward and downward spins of qubits, respectively. (d) A schematic image of states
+that are read out by the measuring device. Here, num_read indicates the number of times the quantum annealing process is executed and
+the resulting states are read out. Finally, the best result, which yielded the smallest Hamiltonian among the num_reads results, is returned to
+users.
+at this moment: quantum annealing machines and quantum
+gate machines. Quantum gate machines are general-purpose
+quantum devices capable of performing a wide range of
+quantum computations. The quantum gate machines enable
+users to design quantum circuits which manipulate qubits
+through gate operations to solve complex problems efﬁ-
+ciently.
+Quantum annealers are devices specialized for solving op-
+timization problems written by the QUBO problem or Ising
+model. Here, a problem written by the Ising model can be
+reformulated to a mathematically equivalent QUBO prob-
+lem and vice versa. Figure A1 provides a conceptual im-
+age of quantum annealing. Users can submit jobs (i.e., prob-
+lems written by the QUBO or Ising model) to quantum an-
+nealers through an application programming interface (API)
+(Fig. A1a). This study used the Fixstars Amplify software de-
+velopment kit (known as Amplify SDK) as an API to submit
+jobs to D-Wave’s physical quantum annealer and the Fixs-
+tars Amplify simulated quantum annealer. Figure A1b shows
+the functions of the control device, quantum processing unit
+(QPU), and measuring device, respectively. The control de-
+vice regulates magnetic ﬁelds to tune the Hamiltonian of the
+quantum system, guiding to a low-energy state which cor-
+responds to an optimal solution of QUBO. In QPU, quan-
+tum effects (superposition and entanglement) are leveraged
+to explore potential solutions of the QUBO problem through
+quantum annealing (Fig. A1c). The measuring device reads
+the ﬁnal state of the QPU. Here, num_reads deﬁnes the num-
+ber of states to be read from the QPU by the measuring de-
+vice. Finally, a user can obtain a solution (binary vector b in
+this study) that yielded the smallest Hamiltonian among the
+num_reads states read by the measuring device.
+Code availability. The code that supports the ﬁndings of this
+study is available from the corresponding author upon reasonable
+request.
+Data availability. All of the data and codes used in this study are
+stored for 5 years at Chiba University and are available from the
+corresponding author upon request.
+Author contributions. SK developed the methodology of the
+study, FK employed Lorenz 96 experiments, and MO conducted
+experiments on quantum annealers.
+Competing interests. The contact author has declared that none
+of the authors has any competing interests.
+Disclaimer. Publisher’s note: Copernicus Publications remains
+neutral with regard to jurisdictional claims made in the text, pub-
+lished maps, institutional afﬁliations, or any other geographical rep-
+resentation in this paper. While Copernicus Publications makes ev-
+ery effort to include appropriate place names, the ﬁnal responsibility
+lies with the authors.
+Nonlin. Processes Geophys., 31, 237–245, 2024 https://doi.org/10.5194/npg-31-237-2024
+
+=== Page 9 ===
+S. Kotsuki et al.: Quantum data assimilation 245
+Acknowledgements. The authors thank project members of the
+Japan Science and Technology Agency Moonshot R&D for fruitful
+discussions.
+Financial support. This study was partly supported by the Japan
+Science and Technology Agency Moonshot R&D (grant nos. JP-
+MJMS2284 and JPMJMS2389) and PRESTO (grant no. JP-
+MJPR1924) programs, the Japan Society for the Promotion of Sci-
+ence (JSPS) via KAKENHI (grant nos. JP21H04571, JP21H05002,
+and JP22K18821), and the IAAR Research Support Program of
+Chiba University.
+Review statement. This paper was edited by Amit Apte and re-
+viewed by two anonymous referees.
+References
+Anderson, J. L.: An Ensemble Adjustment Kalman
+Filter for Data Assimilation, Mon. Weather Rev.,
+129, 2884–2903, https://doi.org/10.1175/1520-
+0493(2001)129<2884:AEAKFF>2.0.CO;2, 2011.
+Bonavita, M., Hólm, E., Isaksen, L., and Fisher, M.: The evolution
+of the ECMWF hybrid data assimilation system, Q. J. Roy. Me-
+teor. Soc., 142, 287–303, https://doi.org/10.1002/qj.2652, 2016.
+D-Wave: Advantage Processor Overview, https://www.dwavesys.
+com/media/3xvdipcn/14-1058a-a_advantage_processor_
+overview.pdf (last access: 10 June 2023), 2022.
+Evensen, G.: The ensemble Kalman ﬁlter: Theoretical formula-
+tion and practical implementation, Ocean Dynam., 53, 343–367,
+https://doi.org/10.1007/s10236-003-0036-9, 2003.
+Houtekamer, P. L. and Zhang, F.: Review of the ensemble Kalman
+ﬁlter for atmospheric data assimilation, Mon. Weather Rev., 144,
+4489–4532, https://doi.org/10.1175/MWR-D-15-0440.1, 2016.
+Hu, F., Wang, B. N., Wang, N., and Wang, C.: Quantum machine
+learning with D-wave quantum computer, Quant. Eng., 1, e12,
+https://doi.org/10.1002/que2.12, 2019.
+Inoue, D., Okada, A., Matsumori, T., Aihara, K., and Yoshida,
+H.: Trafﬁc signal optimization on a square lattice with quantum
+annealing, Sci. Rep., 11, 1–12, https://doi.org/10.1038/s41598-
+020-58081-9, 2021.
+Johnson, M. W., Amin, M. H., Gildert, S., Lanting, T., Hamze,
+F., Dickson, N., Harris, R., Berkley, A. J., Johansson, J.,
+Bunyk, P., Chapple, E. M., Enderud, C., Hilton, J. P., Karimi,
+K., Ladizinsky, E., Ladinzinski, N., Oh, T., Perminov, I.,
+Rich, C., Thom, M. C., Tolkacheve, E., Truncik, C. J. S.,
+Uchaikin, S., Wang, J., Wilson, B., and Rose, G.: Quan-
+tum annealing with manufactured spins, Nature, 473, 194–198,
+https://doi.org/10.1038/nature10012, 2011.
+Kadowaki, T. and Nishimori, H.: Quantum annealing in
+the transverse Ising model, Phys. Rev. E, 58, 5355,
+https://doi.org/10.1103/PhysRevE.58.5355, 1998.
+Kalnay, E.: Atmospheric modeling, data assimila-
+tion and predictability, Cambridge university press,
+https://doi.org/10.1017/CBO9780511802270 , 2003.
+Kotsuki, S., Greybush, S. G., and Miyoshi, T.: Can We Optimize
+the Assimilation Order in the Serial Ensemble Kalman Filter?
+A Study with the Lorenz-96 Model, Mon. Weather Rev., 145,
+4977–4995, https://doi.org/10.1175/MWR-D-17-0094.1, 2017.
+Lorenz, E.: Predictability – A problem partly solved. Proc. Semi-
+nar on Predictability, Reading, United Kingdom, ECMWF, 1–18,
+1996.
+Lorenz, E. and Emanuel, K. A.: Optimal Sites for Supplemen-
+tary Weather Observations: Simulation with a Small Model,
+J. Atmos. Sci., 55, 399–414, https://doi.org/10.1175/1520-
+0469(1998)055<0399:OSFSWO>2.0.CO;2, 1998
+Matsuda, Y .: Research and development of common software plat-
+form for ising machines, IEICE General Conference (2020),
+https://amplify.ﬁxstars.com/docs/_static/paper.pdf (last access:
+10 June 2023), 2020.
+Miyoshi, T.: The Gaussian Approach to Adaptive Covariance In-
+ﬂation and Its Implementation with the Local Ensemble Trans-
+form Kalman Filter, Mon. Weather Rev., 139, 1519–1535,
+https://doi.org/10.1175/2010MWR3570.1, 2011.
+O’Malley, D., Vesselinov, V . V ., Alexandrov, B. S., and
+Alexandrov, L. B.: Nonnegative/binary matrix factorization
+with a d-wave quantum annealer, PloS one, 13, e0206653,
+https://doi.org/10.1371/journal.pone.0206653, 2018.
+Peyron, M., Fillion, A., Gürol, S., Marchais, V ., Gratton, S.,
+Boudier, P., and Goret, G.: Latent space data assimilation by
+using deep learning, Q. J. Roy. Meteor. Soc., 147, 3759–3777,
+https://doi.org/10.1002/qj.2652, 2021.
+Reichle, R. H.: Data assimilation methods in the
+Earth sciences, Adv. Water Resour., 31, 1411–1418,
+https://doi.org/10.1016/j.advwatres.2008.01.001, 2008.
+Ushijima-Mwesigwa, H., Negre, C. F., and Mniszewski, S.
+M.: Graph partitioning using quantum annealing on the
+d-wave system, in: Proceedings of the Second Interna-
+tional Workshop on Post Moores Era Supercomputing,
+https://doi.org/10.1145/3149526.3149531, 2017.
+Whitaker J. S. and Hamill T. M.: Ensemble Data Assim-
+ilation without Perturbed Observations, Mon. Weather
+Rev., 130, 1913–1924, https://doi.org/10.1175/1520-
+0493(2002)130<1913:EDAWPO>2.0.CO;2, 2002.
+Willsch, D., Willsch, M., De Raedt, H., and Michielsen,
+K.: Support vector machines on the D-Wave quan-
+tum annealer, Comput. Phys. Commun., 248, 107006,
+https://doi.org/10.1016/j.cpc.2019.107006, 2020.
+https://doi.org/10.5194/npg-31-237-2024 Nonlin. Processes Geophys., 31, 237–245, 2024

@@ -1,0 +1,2783 @@
+=== Page 1 ===
+npj | quantum information Article
+Published in partnership with The University of New South Wales
+https://doi.org/10.1038/s41534-025-01044-7
+Lindblad-like quantum tomography for
+non-Markovian quantum dynamical maps
+Check for updates
+S. Varona1,2 , M. Müller 1,3 &A .B e r m u d e z2
+We introduce Lindblad-like quantum tomography (L ℓQT) as a quantum characterization technique of
+time-correlated noise in quantum information processors. This approach enables the estimation of
+time-local master equations, including their possible negative decay rates, by maximizing a likelihood
+function subject to dynamical constraints. We discuss L ℓQT for the dephasing dynamics of single
+qubits in detail, which allows for a neat understanding of the importance of including multiple
+snapshots of the quantum evolution in the likelihood function, and how these need to be distributed in
+time depending on the noise characteristics. By a detailed comparative study employing both
+frequentist and Bayesian approaches, we assess the accuracy and precision of L ℓQT of a dephasing
+quantum dynamical map that goes beyond the Lindblad limit, focusing on two different microscopic
+noise models that can be realised in either trapped-ion or superconducting-circuit architectures. We
+explore the optimization of the distribution of measurement times to minimize the estimation errors,
+assessing the superiority of each learning scheme conditioned on the degree of non-Markovinity of the
+noise, and setting the stage for future experimental designs of non-Markovian quantum tomography.
+The ﬁeld of quantum information processing has witnessed a remarkable
+progress in the last years1–5, as evidenced by the key advances reported in6–18.
+This progress lays the groundwork for the eventual demonstration of
+practical quantum advantage in real-world applications
+19. Central to these
+advancements and future breakthroughsis the exceptional level of isolation
+and control achieved over quantum information processors (QIPs),
+enabling the application and integration of various strategies toﬁght against
+the accumulation of errors during quantum computations. These strategies
+can be implemented either during the processing of quantum information
+or, alternatively, post-measurement, falling into three distinct categories:
+quantum error suppression (QES)
+20–23, quantum error mitigation
+(QEM)24–27, and quantum error correction (QEC)28–30.
+The development and optimization of these techniques for speci ﬁc
+architectures greatly beneﬁts from a comprehensive understanding of the
+underlying sources of noise, including a thorough quantum characteriza-
+tion, veri ﬁcation and validation (QCVV) of the noise models
+31–33.B y
+addressing the noise characteristics, researchers can tailor their strategies to
+suit the speciﬁc requirements of different platforms, thereby enhancing the
+reliability and performance of QIPs. For instance, the presence of spatial and
+temporal noise correlations is a critical consideration in some techniques of
+QES, such as decoherence-free subspaces 34–38 and dynamical
+decoupling39–44, respectively. Likewise, in the context of QEC, the presence of
+spatial45–47 and temporal48–50 noise correlations must be carefully accounted
+for when considering fault-tolerant quantum computation beyond the
+idealized regime of independent and identically distributed errors. In this
+work, we will focus on the characterization of qubit dynamics under tem-
+porally correlated noise. This can actually lead to a non-Markovian quan-
+tum evolution, which will require r econsidering some of the established
+characterization tools for the dynamics of Markovian open quantum sys-
+tems. Before delving into more speciﬁc details about the characterization of
+non-Markovian quantum evolutions, we note that the degree of non-
+Markovianity
+51–53 can play a role in the effectiveness of QES54,55 and QEM56,57
+techniques.
+Within the set of QCVV techniques31–33, quantum process tomography
+(QPT) aims at characterizing the mo st generic type of process that can
+account for the evolution of a quantum system, solely constrained by the
+laws of quantum mechanics
+58–62.F o ras p e c iﬁc evolution time, after pre-
+paring and measuring the system in an informationally complete setting,
+one can make an estimate of the compl etely-positive trace-preserving
+(CPTP) quantum channel
+63,64 that determines a snapshot of the quantum
+evolution. Therefore, QPT has been applied for the characterization of
+quantum gates in various experimental QIPs
+65–73, typically restricted to small
+n u m b e ro fq u b i t s .I na d d i t i o nt ot h ei n h e r e n tc o m p l e x i t yo fQ P Ta st h e
+number of qubits increases, this characterization must be repeated for each
+instant of time of interest, in order to obtain a coarse-grained reconstruction
+of the full, i.e. a one-parameter family of CPTP channels
+74–76 that governs the
+1Institute for Quantum Information, RWTH Aachen University, Aachen, Germany. 2Instituto de Física Teórica, UAM-CSIC, Universidad Autónoma de Madrid,
+Cantoblanco, Madrid, Spain. 3Peter Grünberg Institute, Theoretical Nanoelectronics, Forschungszentrum Jülich, Jülich, Germany.
+e-mail: svarona@physik.rwth-aachen.de
+npj Quantum Information |           (2025) 11:96 1
+1234567890():,;
+1234567890():,;
+
+=== Page 2 ===
+time evolution of the quantum system. Although repeating QPT can allow
+to characterise non-Markovian evolutions, the associated overhead can limit
+the precision in architectures where the number of measurements shots
+cannot be sufﬁciently large
+77.
+A strategy to overcome this limitation is to focus on the estimation of
+the generators of the noisy dynamics, rather than on the various coarse-
+grained snapshots. For time-homogeneous quantum dynamical maps,
+which form a semigroup, the time evolution can be described by the
+exponential of a Lindblad super-operator
+74,78,79. Although one may expect
+that the generators of this type of Markovian noise can be obtained by simple
+algebraic manipulations of a single QPT snapshot at any arbitrary time, this
+approach can lead to inconsistencies
+80–83 due to the branches of the complex
+logarithm. Therefore, alternative QCVV techniques are required. One
+possibility is use the Lindbladian generators for a parametrization of the
+quantum evolution, which can then b e inferred using different learning
+strategies
+65,81,82,84–90. Lindblad learning aims to estimate the Hamiltonian
+under which the system evolves and, additionally, the jump operators and
+dissipation rates that govern the non-unitary part of the dynamics of the
+noisy QIP. However, it is important tonote that Lindblad learning is based
+on the Lindblad master equation, valid only for Markovian system-
+environment interactions, i.e., memoryless interactions in which informa-
+tion ﬂows from the system to the environment but neverﬂows back.
+However, noise in real QIPs does not always fall in this category, and
+temporal correlations and even non-Markovianity can play an important
+role, as alluded above in connection to QES, QEM and QEC. Hence, it would
+be desirable to extend the Lindblad learning to encompass non-Markovian
+noise scenarios, such that the quantum dynamical maps are no longer a
+semigroup, nor can they be divided into the composition of sequential CP
+channels at any intermediate time
+75,76. Several characterization techniques
+for related problems have been developed in recent years. Quantum noise
+spectroscopy protocols91,92 have evolved into characterization tools of non-
+M a r k o v i a ns y s t e m s ,a si nr e f .93, where the authors develop aﬁlter-function
+formalism based on frames. A general non-Markovian quantum process
+framework was proposed by ref.94 allowing to characterize non-Markovian
+quantum processes using process tensor tomography (PTT). This later led
+to proposals of quantum non-Ma rkovian process tomography
+95.
+Reference96 introduced into this PTT frameworks the possibility of memory
+effects within the system control itself and from undesirable interactions
+between the control and the environment. This contrasts ref. 94 where
+perfect gates were assumed. Reference97 characterizes certain type of non-
+Markovian errors in quantum gates and98 proposes also characterization of
+quantum gates but with a compressed approach that reduces the resources
+needed in comparison to, for instance, ref.96.
+In general, any quantum evolution that results from the coupling of a
+quantum system to a larger environment, or to a set of noisy controls
+modeled by stochastic processes, can be expressed in terms of a time-local
+master equation by using a time-convolutionless formulation
+99 of the
+Nakajima-Zwanzig integro-differential equation74,100,101.T h e s et i m e - l o c a l
+master equations generalize the aforementioned Lindblad master
+equation78,79, and can be expressed in a canonical form that connects directly
+with the degree of non-Markovianity102. In essence, the characterization of
+these time-local master equations would require a time-dependent para-
+metrization of the Hamiltonian, jump operators and dissipation rates, which
+can then be incorporated into a maximum-likelihood estimation that par-
+allels the Markovian Lindblad limit
+87–90. In this work, we call this QCVV
+techniqueLindblad-like quantum tomography(LℓQT), and develop it in the
+simplest possible scenario: the dephasing dynamics of a single qubit. We
+present a detailed comparative studyof this QCVV technique, considering
+both a frequentist and a Bayesian approach for the statistical inference. We
+consider minimal dephasing models, both semi-classical and fully quan-
+tum-mechanical, in which the temporal correlations and degree of non-
+Markovianity can be independently controlled. By making a careful con-
+nection to the the theory of asymptotic inference and Bayesian estimation,
+we quantify both the accuracy and precision of LℓQT. We discuss how the
+amount of temporal correlations and the degree of non-Markovianity can
+play a key role in deciding which of the two approaches is preferable when
+learning the non-Lindblad qubit dephasing.
+This article is organized as follows. In subsection“Learning time-local
+master equations by maxim um-likelihood estimation” we review the
+techniques of Lindblad quantum tomography and present L ℓQT, a gen-
+eralization of Lindblad learning that allows us to characterize non-
+Markovian noise. In subsections“Frequentist approach to non-Markovian
+inference” and “Bayesian approach to non-Markovian inference ” two
+approaches to L ℓQT are presented. Subsection “Lindblad-like quantum
+tomography for non-Markovian dephasing ” presents L ℓQT applied to
+dephasing noise. The frequentist and Bayesian approaches are later com-
+pared in a performance analysis in subsections “Markovian semi-classical
+dephasing” and “Non-Markovian quantum dephasing”, where we also
+study how measurement times should be selected to reduce the number of
+necessary measurements and the error in the estimation of noise
+parameters.
+Results
+Learning time-local master equations by maximum-likelihood
+estimation
+The Lindblad master equation generalizes the Schrödinger equation to open
+and noisy quantum systems 74,78,79, and describes the non-unitary time
+e v o l u t i o no ft h ed e n s i t ym a t r i xo ft h es y s t e m ,d eﬁned as a positive-deﬁnite
+unit-trace linear operator ρ 2 DðHSÞ/C26LðHSÞ in a Hilbert space of
+dimensiond ¼ dim HS
+64.T h i sm a s t e re q u a t i o nc a nb ew r i t t e ni nt e r m so f
+an inﬁnitesimal generator dρ=dt ¼ LH;GðρÞ,n a m e l y
+LH;GðρÞ¼/C0 i H; ρ
+/C2/C3
+þ
+Xd2 /C01
+α;β¼1
+Gαβ Eα ρEy
+β /C01
+2 Ey
+βEα ; ρ
+no/C18/C19
+; ð1Þ
+where the Hamiltonian H 2 HermðHSÞ is a Hermitian operator, and we
+have introduced the so-called dissi pation Lindblad matrix, a positive
+semideﬁnite matrix G 2 PosðCd2 /C01Þ.H e r e , B ¼f E0 ¼ 1d ; Eα : α 2
+f1; /C1/C1/C1; d2 /C01gg forms an operator basisLðHSÞ¼ spanfBg and, together
+with the Lindblad matrix, determines the dissipative non-unitary dynamics
+of the system. Diagonalizing the Lindblad matrix, we obtain
+LH;GðρÞ¼/C0 i H; ρ
+/C2/C3
+þ
+Xd2 /C01
+n¼1
+γn LnρLy
+n /C01
+2 Ly
+nLn; ρ
+/C8/C9/C18/C19
+; ð2Þ
+where fLn : n 2f 1; /C1/C1/C1; d2 /C01gg 2 LðHSÞ are the jump operators
+responsible of generating the differentnoise processes with dissipative decay
+rates γn 2 Rþ. The goal of Lindblad learning is to estimate LH;G or,
+equivalently the system Hamiltonian and the dissipation rates and jump
+operators {H, γ
+n, Ln}, using aﬁnite number of measurements65,81,82,84–89,103.I n
+particular, our work starts from a maximum-likelihood approach 104 to
+Lindbladian quantum tomography (LQT)87,89,90.
+In the general case, LQT involves preparing an informationally com-
+plete set of initial states s 2 S0, allowing the system to evolve over a set of
+timesi 2 It , and performing measurements in different basisb 2 Mb,w i t h
+corresponding outcomesmb 2 Mmb
+(or more generally using a POVM).
+These independent con ﬁgurations, consisting of initial states, evolution
+times, and measurement outcomes, provide the necessary data to estimate
+the Hamiltonian, dissipation rates, and jump operators, ensuring a complete
+reconstruction of the Lindbladian dynamics. LQT makes use of a total of
+N
+shot measurement shots, also known as trials in the context of statistics,
+which will be distributed among the different initial states, instants of time
+and measurement basis N
+shot = ∑s,i,bNs,i,b. Therefore, the total number of
+measurement shots is a function of number of initial states, measurement
+basis, measurement outcomes and measurement times, expressed as
+N
+shotðjS0j; jMbj; jMmb
+j; jIt jÞ,w h e r ejAj denotes the cardinality of the set
+A, i.e., the number of elements in the set. In the experiment, one would
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 2
+
+=== Page 3 ===
+count the number of timesNs;i;b;mb
+that themb outcome is obtained for each
+of the conﬁgurations, such thatNs;i;b ¼P
+mb
+Ns;i;b;mb
+.T h i sp r o v i d e sad a t a
+set D ¼f Ns;i;b;mb
+g that can be understood as a random sample of the
+corresponding random variable~Ns;i;b;mb
+obtained fromNshot experimental
+measurements. We use tildes to refer to stochastic variables. In this case, the
+probability of obtaining the outcomemb when measuring in basisb is given
+by ps;i;bðmbÞ¼ Tr MμEti ;t0
+ðρ0;sÞ
+no
+,w h e r eMμ represents the correspond-
+ing projector of the combination (b, mb). Et;t0
+2 CðHSÞ is a one-parameter
+family of completely-positive trace-preserving (CPTP) channels64 describ-
+ing the actual time evolution of the noisy quantum system. Each mea-
+surement conﬁguration gives rise to an independent binomial distribution
+with Ns,i,b trials.
+The data set D can be used to estimate the Hamiltonian H and
+Lindblad matrixG by maximizing the likelihood function, which is deﬁned
+as the probability distribution of th e combination of all the independent
+binomials ps,i,b(mb). These binomials can be approximated by the Lind-
+bladian of Eq. (1), namelyps;i;bðmbÞ7!pL
+s;i;bðmbÞ¼ TrfMμeðti /C0t0 ÞLH;G ðρ0;sÞg.
+T h el a r g e rt h i sl i k e l i h o o df u n c t i o ni sf o rag i v e np a i rH, G, the better the
+Lindbladian description approximates the observed data 104.T a k i n gt h e
+negative logarithm of the likelihoodfunction we obtain a cost function
+CLðH; GÞ¼/C0
+X
+s;i;b:mb
+Ns;i;b;mb
+log pL
+s;i;bðmbÞ; ð3Þ
+with the minimum located in the same place as the maximum of the original
+likelihood. The optimization problem is thus converted into a non-linear
+minimization of this Lindbladian cost function. By minimizing this non-
+convex estimator or, instead, a convex approximation based on linearization
+and/or compressed sensing
+90, LQT provides an estimate of the generators
+^H; ^G that yield the best match with the observed data, where we will use hats
+to refer to estimated quantities. We note that this minimization is subject to
+constraints on Hamiltonian hermicity and Lindblad matrix semide ﬁnite
+positiveness.
+In this work, we describe ourﬁrst steps in the development of a learning
+procedure for non-Markovian quantum dynamical maps that supersedes
+the above LQT. In particular, we consider the statistical inference of the
+generators of quantum dynamical maps that need not fulﬁll CP-divisibility,
+the property of a quantum dynamicalmap where the evolution between any
+two intermediate times can be described by a completely positive map
+51,105.
+These maps ρðtÞ¼ ETL
+t;t0
+ðρ0Þ no longer have the Lindbladian generator of
+Eq. (1), but are instead governed by atime-local master equationthat, when
+expressed in a canonical form102,r e a d s_ρ ¼/C0i½HðtÞ; ρ/C138þDTLðρÞ with
+DTLðρÞ¼
+X
+n
+γnðtÞ LnðtÞρLy
+nðtÞ/C0 1
+2 fLy
+nðtÞLnðtÞ; ρg
+/C18/C19
+: ð4Þ
+Here, the Hamiltonian H(t), as well as the dissipative rates and jump
+operatorsγn(t), Ln(t), can be time dependent. It is important to note that the
+‘rates’ a r en ol o n g e rr e q u i r e dt ob ep o s i t i v es e m i d eﬁnite. The possibility of
+encountering negative rates is directly linked with the non-Markovianity of
+the quantum evolution
+51,52,75. This time-local master equation can always be
+w r i t t e ni nt h ef o r mo fE q .(1) by lettingH ↦ H(t)a n dG ↦ G(t), such that the
+corresponding quantum dynamical map will depend on the history of the
+time-dependent generators ETL
+t;t0
+¼ ETL
+t;t0
+ðfHðt0Þ; Gðt0ÞgÞ for all t0 2½ t; t0/C138.
+Here, thet0 argument reﬂects the fact that now the dynamical map between
+initial time t0 and time t depends on all intermediate times. We thus
+formulate a Lindblad-like quantum tomography(LℓQT) by upgrading the
+LQT cost function in Eq. (3) to a time-local one that can encompass non-
+Markovian effects
+CTL fHðt0Þ; Gðt0ÞgðÞ ¼ /C0
+X
+s;i;b;mb
+Ns;i;b;mb
+log pTL
+s;i;bðmbÞ; ð5Þ
+where the theoretical probabilities are calculated following
+pTL
+s;i;bðmbÞ¼ Tr Mb;mb
+ETL
+ti ;t0
+ðρ0;sÞ
+no
+: ð6Þ
+The above cost function must be mi nimized subject to dynamical
+constraints
+^HðtÞ; ^GðtÞ
+/C0/C1
+¼ argmin C TL fHðt0Þ; Gðt0ÞgðÞ
+/C8/C9
+; ð7Þ
+subject to Hðt0Þ2 HermðHSÞ; Gðt0Þ2 HermðCd2 /C01Þ. Therefore, we see
+that in addition to the time dependences, the dissipation matrix is no longer
+required to be semi-positive de ﬁnite, but only Hermitian, and can thus
+support negative decay rates and incorporate non-Markovian effects.
+The crucial property that differentiates LQT from other learning
+approaches such as quantum process tomography58–62 is that the estimator
+includes jIt j different instants of timefti; i 2 It g/C26T, instead of focusing
+on a single snapshot of the quantum dynamical map. Although we have
+s h o w ni nr e f .90 that, in certain regimes, an accurate LQT can be obtained by
+focusing on a single snapshot for Lindbladian evolution, this will not be the
+case for time-correlated and non-Markovian quantum evolutions. In this
+case, it will be crucial to include the information of various snapshots into
+the cost function. In fact, we address in this work how many snapshots
+would be required, and which particular instants of time would be optimal
+in order to learn about the memory effects of a time-correlated or a non-
+Markovian noisy quantum evolution. We note that a black-box approach to
+LℓQT is a very complicated problem, as the parameters of the Hamiltonian
+and dissipation matrix can have any arbitrary time dependence. In order to
+progress further, we instead look into physically-motivated models for
+LℓQT, allowing us to restrict the search space, and start by focusing on a
+simple and, yet, very relevant setting: a single qubit subject to time-
+correlated dephasing noise, which canr e s u l ti nn o n - M a r k o v i a nq u a n t u m
+dynamics. Our techniques and conclusions may be useful when generalising
+to more complicated non-Markovian dynamics, aiming at the character-
+ization of non-Markovian noise in gate sets of QIPs to optimise a tomo-
+graphic analysis
+77.
+As stated in Eq. (7) we can follow a frequentist approach similarly to the
+one in Markovian Lindblad quantum tomography87,89,90, but now taking into
+account the time-dependence of the decay rates, which will require an a
+priori selection of the evolution times at which the system is probed. In light
+of the L ℓQT estimation problem of Eq. ( 7), we do not need to consider
+arbitrary time-dependent functions for the Hamiltonian and dissipation
+matrix, but can actually ﬁnd an effective parametrization that reduces
+drastically the search space. This means that the minimization in Eq. (7)c a n
+be over the parameters θ of the Hamiltonian and d issipation matrix.
+Although several intermediate times can be taken, a single time instant
+actually sufﬁces for an accurate learning in LQT
+90, which makes it simpler
+and computationally lighter. As the noise becomes time correlated, recon-
+structing the more complex time-dependent dynamics via LℓQT, demands
+multiple time steps to achieve high accuracies. LQT has in principle the same
+number of parameters d2(d2 − 1) to be learnt as quantum process tomo-
+graphy, and to do so requires at least d2(d2 − 1) measurement conﬁgura-
+tions. For the general case, where arbitrary time-dependent rates need to be
+estimated, a naive blind-search approach would require repeated LQT at
+many time points, leading to high sample complexity. In contrast, LℓQT’s
+use of a microscopic parameterization reduces the need for extensive
+measurements by imposing physical constraints, which partially addresses
+the sample complexity challenge and makes it a more scalable method. Thus
+in parameterized LℓQT we will need at least as many measurement con-
+ﬁg u r a t i o n sa st h en u m b e ro fparameters to estimate.
+Alternatively to this frequentist approach, we can also consider a
+Bayesian approach that exploits a phy sically-motivated prior knowledge
+about these noise parameters, which can be represented by a certain
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 3
+
+=== Page 4 ===
+probability distribution. After performing measurements on the system at
+certain instants of time and certain measurement basis, we update this
+probability distributionwith the new acquired information, a process that is
+repeated until reaching a target accuracy for the parameter estimation. The
+Bayesian approach has the advantage of choosing, at each step, the most
+convenient subsequent time and measurement basis at which to measure by
+maximizing the information one wouldgain. In principle, this can lead to a
+reduction in the number of measurements required to reach a certain
+accuracy with respect to those required by the frequentist approach. In
+practice, however, the non-Markovianity of the quantum evolution can
+modify this argument, as our probabilistic account of the model parameters
+can be affected by the actual time co rrelations of the underlying random
+process.
+Frequentist approach to non-Markovian inference
+In this section, we focus on the frequentist approach, which builds on the
+relative frequencies of observed outcomes. The LℓQT cost function of Eq. (5)
+can be rewritten as follows
+C
+TLðθÞ¼/C0
+X
+s;i;b
+Ns;i;b
+X
+mb
+~f s;i;bðmb jθ?Þ log pTL
+s;i;bðmbjθÞ; ð8Þ
+where ~f s;i;bðmb jθ?Þ¼ Ns;i;b;mb
+=Ns;i;b is the ratio of the number of mb
+measurement outcomes observedNs;i;b;mb
+to the total ofNs,i,b shots collected
+at the instant of timei and initial states when measuring the system with the
+POVM element b. Our notation remarks that these relative frequencies
+carry information about the real noise parametersθ⋆ we aim at estimating.
+In addition, the estimator depends onps,i,b(mb∣θ)s h o w ni nE q .(6), where we
+make explicit the dependence on the parametrized noise.
+The minimization in Eq. (7) can explicitely written as a minimization
+over the noise parameters. As a consequence, the frequentist approach can
+be recast as a statistical problem of parameter point estimation104,n a m e l y
+^θF ¼ argminθfCTLðθÞ : θ 2 Θ ¼ Rng: ð9Þ
+Instead of the general L ℓQT learning over d2(d2 − 1) parameters, which
+increase exponentially d ¼ 2nq with the number of qubits nq and can
+arbitrarily change in time, our procedure revolves around the estimation of
+n noise parameters, which are independent of the system size and the
+evolution times. On the other hand, the imprecision of our estimates will
+indeed depend on our choice of the evolution times, forcing us to go beyond
+the LQT single-time estimator
+90, and actually measure at optimal times,
+initial states and measurement e lements for which the estimation
+imprecision can be minimized. Let us note that the conditions to minimise
+this cost function are the same as those that minimize the Kullback-Leibler
+divergence
+106,107, which is the following relative entropy
+DKLð p1jj p2Þ¼/C0
+X
+k
+p1;k log
+p2;k
+p1;k
+ !
+; ð10Þ
+between the experimental p1;k 2f ~f s;i;bðmb jθ?Þg and parameterized theo-
+retical p2;k 2f pTL
+s;i;bðmb jθÞg probability distributions, provided one con-
+siders variations with respectto the estimation parametersθ.
+The above estimator d epends on the data set D, and is thus also a
+stochastic variable, which will be characterized by its mean E½^θF/C138and its
+moments, such as the covariance matrix
+½Covð^θFÞ/C138n1 ;n2
+¼ E ^θn1
+/C0E½^θn1
+/C138
+/C16/C17
+^θn2
+/C0E½^θn2
+/C138
+/C16/C17hi
+: ð11Þ
+We note that the expectation values aretaken with respect to the probability
+distributions for the measurements ofps,i,b(mb) which, implicitly, also have
+the stochastic average over the random dephasing noise in the semi-classical
+model, or a partial trace over the environment in the quantum-mechanical
+one. The nice property of the maximum- likelihood estimator is that it is
+asymptotically unbiased, such that Bθ?
+ðθFÞ¼ E½^θF/C138/C0θ? ! 0 for a
+sufﬁciently largeNshot. Moreover, its asymptotic covariance matrix saturates
+the Cramér-Rao bound108 relating the estimation precision to the Fisher
+information matrix, which quantiﬁes the amount of information inD about
+the unknown parameters. If we momentarily assume that the measurements
+occur at a single instant of time t = ti, a single initial state and a single
+measurement basis with outcomes that are independent and identically
+distributed, the covariance matrix becomes Covð^θ
+FÞ/C25ðNs;i;bIF;s;i;bðθ?ÞÞ/C01,
+where
+½IF;s;i;bðθ?Þ/C138n1 ;n2
+¼ E
+∂log pTL
+s;i;bðmbjθÞ
+/C16/C17
+∂θn1
+∂log pTL
+s;i;bðmbjθÞ
+/C16/C17
+∂θn2
+/C12/C12/C12
+/C12
+/C12
+/C12
+θ?
+2
+64
+3
+75: ð12Þ
+In this work, we deal with the more general case in which we measure at
+several times, therefore the random variables are not identically distributed,
+and the total number of shots need not be the same for different mea-
+surement conﬁgurations, i.e., instants of time, initial states and measure-
+ment basis. In this case, we must tak e a linear combination of the Fisher
+information matrices of each measurement conﬁguration weighted by the
+proportion of measurements taken at each one of these con ﬁgurations
+109.
+We thus obtain the asymptotic covariance matrix
+Covð^θFÞ/C25Σ^θ /C17Nshot
+X
+s;i;b
+Ns;i;b
+Nshot
+IF;s;i;bðθ?Þ
+"# /C01
+; ð13Þ
+such that, the more the Ramsey estimator varies under changes of the noise
+parameters, the bigger the ampliﬁcation of the noise parameter is and, thus,
+t h es m a l l e rt h ei m p r e c i s i o no n ec a na c h i e v e .A sw ec a ns e e ,t h ei m p r e c i s i o n
+of the estimate will scale with 1= ﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃN
+shot
+p , such that the Ramsey estimator is
+asymptotically consistent in the Nshot → ∞ asymptotic limit104.T h e
+asymptotic statistics of the maximum -likelihood estimator is further
+explained in the Methods section.
+We also note that, in this limit, the observed relative frequencies will be
+normally distributed, such that one can consider minimizing a weighted
+least-squares cost function. For instance, assuming a binary case wheremb ∈
+{0, 1}, corresponding to a qubit measurement, we have
+CTLðθÞ/C25
+X
+s;i;b
+~f s;i;bð0jθ?Þ/C0 pTL
+s;i;bð0jθÞ
+/C16/C17 2
+~σ2
+f s;i;b
+; ð14Þ
+where ~f s;i;bð0 jθ?Þ¼ Ns;i;b;0=Ns;i;b is the ratio of the number of outcomes
+observedNs,i,b,0 to the total of shotsNs,i,b collected at initial states, the instant
+of time ti and measurement elementb. Here, ~σ2
+f s;i;b
+is the variance of these
+measured samples. These ~f s;i;bð0 jθ?Þ follow a binomial proportion dis-
+tribution with mean given bypTL
+s;i;bð0jθ?Þ and, in the limit of a largeNs,i,b,t h e y
+can be approximated by a normal distribution with mean pTL
+s;i;bð0jθ?Þ and
+varianceσ2
+f s;i;b
+according to the central limit theorem. The expected variance
+of the measurement conﬁguration (s, i, b)i s
+σ2
+f s;i;b
+¼
+pTL
+s;i;bð0 jθÞ 1 /C0pTL
+s;i;bð0 jθÞ
+/C16/C17
+Ns;i;b
+; ð15Þ
+since we are sampling from a binomial distribution. This approximation
+allows us to use a simpler weighted lea st-squares algorithm, such as the
+trust-region reﬂective algorithm implemented in SciPy, where we can
+optionally set some bounds for the parameters to be estimated. The
+computational complexity of the trust-region re ﬂective algorithm is
+dominated in each iteration by solving the trust-region subproblem, which
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 4
+
+=== Page 5 ===
+is typically O(n3), with n t h en u m b e ro fp a r a m e t e r s .T h en u m b e ro f
+iterations depends on the complexity ofthe cost function, the accuracy of the
+initial guess, and the desired level of convergence. However, once the
+algorithm gets close to the solution, the remaining convergence is rapid,
+showing a quadratic rate, meaning the distance to the solution decreases at a
+rate proportional to the square of the distance at the previous step.
+Once the properties of the Ramsey frequentist estimate^θ
+F have been
+discussed, we can search for the optimal measurement times, initial states
+and measurement elements that would lead to a Ramsey estimator with the
+lowest possible imprecision for a given ﬁnite N
+shot. Depending on which
+parameter we are interested in, we may be interested in minimizing a par-
+ticular component of the covariance matrix ½Σ
+^θ/C138n1 ;n1
+in Eq. (13) or, alter-
+natively, minimize its determinant as a whole. In the asymptotic limit in
+which ^θ
+F follows a multivariate normal distribution, detΣ^θ is proportional
+to the volume enclosed by the covarian ce elliptical region, so it is a good
+measure of the dispersion of the distribution, and a good way to quantify the
+accuracy of the estimation. Sometimes, we will also use det Σ1=2n
+θ instead,
+which can be more easily compared to the individual standard deviations
+½Σ^θ/C1381=2
+n1 ;n1
+, as both quantities scale with 1= ﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃNshot
+p . Minimizing detΣ^θ has also
+the advantage that the optimal measurement conﬁgurations obtained are
+independent of the parameters we wantto determine, assuming the different
+parametrizations have the same number of parameters and that a coordi-
+nate transformation exists between p arametrizations. In this case, the
+determinants of the covariance matrices are related by det Σ
+θ
+¼ det Σθ0 det J2,w i t h J the Jacobian of the coordinate transformation
+between both parametrizations, which does not depend on the measure-
+ment con ﬁgurations and therefore will have no in ﬂuence in the mini-
+mization. Before presenting these results, we discuss an approach based on
+Bayesian inference
+104.
+Bayesian approach to non-Markovian inference
+Rather than considering the relative frequencies as approximations of the
+underlying probability distribution with a certainﬁxed value ofθ⋆,t h ei d e a
+of Bayesian inference is to quantify statistically our knowledge about the
+noise parameters, and how this knowledge gets updated as we collect more
+information via measurements. Hence, the noise parameters become con-
+tinuous stochastic v ariables themselves θ
+?7!~θ that take values θ ∈ Θ
+according to a prior probability density function (PDF) π0(θ). This prob-
+ability distribution quantiﬁes our uncertainty about the noise parameters
+before making any measurementD0 ¼; .A te a c hℓ >0B a y e s i a ns t e p ,w e
+measure the system enlarging the data set sequentially
+D
+‘/C017!D‘ ¼ D‘/C01 ∪ δD‘,w h e r e δD‘ /C26D ¼f Ni;s;b;mb
+g contains a
+number of measurement outcomes∣δNℓ∣that is a fraction of the totalNshot.
+These outcomes will be labeled asδD‘ ¼f Ni‘ ;s‘;b‘ ;mb‘
+g. The measurements
+in this data set are again binary Bernoulli trials, and can be described by a
+joint distribution of independent binomialsp
+~N ðδD‘Þ,d eﬁned in analogy to
+the likelihood function, but only extended to the conﬁgurations measured in
+the particular Bayesian step. The prior (ℓ − 1)-th probability distribution is
+then updated by using Bayes’ rule based on the parametrized probability
+distributionspTL
+‘ ðδD‘jθÞ being understood as probabilities conditioned on
+our statistical knowledge of the noise parameters
+π‘ðθjD‘Þ¼ 1
+pTL
+‘/C01ðδD‘Þ pTL
+‘ ðδD‘jθÞπ‘/C01ðθÞ: ð16Þ
+Here,pTL
+‘/C01ðδD‘Þ¼
+R
+Θ dnθ pTL
+‘ ðδD‘jθÞπ‘/C01ðθÞ is a normalization constant
+required to interpret π‘ðθjD‘Þ7!π‘ðθÞ as a probability distribution
+describing our updated knowledge about the noise, which will be used as the
+subsequent prior.
+One of the main differences with respect to the frequentist approach is
+that we have, at each step, a probabili ty distribution from which one can
+obtain a Bayesian estimate
+^θ
+B ¼ Eθ½θ/C138¼
+Z
+Θ
+dnθπ ‘ðθÞθ: ð17Þ
+We note that this Bayesian estimator ^θB minimizes the Bayesian risk
+associated to a squared error loss fun ction over all possible estimators ^τ,
+^θB ¼ argminfRTLð^τÞg104 with
+RTLð^τÞ¼
+X
+i‘ ;s‘ ;b‘ ;mb‘ 2δD‘
+Z
+Θ
+dnθπ ‘ðθÞpTL
+‘ δD‘jθ
+/C0/C1
+ð^τ /C0θÞ2: ð18Þ
+In addition to the expectation value in Eq. (17), since we have the updated
+probability distributions, we can quantify how our uncertainty about the
+noise parameters changes via the associated covariance matrix
+½Covð^θBÞ/C138n1 ;n2
+or any other statistics, regardless of the size of the Bayesian
+data setD‘. This differs from our previous arguments for covariance of the
+maximum likelihood estimate^θF in Eq. (13), which require working in the
+asymptotic regime Nshot → ∞. In experimental situations in which this
+regime cannot be reached, we note that one could use Monte Carlo sampling
+techniques to estimate precision of^θF
+77,110,111, although these deal with the
+estimator based on the full likelihood function.
+Another crucial difference of the Bayesian approach is that, instead of
+choosing a predeﬁned set of evolution times, initial states and measurement
+basis, we canﬁnd the optimal time at which we should measure to maximize
+the information gain at each Bayesian step. For each update, we thus solve
+for
+ði‘; s‘; b‘Þ¼ argmaxi;s;b E DKL π‘ðθjD‘Þ ∣∣π‘ðθÞ
+/C0/C1/C2/C3/C8/C9
+; ð19Þ
+whereπ‘ðθjD‘Þ is the posterior probability in Eq. (16) corresponding to the
+measurement results one would obtain by measuring at a timeti, initial state
+s and measurement basisb, and enlarging the data set asD‘0 ¼ D‘ ∪ δD‘0 .
+In the expression above, we are making use of the Kullback-Leibler
+divergence of Eq. (10) between the posterior and the prior, searching for a
+measurement conﬁguration that maximizes the relative entropy between
+the prior and any of the possible posteriors, such that one gains the
+maximum amount of information at each Bayesian step. Therefore, not only
+the data set is enlarged sequentiallyD
+‘ /C27D‘/C01, but also the speciﬁct i m e s
+are chosen adaptively. In light of theﬁxed set of measurement times in the
+frequentist approachfti : i 2 It g, we note that the total set of updated times
+after NB Bayesian steps {tℓ, ℓ ∈ {0, ⋯ , NB}} can be very different, and that is
+the reason why we use a different notation. Computing Eq. (19) can be quite
+time-consuming, especially when dealing with a large number of
+parameters. In practice, long computation times may lead to a reduction
+in the frequency of experimental shots,which is undesirable. To avoid this,
+we can take tens or hundreds of shots at each step before computing again
+the optimal measurement conﬁguration. This will not change the results
+signiﬁcantly, since a Bayesian update of a single shot does not change the
+prior much and the optimal measurement time of next step remains very
+similar to the previous one. We note that the Bayesian approach is ultimately
+related to the maximum-likelihood estimation in the asymptotic limit
+N
+shot → ∞. When the variance of the prior is small, the maxima of the
+Kullback-Leibler divergence in Eq. ( 10) between prior and posterior are
+localized at the optimal measurement conﬁgurations obtained by minimiz-
+ing the asymptotic covariance matrix of the maximum likelihood-
+estimation in Eq. (13). Additionally, if we make a single Bayesian update
+in which we take a very big number of shots at several measurement
+conﬁgurations, the likelihood function relating the posterior and the prior
+will be a joint distribution of independent binomials. Given the big number
+of shots taken in this single step, the po sterior distribution will be mainly
+shaped by the likelihood function, which contains most of the information
+about the parameters. The position of the maximum of this PDF will be
+located at the most likely value of the parameters, and therefore it is in
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 5
+
+=== Page 6 ===
+agreement with the maximum-likelihood estimator that takes measure-
+ments at those measurement conﬁgurations. The Bayesian approach has the
+advantage that, at each step, we m easure at the most convenient
+conﬁguration that maximizes the expected information gain, and this can
+lead to an overall reduction of the number of measurements needed. Also, as
+noted above, theﬁnal estimate relies on a probability distribution, so that we
+can immediately derive con ﬁdence intervals without requiring any
+asymptotic limit.
+For the Bayesian approach, where we use sequential Monte Carlo112 to
+implement it numerically, the computational complexity is dominated by
+the computation of the best measurement conﬁguration. At each step in the
+Bayesian approach, we need to compute the expected posterior of the
+measurement conﬁgurations, and then select the measurement conﬁgura-
+tion maximizing the Kullback-Leibler divergence between posterior and
+prior. The complexity of this calculation depends on the number of particles
+in the particle ﬁlter, N
+ﬁlter, the number of initial states, the number of
+measurement bases, the number of measurement outcomes and the number
+of measurement times considered. Therefore, we have a complexity
+OðN
+filter × jS0j × jMbj × jMmb
+j × jIt jÞ. At each one of these
+Nfilter × jS0j × jMbj × jMmb
+j × jIt j operations we need to evaluate the
+likelihood functionpTL
+‘ ðδD‘jθÞ to compute the posterior weight. Therefore
+if the posterior function is costly to compute we could think of pre-
+computing it on a grid and then make linear interpolation to reduce the
+computational cost, as the authors of ref.113 do. N
+ﬁlter may need to increase
+exponentially with the number of parameters, which makes the frequentist
+approach more suitable in the case of large number of parameters. However,
+this can be moderated by the speci ﬁc structure of the model and how
+concentrated the posterior is.
+Lindblad-like quantum tomography for non-Markovian
+dephasing
+Let us formulate the LℓQT for the time-local master equation of Eq. (4)f o r
+the dephasing of a single qubit, including temporal correlations. As dis-
+cussed in the Methods section, either in a semi-classical or quantum-
+mechanical model of pure dephasing, the qubit dynamics can be described
+by the time-local master equation in Eq. ( 4) with a simple Hamiltonian
+HðtÞ¼
+1
+2 ω 0σz and a single jump operatorL(t)= σz, both of which are time
+independent
+dρ
+dt ¼/C0 i
+2 ω 0σz ; ρ
+/C2/C3
+þ γðtÞ σz ρσz /C0ρ
+/C0/C1
+: ð20Þ
+On the contrary, the decay rate is time-dependent and contains memory
+information about the noiseﬂuctuations
+γðtÞ¼ 1
+4
+Z t
+0
+dt0 Cðt; t0Þþ Cðt0; tÞðÞ : ð21Þ
+In a semi-classical model,Cðt; t0Þ¼ E½δ~ω ðtÞδ~ω ðt0Þ/C138is the auto-correlation
+function of a stochastic processδ~ω ðtÞ representing frequencyﬂuctuations.
+This master equation is the result of averaging over the stochastic process
+ρðtÞ¼ E½~ρðtÞ/C138, and is valid for a random process in a second-order
+cumulant expansion known as the fast- ﬂuctuation expansion or, alter-
+natively, for a Gaussian random process with arbitrary correlation timesτc,
+as discussed in the Methods section. Alternatively, for a fully quantum-
+mechanical dephasing model, Cðt; t
+0Þ¼ 1
+2 TrBfBI ðtÞBI ðt0Þρss
+B g is the auto-
+correlation function on the stationary state of the environment/bath ρss
+B ,
+which induces ﬂuctuations in the qubit frequency via the bath operators
+BI(t). In this case, the time-local master equation is the result of tracing over
+the bath degrees of freedom ρðtÞ¼ TrBfρSBðtÞg, and is valid in a second-
+order cumulant expansion also discussed in the Methods section. Assuming
+wide-sense stationarity, i.e., the mean of the stochastic process is constant
+and the auto-correlation function only depends ont
+0 /C0t,w ec a ni n t r o d u c e
+the power spectral density (PSD) of the noise
+Cðt /C0t0Þ¼
+Z 1
+/C01
+dω
+2π Sðω Þ eiω ðt/C0t0 Þ: ð22Þ
+Therefore, the time-dependent rate becomes
+γðtÞ¼ 1
+2
+Z 1
+/C01
+dω Sðω Þ f γðω ; tÞ; ð23Þ
+w h e r ew eh a v ei n t r o d u c e dt h ef o l l o w i n gm o d u l a t i o nf u n c t i o n
+f γðω ; tÞ¼ t
+2π sinc ðω tÞ: ð24Þ
+It will be useful to deﬁne the symmetrized auto-correlation function and the
+symmetrized PSD as /C22Cðt; t0Þ¼ 1
+2 ðCðt; t0Þþ Cðt0; tÞÞ and /C22Sðω Þ¼ 1
+2 ðSðω Þ
+þSð/C0ω ÞÞ, since for dephasing noise only the symmetric part of the auto-
+correlation function and the symmetric part of the PSD inﬂuence the time
+evolution, as shown in the Methods section.
+As discussed in the previous sections, we focus on an effective
+parametrization of the Hamiltonian and dissipation matrix that reduces
+the search space. Considering the expression in Eq. ( 23), the dephasing
+rate will depend on a certain number n of real-valued noise parameters
+θ
+? 2 Θ ¼ Rn via the PSD Sθ?
+ðω Þ, where we have made explicit its
+parametrization. Since the Hamiltonian of the qubit is very simple, and
+only depends on the transition frequency ω 0 that is known with a high
+precision using spectroscopic methods, it need not be included in the
+learning. Technically, this means that we can assume that the driving
+used to initialize and measure the qubit is resonant with the transition
+(see Fig. 1), and work in the rotating frame presented in the Methods
+section. Likewise, we have only one possible jump operator L = σ
+z, such
+that the learning can focus directly on the estimation^θ of the actual noise
+parameters θ⋆, which translate into the estimation of the dephasing rate
+^γðtÞ via Eq. ( 23). Therefore, L ℓQT becomes a non-linear minimization
+problem for the cost function in Eq. (5). Before giving more details on this
+problem, we discuss relevant properties of the dephasing quantum
+dynamical map.
+For a white-noise noise model with a vanishing correlation timeτc =0 ,
+one has a ﬂat PSD S(ω )= c and a constant dephasing rate γ(t)= c/2. This
+leads to an exponential decay of the coherences pþ;i;x ðmx Þ
+¼ 1
+2 1 þð /C01Þmx e/C0ti =T2
+/C0/C1
+,w h e r emx ∈ {0, 1} correspond to the projective
+measurements on ∣þi; ∣/C0i, respectively, and we have introduced a deco-
+herence timeT2 =2 /c. If the real system is affected by white dephasing noise,
+there is thus a single noise parameter to learnθ⋆ = c⋆ or, alternatively, the
+real decoherence timeθ⋆ = T2⋆. We note that this procedure is in complete
+agreement with the LQT based on the corresponding Lindblad master
+equation in Eq. (2). On the other hand, for a time-correlated dephasing noise
+with a structured PSD, the coherence decay will generally differ from the
+above exponential law, with the exception of the long-time regimet
+i ≫ τc,
+where pþ;i;x ðmx Þ/C251
+2 1 þð /C01Þmx e/C0ti =T2
+/C0/C1
+and one ﬁn d sa ne f f e c t i v e
+decoherence time controlled by the static part of the PSDT2 =2 /S(0). As ti
+increases towards τc, the decay will no longer be a time-homogeneous
+exponential, which can actually be a consequence of (but not a prerequisite
+for) a non-Markovian quantum evolution. In this more general situation, we
+will have more noise parametersθ
+⋆ to learn.
+Let us now connect to the formalism of ﬁlter functions40,41,43,44,114–117,
+which appears naturally when considering the time evolution of the
+coherences at any instant of time. This follows from the exact solution of the
+time-local master equation in the rotating frame, which reads
+p
+TL
+þ;i;x ðmx Þ¼ 1
+2 1 þð /C01Þmx e/C0Γðti Þ/C0/C1
+¼: pTL
+i ðmx Þ; ð25Þ
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 6
+
+=== Page 7 ===
+w h e r ew eh a v ei n t r o d u c e dt h et i m ei n t e g r a lo ft h ed e c a yr a t e s
+ΓðtÞ¼ 2
+Z t
+0
+dt0γðt0Þ; ð26Þ
+and simpliﬁed the notation by omitting the initial state and the measure-
+ment basis, as they will be unique for the estimation of the dephasing map.
+Using the Fourier transform in Eq. ( 22), this integral can be rewritten in
+terms of the noise PSD as
+ΓðtÞ¼
+Z 1
+/C01
+dω Sðω ÞFΓðω ; tÞ; FΓðω ; tÞ¼
+Z t
+0
+dt0f γðω ; t0Þ; ð27Þ
+w h e r ew eh a v ei n t r o d u c e daﬁlter function that reads
+FΓðω ; tÞ¼ t
+2 η2
+t
+ðω Þ: ð28Þ
+Note that, by making use of the nascent Dirac delta
+ηϵðxÞ¼ ϵ
+πx2 sin2 x
+ϵ
+/C16/C17
+; ð29Þ
+where ηϵ(x) → δ(x)a s ϵ → 0+,a n d
+R 1
+/C01dx ηϵðxÞ¼ 1, one sees that in the
+long-time limit ϵ =2 / t → 0+, ~f Γðω ; tÞ/C25t
+2 δðω Þ becomes a Dirac delta
+distribution, such that Γ(t) ≈ tS(0)/2. This agrees with the above coarse-
+grained prediction for a decoherence timeT2 =2 /S(0). Therefore, physically,
+the conditions for the long-time limit to be accurate is thatt ≫ τc.
+In this article, we are not interested in this Markovian limit, as we
+aim at estimating the time-local master equation that depends on the
+full decay rate γ(t), including situations in which non-Markovianity
+becomes manifest. To quantify this, we note that the dephasing
+quantum dynamical map
+E
+TL
+t;0 ðρ0Þ¼ð 1 /C0pðtÞÞρ0 þ pðtÞσz ρ0 σz ; ð30Þ
+is non-Markovian when it is not CP-divisible. In Eq. ( 30), we have
+introduced the following time-dependent probability for the occurrence of
+phase-ﬂip errors
+pðtÞ¼ 1
+2 1 /C0e/C0ΓðtÞ/C0/C1
+: ð31Þ
+Following105, the degree of non-Markovianity of the quantum evolution can
+be obtained by integrating over all times for which the rate of the time-local
+ρ0,0 = | +⟩ ⟨+ |
+Initial state
+ρ0
+reference 
+ state
+ℋ SE
+ℋ S
+Time-evolved states Outcomes
+TL({pk(θ), fk})
+{f+,i,x(mx | θ⋆ )}
+Non-linear  
+minimization
+̂θF ={ ̂T2, ̂τc,⋯ }
+Quantum
+Classical
+− ∇
+ω L = ω 0
+π/2 pulse
+δ ˜ω (t) ω L = ω 0
+π/2 pulse
+ℰ ti,t0
+(ρ0,0)
+Time-evolved observables 
+{pTL
++,i,x(mx | θ)}
+Filter and PSD functions
+Sθ(ω )FΓ(ω , t)
+Time-local master equation
+dρ
+dt = (t)ρ(t)
+(t)= ˜ℒ t(1 − ˜Σ(t))−1
+Kernel cumulant expansion
+Estimated noise 
+Filtered noise integrals 
+Qubit coherence 
+for 
+Ramsey estimation
+t1 t2 t3
+t1 t2 t3
+Ramsey 
+decay 
+signal
+Cov ̂θF
+Frequentist
+Bayesian  
+{ti,opt}
+πℓ(θ| ℓ)
+{N+,iℓ,x,mxℓ
+(θ⋆ )}
+Information-gain 
+maximization
+̂θB ={ ̂T2,ℓ, ̂τc,ℓ,⋯ }
+Estimated noise 
+ℓ ↦ ℓ +1 , { ti,ℓ+1}
+Fig. 1 | Scheme for L ℓQT protocol of a dynamical dephasing map. In the case of
+pure dephasing, the LℓQT scheme reduces to a problem of Ramsey estimation. In the
+QIP, the qubit is initialized in a single state in the equator of Bloch ’s sphere ρ0;0 ¼
+∣þi þh ∣by a resonant driving inducing a π/2 pulse on a reference state ρ0 ¼ ∣0i 0h ∣.
+The qubit then evolves for different times ti : i 2 It , after which it is subjected to
+another resonant π/2 pulse, which effectively rotates to the Pauli measurement basis
+x. As a consequence of the device dephasing noise with actual noise θ⋆ parameters,
+the mx ∈ {0, 1} outcomes are collected as relative frequencies { f+,i,x(mx∣θ⋆)} which
+will decay in time. This data can be collected by distributing the measurement shots
+among pre-ﬁxed evolution times, connecting to the frequentist estimation protocol.
+Alternatively, in a Bayesian approach, one collects the data by successive ℓ-update
+steps δD
+‘ ¼f Nþ;i‘ ;x;mx;‘
+ðθ?Þg. In the lower half, we show the classical part of the
+estimation, which starts by solving the time-local master equation for a particular
+parametrized power spectral density Sθ(ω ) and ﬁlter function. This leads to the
+theoretically predicted probabilities fpTL
+þ;iðmx jθÞg. These probabilities and the rela-
+tive frequencies are either fed into a log-likelihood cost functionCTLðθÞ that must be
+minimized in order to obtain the frequentist estimateθF, or used in a Bayesian step to
+update our prior knowledge of the noise parameters π‘ðθjD‘Þ, converging to the
+ﬁnal Bayesian estimate θB. In the frequentist approach, by calculating the covariance
+matrix, we can estimate the precision and ﬁnd the optimal measurement times,
+which will depend on how many noise parameters we aim at estimating, and changes
+with their speci ﬁc values. In the Bayesian approach, knowledge about the noise
+parameters is updated sequentially by selecting evolution times that are expected to
+yield the greatest information gain at each step, thereby implementing feedback and
+adaptive data acquisition from the quantum device.
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 7
+
+=== Page 8 ===
+master equation is negative
+NCP ¼
+Z
+dt jγðtÞj /C0γðtÞ
+/C0/C1
+: ð32Þ
+An alternatively measure of non-Markovianity is based on the trace distance
+of two arbitrary initial states52,118, which will decrease with time when there is
+a ﬂow of information from the system into the noisy environment. When
+this informationﬂows back, the trace distanceincreases, and the qubit can
+recohere for a ﬁnite lapse of time, such that one gets a non-Markovian
+quantum evolution. The instantaneous variation of trace distance is given by
+σðtÞ¼
+d
+dt DðETL
+t;0 ðρ0Þ; ETL
+t;0 ðρ0
+0ÞÞ,w i t h D being the trace distance 1,a n da
+positiveσ(t) is thus a measure of non-Markovianity, which can be expressed
+in terms of the time intervals in which the phase- ﬂip error probability
+decreases inﬁnitesimally with time
+NTD ¼ max
+ρ0 ;ρ0
+0
+Z
+σðtÞ >0
+dt σðtÞ¼/C0
+Z
+γðtÞ <0
+dt _pðtÞ: ð33Þ
+Here, we have rewritten this measure in terms of the error probability of the
+phase-ﬂip channel of Eq. ( 31), which changes in ﬁnitesimally with
+_pðtÞ¼ γðtÞe/C0ΓðtÞ. Hence, the non-Markovianity condition translates into a
+dynamical situation in which phase-ﬂip errors do not increase monotonically
+during the whole evolution. When the dephasing rate attains negative values,
+the phase-ﬂip error probability can decrease, such that the qubit momentarily
+r e c o h e r e s( s e et h eo r a n g el i n e si nF i g .1). In this simple case of pure dephasing
+noise, we see that both measures of non-Markovianity in Eqs. (32)a n d(33)
+depend on the rateγ(t) attaining negative values, and both are equal to 0 ifγ(t)
+is always positive. We deﬁne and detect non-Markovianity in this case using
+Eqs. (32)a n d( 33). However, it is important to note that these measures
+provide sufﬁcient, but not necessary, conditions for detecting all possible
+forms of non-Markovian behavior. For instance, certain non-Markovian
+dynamics may not yield an increase in trace distance.
+Once these additional properties of the dephasing quantum dynamical
+map have been discussed, we can move back to the estimation LℓQT pro-
+tocol of Eq. (7), and how it can be simpliﬁed even further. As noted above, in
+contrast to the informationally-complete set of initial states an measure-
+ments that must be considered for the general cost function of LℓQT in Eq.
+(5), we can work with a smaller number of conﬁg u r a t i o n sb yn o t i n gt h a ta l l
+information of the dephasing map can be extracted by preparing a single
+initial state ρ
+0 ¼ ∣þi þh ∣, and measuring in a single basisMx,± (see Fig. 1).
+Indeed, this combination of initial state and measurement basis yields the
+expected value pTL
+þ;i;x ðmx Þ¼ 1
+2 ð1 þð /C01Þmx e/C0Γðti ÞÞ. Similarly, if we chose
+ρ0 ¼ ∣þ ii þih ∣ and My,±, we would obtain pTL
+þi;i;y ðmyÞ
+¼ 1
+2 ð1 þð /C01Þmy e/C0Γðti ÞÞ, which yields the same information. The rest of
+combinations of initial states and measurement bases yield constant values
+and do not provide any information about the decay rates.
+As advanced in the introduction, we would like to know how many
+snapshotsjI
+t j are required, at which the system is measured after evolving
+for fti : i 2 It g and, moreover, which are the optimal times of those
+snapshots in terms of the speci ﬁcd e t a i l so ft h en o i s e .W et a k eh e r et w o
+different routes: the frequentist an d the Bayesian approach. In the fre-
+quentist case, for pure dephasing we have the cost function
+Cpd
+TLðθÞ¼/C0
+X
+i
+Ni
+X
+mx
+~f iðmx jθ?Þ log pTL
+i ðmx jθÞ; ð34Þ
+which is greatly simpliﬁed with respect to the general case in Eq. (8), as we
+only have a single initial state and a single measurement basis. Since we are
+monitoring the coherence of the qubit, this cost function corresponds to a
+Ramsey-type estimator,w h e r e~f
+ið0 jθ?Þ¼ Ni;0=Ni ð~f ið1 jθ?Þ¼ Ni;1=NiÞ is
+the ratio of the number of outcomes observedNi,0 (Ni,1 = Ni − Ni,0)t ot h e
+total ofNi shots collected at the instant of timeti, when measuring the system
+with the POVM element Mx,0 (Mx,1). Our notation remarks that these
+relative frequencies carry information about the real noise parametersθ⋆ we
+aim at estimating. In addition, the estimator depends onpi(mx∣θ)s h o w ni n
+Eqs. (25)–(26), which stand for the probabilities obtained by solving the
+time-local dephasing master equation of Eq. (20) ,w h e r ew em a k ee x p l i c i t
+the dependence on the parametr ized noise. Minimizing det Σ^θ we can
+determine the optimal measureme nt times of the estimator. For the
+Bayesian approach, at each ℓ > 0 Bayesian step, we measure the system
+enlarging the data set sequentially D‘/C017!D‘ ¼ D‘/C01 ∪ δD‘,w h e r e
+δD‘ /C26D ¼f Ni;þ;x;mx
+g contains a number of measurement outcomes
+∣δNℓ∣that is a fraction of the totalNshot. These outcomes will be labelled as
+δD‘ ¼f Ni‘ ;þ;x;mx‘
+g. At each step, we maximize the information gain of Eq.
+(19) to determine the optimal measurement time. As shown in Fig. 1 the
+scheme for L ℓQ Ti nt h ec a s eo fp u r ed e p h a s i n gc a nb ed i v i d e di n t ot h e
+following steps:
+a) Quantum experiment:
+1. Initialize the reference state ρ0 ¼ ∣0i 0h ∣(see Fig. 1).
+2. Prepare ρ0;0 ¼ ∣þi þh ∣by a resonant π/2 pulse.
+3 . L e tt h eq u b i te v o l v eu n d e rt h ep u r edephasing for different evolution
+times ti.
+4. Apply a second resonant π/2 pulse, rotating the qubit to the Pauli-X
+measurement basis.
+5. Collect the outcomes mx ∈ {0, 1} and compute the fre-
+quencies f f þ;i;mx
+g.
+b) Classical processing and frequentist approach:
+1. Solve the time-local master equation with a parametrized power
+spectral density Sθ(ω)a n da ﬁlter function, yielding the predicted
+probabilitiesfpþ;i;mx
+ðθÞg.
+2. From the quantum experiment we have a set of frequenciesf f þ;i;mx
+g at
+different times ti.T h ep r e d i c t e dp r o b a b i l i t i e sa n dm e a s u r e dr e l a t i v e
+frequencies are used in a log-likelihood cost function, which is
+minimized to estimate noise parametersθ.
+3. By calculating the covariance matrix, the precision of the estimation is
+determined.
+c) Classical processing and Bayesian approach:
+1. Solve the time-local master equation with a parametrized power
+spectral density S
+θ(ω)a n da ﬁlter function, yielding the predicted
+probabilitiesfpþ;i;mx
+ðθÞg.
+2. We have some prior knowledge of the parameters θ,w h i c hi sr e p r e -
+sented by a prior probability distribution.
+3. At each step, evolution time ti is chosen to maximize the information
+gain of the parameters. A new quantum experiment is performed with
+this new evolution time.
+4. After each measurement or set of measurements the relative fre-
+quencies are used to update the prior distribution of the parameters.
+We present below a detailed comparison of the two approaches, fre-
+quentist and Bayesian, determining the regimes in which each of them is
+better than the other. For the Bayesian protocol design, we have used the
+Python package Qinfer119, which numerically implements the operations
+needed by using a sequential Monte Carlo algorithm for the updates.
+Let us study some dephasing dynamics in which we can apply the two
+approaches we have just introduced, and make a comparative study of their
+performance when learning parame trized dephasing maps with time-
+correlated noise. We study two different dephasing models: a Markovian
+semi-classical dephasing and a non-Markovian quantum dephasing. These
+models are selected for several reasons. The semi-classical model is a well-
+established generalization of purely Lindbladian evolution, and in fact,
+contains the Lindbladian regime as a limiting case. This allows us to connect
+with previous results from LQT and Ramsey interferometry in the context of
+quantum sensing and quantum clocks. On the other hand, the non-
+Markovian case represents the simplest possible generalization of the
+Markovian scenario by introducing a shifted Lorentzian PSD, making it an
+ideal testbed for LℓQT. Furthermore, it has experimental relevance, as we
+can use a laser-cooled vibrational mode in trapped ions to obtain a fully-
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 8
+
+=== Page 9 ===
+tunable implementation of this non-Markovian noise. These two dephasing
+models offer both classical and quantum noise characterization through the
+symmetry of the PSD, and they provid e a versatile platform to demon-
+strate LℓQT.
+Regarding the choice between frequentist and Bayesian inference, the
+majority of quantum technologies traditionally use frequentist approaches.
+However, Bayesian inference is becoming increasingly relevant, particularly
+in situations where the number of shots is limited and clock cycle times are
+large, such as in trapped-ion platf orms. As we show below, Bayesian
+methods offer advantages in scenarios where physical priors are available
+and can provide better estimates in non-Markovian cases, where the
+d y n a m i c sa r em o r ec o m p l e x .
+For each one of the cases presented below, we have a PSD with some
+real parameters θ
+⋆ from which we can determine the time-dependent
+measurement probabilities pTL
+i ðmx jθ?Þ. From these probabilities, we
+numerically take the necessary samples to simulate the experiment by using
+the SciPy implementation of a binomial random variable120.
+Markovian semi-classical dephasing
+We now apply both estimation techniques for the L ℓQT of a dephasing
+quantum dynamical map that goes beyond the Markovian Lindblad
+assumptions. In particular, we consider a time-correlated frequency noise
+δ~ω ðtÞ that is described by an Ornstein-Uhlenbeck (OU) random
+process
+121,122. This process has an underlying multi-variate Gaussian joint
+PDF, and incorporates a correlation timeτc > 0 above which the correlations
+between consecutive values of the process become very small. In fact,
+beyond the relaxation window t; t0 > τc, the correlations show an expo-
+nential decay
+Cðt /C0t0Þ¼ cτc
+2 e/C0jt/C0t0 j
+τc ; ð35Þ
+where c > 0 is a so-called diffusion constan t. Since this correlations only
+depend on the time differences, the process is wide-sense stationary.
+Moreover, on the basis of its Gaussian joint PDF, it can be shown that the
+process is indeed strictly stationary. Being Gaussian, all the information is
+thus contained in its two-point functions or, alternatively, in its PSD
+Sðω Þ¼
+cτ2
+c
+1 þð ωτcÞ2 ; ð36Þ
+which has a Lorentzian shape. This Gaussian process then leads to an exact
+time-local master equation for the dephasing of the qubit in Eq. (20)w i t ha
+time-dependent decay rate
+γðtÞ¼ 1
+4 Sð0Þ 1 /C0e/C0t
+τc
+/C16/C17
+: ð37Þ
+In the long-time limit t ≫ τc, one recovers a constant decay rate
+γðtÞ/C25Sð0Þ=4 ¼ cτ2
+c =4, which connects to our previous discussion of the
+effective exponential de cay of the Ramsey signal pTL
+i ðmx Þ/C25
+1 þð /C01Þmx e/C0ti =T2
+/C0/C1
+=2 and the decoherence time T2 ¼ 2=cτ2
+c .O nt h e
+other hand, for shorter time scales, we see the effects of the noise memory
+through a time-inhomogeneous evolution of the coherences that goes
+beyond a Lindbladian description. The time-dependent decay rate is always
+positive, such that the two measures of non-Markovianity in Eqs. (32)-(33)
+vanish exactly. The pure dephasing quantum dynamical map of a qubit
+subjected to OU frequency noise is thusMarkovian albeit not Lindbladian.
+From the perspective of L ℓQ T ,w eh a v et w op a r a m e t e r st ol e a r n
+θ ¼ð c; τ
+cÞ2 Θ ¼ R2
+þ, which fully parametrize the PSD, the decay rate or,
+alternatively, the Ramsey attenuation factor
+ΓðtÞ¼ 1
+2 Sð0Þ t /C0τc 1 /C0e/C0t
+τc
+/C16/C17/C16/C17
+: ð38Þ
+a. Frequentist Ramsey estimators. We can now evaluate the LℓQT cost
+functionCpd
+TLðθÞ in Eq. (34) by substituting the attenuation factor in Eq. (38)i n
+the likelihood functionpTL
+i ðmx jθÞ¼ 1 þð /C01Þmx e/C0Γðti Þ/C0/C1
+=2a f t e rac e r t a i n
+set of evolution timesfti; i 2 It g, and the relative frequencies for the mea-
+surement outcomes~f iðmx jθ?Þ. For a Lindbladian dynamics, a single mea-
+suring timet1 would sufﬁce for the estimation90, which can actually be solved
+for analytically in the present pure dephasing context, as discussed in Sec. I of
+the Supplementary Material. For the OU dephasing, this is no longer the case,
+and we actually need at least two timest
+1, t2. In order to assess the performance
+of the frequentist minimization problem in Eq. ( 9) under shot noise, we
+numerically generate the relative frequencies~f 1ðmx jθ?Þ; ~f 2ðmx jθ?Þ at two
+instants of time by sampling the probability distribution with the actual OU
+parametersθ⋆ =( c⋆, τc⋆) a number of timesNshot= N1 + N2. In the following,
+rather than learning (c⋆, τc⋆), we will focus on two noise parameters with units
+of time (T2⋆, τc⋆), where we recall that T2? ¼ 2=c?τ2
+c? is an effective deco-
+herence time in the long-time limit. In Fig.2, we present a contour plot of this
+two-time cost functionCpd
+TLðθÞ, which is actually convex and allows for a neat
+visualization of its global minimum. We also depict with a red cross the result
+of a gradient-descent minimization, where one can see that the estimates
+^θF ¼ð ^T2; ^τcÞ are close to the real noise parameters. The imprecision of the
+estimate is a result of the shot noise, which we now quantify.
+In order to ﬁnd the optimal evolution times t1, t2 that maximize the
+precision of our estimates, we can minimize the covariance in Eq. ( 13)
+which, in turn, requires maximizing the Fisher information matrix in Eq.
+(12). By Taylor expanding the cost function, we can actually ﬁnd a linear
+relation between the estimate differenceδ^θ ¼ ^θ
+F /C0θ?, and the differences
+between the parametrized probabilities and the relative frequencies
+δ~f
+i ¼ pTL
+i ðmx j^θÞ/C0 ~f iðmx jθ?Þ,n a m e l y
+δ^T2
+δ^τc
+ !
+¼ 1
+N
+/C0
+Γ0
+τc ðt2 Þðe2Γðt1 Þ /C01Þ
+sinhΓðt1 Þ
+Γ0
+τc ðt1 Þðe2Γðt2 Þ /C01Þ
+sinh Γðt2 Þ
+Γ0
+T2 ðt2 Þðe2Γðt1 Þ /C01Þ
+sinhΓðt1 Þ /C0
+Γ0
+T2 ðt1 Þðe2Γðt2 Þ /C01Þ
+sinh Γðt2 Þ
+0
+B@
+1
+CA δ~f 1
+δ~f 2
+ !
+; ð39Þ
+where N ¼ Γ0
+T2
+ðt1ÞΓ0
+τc
+ðt2Þ/C0 Γ0
+τc
+ðt1ÞΓ0
+T2
+ðt2Þ, and we have introduced a
+shorthand notation for the partial derivatives Γ0
+τðtiÞ¼ ∂ΓðtiÞ=∂τc,
+Fig. 2 | Gradient descent for OU dephasing LℓQT. Contour plot of the Ramsey cost
+functionCpd
+TLðθÞ of Eq. (34) as a function of the noise parameters (T2, τc), where we recall
+that T2 ¼ 2=cτ2
+c plays the role of an effective decoherence time in the long-time limit.
+We choose two evolution times and, for illustration purposes,ﬁxt h e ma tt1 = τc⋆, t2 =
+2τc⋆, ﬁxing the OU diffusion constant such thatT2⋆/τc⋆ =1 .W ed i s t r i b u t eNshot =
+2×1 0 3 shots equally per time step. The gradient descent of this convex problem con-
+verges towards the global minimum, and is marked with a red cross atT2/T2⋆ ≈ 0.95 and
+τc/τc⋆ ≈ 1.07, lying close to the real noise parametersθ ↦ θ⋆.
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 9
+
+=== Page 10 ===
+Γ0
+T2
+ðtiÞ¼ ∂ΓðtiÞ=∂T2.T h eﬁrst thing one notices is that, ﬁxing t2 = t1,t h e
+factorN ¼ 0, and the difference between theestimation and the true value
+of the parameters diverges, signaling the fact that one cannot learn two noise
+parameters using a Ramsey estimato r with a single instant of time. The
+second result oneﬁnds is that, in the asymptotic limitNi → ∞, the estimate
+differences will follow a bi-variate normal distribution. This follows from the
+fact that Eq. (39) is a linear combination of the differences between theﬁnite
+frequencies and the binomial probabilities, which are known to follow a
+normal distribution N 0; diag σ2
+f 1
+; σ2
+f 2
+/C16/C17/C16/C17
+with binomial variances σ2
+f i
+deﬁned in Eq. (15). Therefore, the frequentist estimates will also be normally
+distributedδ^θ /C24N 0; Σ^θ
+/C0/C1
+according to
+Σ^θðt1; t2Þ¼ M^θðt1; t2Þ
+σ2
+f 1
+0
+0 σ2
+f 2
+ !
+MT
+^θ ðt1; t2Þ; ð40Þ
+where M^θðt1; t2Þ is the matrix in Eq. (39). A more detailed derivation of the
+relationship between shot noise and the uncertainty in estimation, as well as
+the asymptotic covariance matrix, is provided in the Methods section. From
+this perspective, the aforementioned divergence fort
+1 = t2 is a consequence
+of the singular nature of this matrix, which cannot be thus inverted.
+A measure of the imprecision of the estimation is then obtained from
+detðΣ^θðt1; t2ÞÞ ¼ ð det M^θÞ2σ2
+f 1
+σ2
+f
+2
+/ 1=N1N2 ¼ 1=N1ðNshot /C0N1Þ
+which, in this bi-variate case, can be related to the area enclosed by a
+covariance ellipse. We thus clearly see that the maximum precision will be
+obtained when N
+1 = N2 = Nshot/2. Turning to the optimal measurement
+times, we can now numerically minimize the determinant of the asymptotic
+covariance matrix
+ft
+i;optg¼ argmin det Σ^θ ftig
+/C0/C1/C8/C9
+; ð41Þ
+ﬁnding the two optimal values at which the signal shows the highest
+sensitivity to changes in the OU noise (see Fig. 3). The optimal times
+obtained in this way are depicted in Fig. 4 as a function of the noise
+correlation time. In the limit where this correlation time is much smaller
+than the effective decoherence time τ
+c⋆ ≪ T2⋆, the signal only carries
+important information about the noise for times that are much larger
+than the correlation time. Hence, we are in the long-time limit where the
+decay rate is constantγ(t) ≈ 1/2T
+2 and one expects toﬁnd agreement with
+a purely Lindbladian dephasing noise. As discussed in Sec. I of the
+Supplementary Material, the LQT for pure dephasing requires a single
+measuring time, and can be analytically found by minimizing the
+standard deviation of the estimated noise parameter. This solution yields
+an optimal time t
+opt = 0.797 T2⋆, which is actually very close to the
+intercept of the curve oft2,opt shown in Fig.4. In this long-time regime, we
+ﬁnd t1,opt ≈ 0 indicating that measurements at time t2,opt will be mainly
+used to determine parameter T2, while those at t1,opt ≈ 0 contribute to
+determine the much smaller τc.
+In the more general case in which the time correlation of the OU noise
+yields important memory effects, the measurement times have to be adapted
+to speci ﬁc optimal values, which are in general larger than the purely
+Lindbladian limit as shown in Fig.4. Since these optimal times depend on
+the parameters we aim at learning, it is not straightforward to devise a
+practical strategy to minimise the imprecision of the frequentist estimates.
+In the pure Lindbladian case, one may foresee that the experimentalist will
+have an accurate prior knowledge of the T
+2 time, such that the measure-
+ments can all be implemented close to the predicted optimal time. On the
+other hand, for the OU noise, one has the additional noise correlation time
+τ
+c, which is related to deviations from the time-homogeneous exponential
+decay of the coherences and is not typically characterised experimentally.
+The frequentist procedure to operate at the optimal regime of estimation
+would then need to distribute the total N
+shot in smaller groups that are
+applied in sequence, each time shifting the measurement times to try to get
+t ot h eo p t i m a lp o i n t .O n ec a nf o r e s e et h a tt h i sp r o c e d u r ew i l ln o tb eo p t i m a l ,
+as one will loose many measurements along the way and, moreover, not
+scalable to other situations in which one aims at learning more noise
+parameters also optimally.
+b. Bayesian Ramsey estimators. Let us now describe how a Bayesian
+inference for OU dephasing LℓQT would proceed, which will provide an
+experimental procedure to operate at the optimal estimation times. We start
+by commenting on the fully-uncorrelated Lindbladian limit discussed in
+Sec. I of the Supplementary Materia l, where the optimization of the
+Fig. 3 | Asymptotic covariance matrix for OU dephasing. We represent
+det ðΣ^θðt1; t2ÞÞ1=2 as a function of thet1 and t2 measurement times selected. Fort1 = t2
+the determinant diverges, since it is not possible to determine the parameters by just
+measuring at a single time. The true parameters are τc⋆ = T2⋆/2 and the number of
+shots is N1 = N2 =5 ⋅103. The optimal times that minimize the determinant are
+indicated with a white cross, t1 ≈ 0.56T2⋆, t2 ≈ 1.99T2⋆. The determinant increases
+rapidly when moving away from this minimum. Note the color bar scale is loga-
+rithmic. The plot is symmetric with respect to the line t
+1 = t2, therefore we just
+represent the part t2 > t1.
+Fig. 4 | Optimal times for OU dephasing L ℓQT. We represent ðt1;opt; t2;optÞ¼
+argminfdetðΣðt1; t2ÞÞg as a function of the ratio of the real noise parametersτc⋆/T2⋆.
+In the regime where τc⋆ ≪ T2⋆,w e ﬁnd that t2 ≈ 0.8T2⋆ and t1 ≈ 0. The optimal time
+of this measurement lies very close to the Lindbladian result t = 0.797T2⋆ (gray
+dashed line) found when there is no time correlation and we have a single parameter
+Tc, which is an exact analytical result discussed in Sec. I of the Supplementary
+Material.
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 10
+
+=== Page 11 ===
+measurement time for each Bayesian step in Eq. ( 19) can also be solved
+analytically. Considering that the prior probability distributionπℓ(γ)f o ro u r
+knowledge about the decay rate at theℓ-th step is Gaussian, we can focus on
+how its mean and variance change as one takes the next Bayesian step. In
+Sec. I of the Supplementary Material, we show that, minimizing the Bayesian
+variance of the next step, one ﬁnds optimal measurement times that agree
+with the above frequentist prediction,albeit for the knowledge of the decay
+rate that we actually have at each particular step t‘ ¼ 0:797=2^γ‘ or, alter-
+natively, of the decoherence timeT2,ℓ. This result is very encouraging, as the
+experimentalist may only have a crude guess of this value, but it gets
+automatically updated towards the optimal regime. This motivates an
+extension to time-correlated dephasing such as the OU noise.
+For the OU dephasing, we have two parameters to learn, and we
+can maximize the Kullback-Leibler divergence of Eq. ( 19) to obtain the
+subsequent optimal time t
+ℓ for the next Ramsey measurement(s), and
+the corresponding extension of the data set D‘/C017!δD‘
+¼ D‘/C01 ∪δD‘/C01. We then proceed by measuring at this time, updating
+the prior, and starting the optimization step all over again to ﬁnally ﬁnd
+the estimates in Eq. ( 17) ^θB ¼ð ^τc;‘; ^T2;‘Þ. As shown in Fig. 5,a so n e
+collects more and more data, the Bayesian measurement times cluster at
+two single times, and tend to alte rnate between them. Remarkably,
+these times are the optimal t1,opt and t2,opt predictions of the frequentist
+approach shown in Fig. 4. We can see how the Bayesian approach
+automatically ﬁnds the optimal measurement setting to learn a time-
+correlated dephasing noise.
+Let us now present a detailed comparison of the precision of the fre-
+quentist and Bayesian approaches. For the frequentist approach, we can
+obtain the expected covariance of the estimator Cov ð^θFÞ by performing
+several runs, and computing the covariance matrix of the results. We
+emphasise that this is not the asymptoticΣ
+^θ discussed previously, and does
+not require a very large number of measurement shots. For the Bayesian
+approach we obtain a posterior probability distribution afterℓ steps, π
+ℓ(θ),
+and we can directly compute the covariance matrix Σℓ of this posterior
+distribution. A good measure of the uncertainty of each one of the
+approaches can be obtained by taking the determinant of the corresponding
+covariance matrix. For a Gaussiandistribution, this quantity detΣ gives us
+the elliptical area associated to the bi-variate Gaussian covariance, and we
+can deﬁne an average radius /C22R ¼
+ﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃ
+det Σ
+p
+=π.I no r d e rf o rt h i st os c a l ea s
+1= ﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃN
+shot
+p and that it has the same units as the standard deviation, we will
+use the square root of this radius det Σ1=4.T h e r e f o r e ,w ew i l lc o m p a r e
+det Σ1=4 for both frequentist and Bayesian approaches by taking the ratio of
+the determinants,
+rOU ¼
+ﬃﬃ
+½
+p
+4/C138
+det Cov ð^θF;optÞ
+/C16/C17
+det Σ‘max
+; ð42Þ
+with ^θF;opt the frequentist estimator taking measurements at optimal times
+and considering for both approaches the same number of total measure-
+mentsNshot. This ratio is represented in Fig.6 as a function ofτc,⋆/T2⋆.A sw e
+can see, the Bayesian approach is better for small number of measurements,
+since it has some prior knowledge of the parameters. As we make more
+measurements and the frequentist estimator keeps measuring at optimal
+times we get to the opposite situation. Finally, in the limit of big N
+shot the
+Bayesian approach takes also most m easurements at these optimal times
+and the ratio saturates to rOU ≈ 1, indicating that both approaches offer a
+similar precision. Let us emphasize, however, that the frequentist approach
+will not operate in practice at the optimal times, as these depend on the noise
+parameters one aims at estimating. It is also interesting to note that, as the
+correlation time of the noise increases, the region where the Bayesian
+strategy overcomes the frequentist one grows also in terms of the required
+number of shots. In regimes in which the time correlations are much larger
+than the effective decoherence time, the Bayesian approach will always be
+preferred unless one can perform a prohibitively-large number of
+measurements.
+Non-Markovian quantum dephasing
+Let us now move on to the discussion of L ℓQT for a non-Markovian
+dephasing dynamics. In the previous section, we have shown that a semi-
+classical dephasing with OU noise, an archetype for time-correlated
+Gaussian random processes, yiel ds a dephasing map that, although
+departing from the time-homogeneousLindbladian case, does not fall under
+the class of non-Markovian quantumdynamical maps. We have shown how
+Fig. 5 | Bayesian optimal measurement time at each step. We consider OU noise
+and set τc⋆ = T2⋆/2. The prior of the parameters is a continuous uniform distribution
+with T2 ∈ [T2⋆/3, 3T2⋆], τ∈ [τc⋆/3, 3τc⋆]. At each Bayesian step, we increase the data
+set with jδD‘j¼ 50 new outcomes, which are used to compute the Bayesian update.
+The total number of measurements after 500 steps is 500 × 50 = 25000. In the
+Bayesian steps at the beginning, we see that the evolution times lie around t ~ T2⋆.
+Later on, the algorithm tends to alternate between two times, which correspond to
+the optimal times t
+1,opt ≈ 0.56T2⋆, t2,opt ≈ 1.99T2⋆ in the case of τc⋆ = T2⋆/2. As the
+number of steps increases and and the posterior gets closer to the true values of τc⋆
+and T2⋆, the Bayesian algorithm tends to select measurement times which are closer
+to the optimal times.
+Fig. 6 | Comparison of frequentist and Bayesian approaches for OU noise. The
+ratio of Eq. ( 42) computed for different parameter values τc⋆ and total number of
+shots Nshot. 5000 frequentist runs were done to estimate det Cov ð^θF;optÞ, while 200
+Bayesian runs were done to estimate det Σ‘max
+for each point ( τc,⋆, Nshot). In the
+Bayesian approach 100 shots were taken at each step and the prior is a continuous
+uniform distribution with T2 ∈ [T2⋆/3, 3T2⋆], τ∈ [τc⋆/3, 3τc⋆]. Analogously, for the
+least-squares minimization algorithm used in the frequentist approach (trust-region
+reﬂective algorithm), we set the same parameter bounds as the ones of the uniform
+distribution.
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 11
+
+=== Page 12 ===
+both the frequentist and Bayesian approaches can learn the time-local
+master equation, which is parametrized in terms of an effective decoherence
+time T2 and a correlation time τc.I nt h i ss e c t i o n ,w ef o c u so naq u a n t u m -
+mechanical dephasing noise that can actually lead to non-Markovianity in
+the qubit evolution, and see how the degree of non-Markovianity affects the
+precision of both the frequentist and LℓQ T .W ec o n s i d e ra na p p a r e n t l ym i l d
+modiﬁcation of the noise PSD with respect to the OU case in Eq. ( 36). In
+particular, we use
+Sðω Þ¼ 4g2
+/C22n
+κ
+ðω þ ΔcÞ2 þð κ=2Þ2 ; ð43Þ
+which is a Lorentzian of width κ centered around − Δc, and reaching a
+maximum of 16g2
+/C22n=κ.W en o t et h a tf o rΔc = 0, we recover the previous OU
+case (36)w i t hτc =2 /κ and c ¼ 4g2
+/C22nκ. On the other hand, forΔc ≠ 0, this PSD
+is not an even function S(ω ) ≠ S(− ω ), and the associated frequency noise
+cannot arise from a semi-cl assical stochastic model 123. Instead, this
+particular PSD can be deduced from a quantum-mechanical dephasing
+model as discussed in the Methods section, and applied to a qubit coupled to
+a dissipative bosonic mode.In the context of superconducting circuits
+124, Δc
+is the detuning of a bosonic microwave resonator with respect to the
+frequency of an external driving, which is considered to be resonant with the
+qubit, such thatΔ
+c = ω c − ω 0.I na d d i t i o n ,g is a qubit-resonator cross-Kerr
+coupling that leads to a bosonic enhancement g2
+/C22n ¼ g2/C22n,w h e r e/C22n is the
+average bosonic occupation of the driven resonator, and κ i st h er a t eo f
+spontaneous emission/loss of photons into the electromagnetic environ-
+ment. We note that a similar dynamics can be engineered in a two-ion
+crystal, in analogy to125, such that one of the ions encodes the qubit in a pair
+of ground state/metastable levels, while the other one is continuously
+Doppler cooled via a laser that is red-detuned with respect to a dipole-
+allowed transition. This laser then drives the carrier and motional sidebands,
+and effectively laser cools the common vibrational modes, one of which will
+play the role of the above dissipative bosonic mode, such that the aboveω
+c
+will now be its vibrational frequency. The role of the aboveκ is then played
+by the laser cooling rate, and the phonon population in the steady state /C22n
+depends on the difference of laser cooling and heating processes126,w h i c h
+can be controlled by the Rabi frequency and detuning of the laser that drives
+the dipole-allowed transition. The dissipative phonons will then act as an
+effective Lorentzian bath for the qubits125,127,128. We consider the qubit to be
+subjected to a far-detuned sideband coupling, which induces a second-order
+cross-Kerr coupling of strengthg describing a phonon-dependent ac-Stark
+s h i f to nt h eq u b i tl e v e l s .
+In any of the two architectures discussed, when the coupling between
+the bosonic mode and the qubit is weaker than the dissipative rate g
+/C22n≪ κ,
+one can truncate the cumulant expansion of a time-convolutionless master
+equation of the qubit at second order such that, after tracing over the driven-
+dissipative mode in its stationary state, one arrives at a time-local dephasing
+master equation of the form given in Eq. (20). This master equation will be
+controlled by an auto-correlation function for the bath operator
+BðtÞ¼ 2gða
+ya /C0/C22nÞ, following the notation used below Eq. (21)a n di nt h e
+Methods section. In particular, ma king use of the quantum regression
+theorem129, this auto-correlation can be expressed as
+Cðt /C0t0Þ¼ 4g2
+/C22ne/C0κ
+2jt/C0t0 je/C0iΔc ðt/C0t0 Þ; ð44Þ
+which coincides with the OU auto-correlation function in Eq. (35)w h e nΔc
+= 0. Being wide-sense stationary, one can Fourier transform this function as
+s h o w ni nE q .(22), leading to the displaced Lorentzian PSD in Eq. ( 43).
+Following Eq. (23), one can obtain the following time-dependent decay rate
+γðtÞ¼ 1
+4 Sð0Þ 1 /C0e/C0κ
+2t cos Δct þ 2Δc
+κ sin Δct
+/C18/C19/C18/C19
+: ð45Þ
+In comparison to Eq. ( 37), this decay rate presents additional oscillatory
+terms forΔc ≠ 0 that will play an important role for the non-Markovianity of
+the quantum dynamical map. The attenua t i o nf a c t o rt h a tc o n t r o l st h ed e c a y
+of the coherence is
+ΓðtÞ¼ Sð0Þ
+2 t þ 2
+κ
+ð2Δc=κÞ2 /C01
+ð2Δc=κÞ2 þ 1
+þ 2
+κ e/C0κ
+2t cos φðtÞ
+ !
+; ð46Þ
+w h e r ew eh a v ei n t r o d u c e dφðtÞ¼ Δct /C02a r c t a n2Δc
+κ .
+Recalling that we can assign a correlation time to this noise byτc =2 /κ,
+one would expect to recover a Markovian Lindbladian description fort ≫ τc.
+In this limit, the term linear int in Eq. (46) is the dominant one, which leads
+to a time-homogeneous exponential decay of the Ramsey probabilities
+p
+TL
+i ðmx jθÞ/C25 1 þð /C01Þmx e/C0ti =T2
+/C0/C1
+=2 with an associated decoherence time
+T2 ¼ 2=Sð0Þ¼ð ð κ=2Þ2 þ Δ2
+c Þ=2g2
+/C22nκ.A si nt h eO Uc a s e ,f o rs h o r t e rt i m e s ,
+the memory effects will start playing a bigger role in the qubit dynamics,
+such that the Ramsey decay is no longera time-homogeneous exponential.
+Moreover, in this particular case, these memory effects can give rise to a non-
+Markovianity that can be understood as a backﬂow of information from the
+environment into the system. According to Eq. ( 32)o r( 33), non-
+Markovianity occurs when the d ecay rate takes negative values γ(t)<0 .
+This can only happen if the second contribution in Eq. (45) dominates over
+the ﬁrst one, which cannot happen if Δ
+c = 0. Since this contribution is
+suppressed by e−κt/2, we will need the frequency of the oscillationsΔc to be
+sufﬁciently large in comparison toκ, such that one can get a non-vanishing
+degree of non-Markovianity. In Fig. 7,w ed e p i c tt h em e a s u r eo fn o n -
+Markovianity of Eq. (32) as a function of Δc and τc =2 /κ. We see that the
+parameter regimeΔc ≳ 1.82κ (white dashed line) is whereγ(t)c a nb e c o m e
+negative at some time during the evolution, leading to larger non-
+Markovianity as bothΔ
+c and τc are further increased.
+Let us now discuss the statistical inference for the LℓQT of this non-
+Markovian dephasing map, and compa re the frequentist and Bayesian
+approaches to the statistical estimation.
+a. Frequentist Ramsey estimators . As in the OU case, we need to
+minimize Cpd
+TLðθÞ in Eq. ( 34), where the likelihood function pTL
+i ðmx jθÞ¼
+1 þð /C01Þmx e/C0Γðti Þ/C0/C1
+=2 now depends on the new attenuation factor in Eq.
+(46). Since there are three noise parametersθ? ¼ð g2
+/C22n?; κ?; Δc?Þ2 Θ ¼ R3
+þ,
+we shall at least need to measure at three different times. To assess the
+performance of the frequentist approach under shot noise, we numerically
+generate the relative frequencies~f 1ðmx jθ?Þ; ~f 2ðmx jθ?Þ; ~f 3ðmx jθ?Þ at these
+Fig. 7 | Non-Markovianity measure for the quantum dephasing map. Non-
+Markovianity measure of Eq. (32) for different values of τc =2 /κ and Δc. The dashed
+line signals the limit between the Markovian and the non-Markovian regions and
+corresponds to the equation Δ
+c ≈ 1.82κ. The non-Markovian region is located in the
+upper right corner.
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 12
+
+=== Page 13 ===
+times by sampling the probability distribution with the real noise parameters
+θ⋆ an u m b e ro ft i m e sNshot = N1 + N2 + N3.I no r d e rt oﬁnd the three
+optimal times, we minimize the determinant of the covariance matrix in Eq.
+(41), which will have an similar expression as Eq. (40), but now expressed in
+t e r m so f3×3m a t r i c e sf o rt h eu n d e r l y ing trivariate normal distribution.
+Since we are optimizing t
+1, t2 and t3,o n em a yw o n d e ri fw ea l s oc o u l d
+improve the estimation by redistributing the total number of measurements
+differently at each of these times. However, according to our prescription in
+which the imprecision is quanti ﬁed by the long-run Gaussian PDF,
+which de ﬁnes an elliptical volume in this case, one gets
+det Σ
+^θðt1;opt; t2;opt; t3;optÞ/ 1=N1N2N3. Therefore, the number of mea-
+surements must be equally distributed between the three different timesN1
+= N2 = N3 = Nshot/3.
+The minimization in Eq. (41)t h e ny i e l d st h eo p t i m a lt i m e s{t1,opt, t2,opt,
+t3,opt}s h o w ni nF i g .8, which have been represented as a function ofτc⋆/T2⋆
+for a ﬁxed value ofΔc⋆. The non-zero value of the later is responsible for the
+fact that, for τc⋆ ≳ 0.73T2⋆, we cross the red-dashed line and enter a non-
+Markovian regime in which the effective dephasing dynamics is no longer
+CP-divisible. In this non-Markovian regime, the optimal times tend to be
+close to the local maxima of ~f
+iðmx jθ?Þ, providing a large amount of infor-
+mation about the dephasing noise. Conversely, deep in the Markovian
+regime τ
+c⋆ ≪ T2⋆,i ts u fﬁces to measure at t3,opt ≈ 0.797T2⋆ in order to
+determineT2⋆, in agreement with the analytical Lindblad result, whilet1,opt
+and t2,opt tend to zero and would be used to determine the two other noise
+parameters.
+b. Bayesian Ramsey estimators .L e tu sn o wm o v et ot h eB a y e s i a n
+approach, where we have some prior knowledge as shown in Eq. (16)o ft h e
+parameters θ ¼ð g2
+/C22n; κ; ΔcÞ that gets updated at each Bayesian step tℓ by
+enlarging the data set with δD‘. Minimizing the relative entropy between
+the prior and the posterior in Eq. (19), we obtain the subsequent evolution
+time tℓ, and update our knowledge about the noise parameters in the best
+possible way. As shown in Fig. 9, the Bayesian procedure starts by using
+evolution update times that are scattered in a broad range of values. How-
+ever, as the number of iterations increases and we gain more knowledge,
+they tend to cluster around three well-deﬁned times. In fact, as shown by the
+corresponding dashed lines, these ti mes coincide with the optimal mea-
+surement times of the frequentist approach in Fig.8. Therefore, if we start a
+Bayesian experiment with some prior, and we let the experiment run for
+sufﬁciently long number of steps, we will learn the optimal times
+automatically.
+In order to compare the precision of the frequentist and Bayesian
+approaches, we proceed in analogy to the OU noise by looking for a para-
+meter that captures the relative precision of the two approaches in Eq. (42).
+We now have to consider that the determinant of the trivariate Gaussian
+covariance det Σ is a volume, and we can de ﬁne an average radius as
+/C22R ¼ ﬃﬃ½p 3/C138det Σ=ð4π=3Þ. We can quantify the precision by taking the square
+root of this radius, which scales like a s tandard deviation. Altogether, the
+relative precision of the frequentist and Bayesian approaches is deﬁned by
+the ratio
+r
+NM ¼
+ﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃ
+det Cov ð^θF;optÞ
+/C16/C17
+det Σ‘max
+6
+vuu
+t : ð47Þ
+Here, ^θ
+F;opt is the frequentist estimator taking measurements at the optimal
+times, and we consider the same number of total measurements Nshot for
+both approaches. This ratio is represented in Fig. 10 for Nshot =2×1 0 4,
+which is still far from the asymptotic regime of largeNshot where one would
+obtain rNM ≈ 1 in similarity to the results found for the OU noise in Fig.6.
+Instead of exploring how this ratio changes with the number of measure-
+ment shots, we are here interested in understanding how the degree of non-
+Markovianity can affect the performance of the two estimation strategies.
+We thus setNshot =2×1 0 4, since the variance is already good enough but the
+cost in terms of number of measurements is still not too big, and plot the
+precision ratio as a function of the real noise parameters. As we can see in
+Fig. 10, the blue region represents a regime in which the frequentist
+approach is slightly better than the Bayesian one, and coincides with the
+regime of Markovian dephasing that isdelimited by the dashed white line.
+The continuous white line marks the ratio contour line with r
+NM =1 ,a n d
+thus delimits the part of the blue region in which the frequentist approach
+with optimal times is preferable. In the green and yellow areas, which
+coincide with the non-Markovian regime, the Bayesian approach becomes
+preferable and the advantage can actually be quite signi ﬁcant. As we go
+Fig. 8 | Optimal times for quantum dephasing L ℓQT. We represent the three
+optimal times ðt1;opt; t2;opt; t3;optÞ¼ argminfdetðΣ^θðt1; t2; t3ÞÞg as a function of the
+ratio of the real noise parameters τc⋆/T2⋆, setting Δc⋆ =5 /T2⋆. The vertical red
+dashed line separates the Markovian regime (left) from the non-Markovian one
+(right). On the Markovian regime, as τc⋆ ≪ T2⋆, we see that the t1, t2 in blue and
+orange tend to zero, while t3 in green tends to the optimal value of the pure Lind-
+bladian case t3 ≈ 0.797T2⋆. On the other hand, as τc⋆ increases and memory effects
+become more relevant, the three optimal times start to depart from each other. In the
+non-Markovian regime, the optimal time t2,opt is closer to t3,opt than it is to t1,opt.
+Moreover, this optimal t1,opt time starts to decrease as τc⋆ goes deep into the non-
+Markovian regime.
+Fig. 9 | Bayesian optimal measurement time at each step. We consider the non-
+Markovian quantum dephasing with noise parameters τc,⋆ = T2⋆/2 and Δc⋆ =5 /T2⋆.
+We consider as initial prior a continuous uniform distribution with
+g
+2
+/C22n 2½ g2
+/C22n?=3; 3g2
+/C22n?/C138; κ 2½ 3κ?; κ?=3/C138; Δc 2½ 3Δc?; Δc?=3/C138. At each Bayesian step, we
+increase the data set with jδD‘j¼ 50 new outcomes. As the Bayesian protocol
+proceeds, we see that the Bayesian update times cluster in three groups of data, which
+lie around the optimal times t1,opt, t2,opt, t3,opt of the frequentist approach, which are
+represented by dashed lines.
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 13
+
+=== Page 14 ===
+deeper in the non-Markovian regime, the oscillating term in Eq. ( 46)
+becomes bigger and the decay of the coherence exhibits an increasing
+number of local maxima. These local maxima represent times that provide a
+signiﬁcant amount of information in terms of the Kullback-Leibler
+divergence of Eq. ( 19). Therefore, the presence of more local maxima in
+the non-Markovian regime makes it easier for the Bayesian method to, even
+if the prior information is minimal, select a time as useful as the
+asymptotically optimal times.
+It is also useful to quantify the advantage of one estimator with respect
+to the other in terms of number of measurements that is required to reach a
+target precision, which amounts to reaching the same value of the above
+covariance determinant. The values shown for the ratio of the determinants
+in Fig. 10 can be converted into the ratio of number of measurements by
+assuming that both covariance determinants in Eq. (47) scale as 1= ﬃﬃﬃﬃﬃﬃﬃﬃﬃﬃN
+shot
+p
+even in the non-asymptotic regime. Although there can be corrections to
+this scaling, this can give us in most cases an idea of the proportion of
+measurement shots one can save by us ing the best estimator. With this
+assumption, we get Nshot;F=Nshot;B /C25r2
+NM,w i t h rNM the ratio of the
+determinants of two different approaches. Thus, if for instancerNM =1 . 5 ,w e
+obtain thatNshot,F/Nshot,B≈ 2.25. Therefore, we get more than a 2× reduction
+in the number of measurements with the Bayesian approach in comparison
+to the frequentist one to reach the same precision. Going back to the values
+of Fig. 10, we see that the Bayesian approach can result in a considerable
+improvement as one goes deep in the non-Markovian limit. Before closing
+this subsection, it is worth recalling on ce more that, in practice, the fre-
+quentist estimation will never be performed at the three optimal times, and
+the advantage of the Bayesian approach can be even bigger. In Sec. II of the
+Supplementary Material, we present a detailed comparison of these esti-
+mators with another one in which the shots are evenly distributed between
+the measurements after evolution times that cover uniformly the whole time
+interval T. As discussed in Sec. II of the Supplementary Material, the
+Bayesian approach is preferable for most of the parameter values, and can
+again show a big advantage as one enters into the non-Markovian regime.
+Discussion
+We have presented L ℓQT, a new tool designed to characterize non-
+Markovian dephasing noise in QIPs, building upon the established frame-
+work of Lindblad quantum tomography. LℓQT extends the applicability of
+Lindblad learning to scenarios whe re temporal correlations and non-
+Markovian dynamics play a signiﬁcant role. In particular, it allows us to
+extend the characterization of the generators of quantum dynamical maps
+that go beyond the time-homogeneous Lindblad limit, which connect to a
+time-local master equation that can display negative decay rates in certain
+time intervals and, thus, strictly non-Markovian quantum evolutions.
+Through a detailed comparative study, both frequentist and Bayesian
+approaches to LℓQT are presented, offering insights into the accuracy and
+precision of noise estimation under different conditions.
+By focusing on the time-correlated dephasing quantum dynamical
+map of a single qubit, we show that L ℓQT can be formally expressed as a
+parameter estimation process, which simpliﬁes the most general learning
+scheme to a single initial state and a single measurement basis. In particular,
+the problem reduces to a time-correlated Ramsey estimator for a para-
+metrized decay rate, which depends on the noise parameters via a ﬁltered
+power spectral density of the noise. In the frequentist approach, the focus lies
+on optimizing measurement times to reduce the number of necessary
+measurements while minimizing error in parameter estimation. By lever-
+aging statistical inference techniques, the frequentist approach provides
+valuable insights into the efﬁciency and effectiveness of LℓQT, particularly in
+scenarios with varying degrees of temporal correlations and non-
+Markovianity. Conversely, the Bayesian approach offers a more dynamic
+and adaptive framework, allowing forthe incorporation of prior knowledge
+and iterative updates to reﬁne noise estimates over time.
+We have compared the performance of both approaches for two dif-
+ferent dephasing quantum dynamical maps, either for a semi-classical or for
+a quantum-mechanical noise model. I n both cases, the microscopically-
+motivated parametrization allows one to interpolate between a fully Mar-
+kovian Lindblad limit, for which we derive analytical solutions for the
+optimal estimation, and a time-correlated and even non-Markovian regime
+which require a different distribution of the optimal and Bayesian mea-
+suring times. Interestingly, in the quantum-mechanical dephasing model,
+which can be obtained from a microscopic model of a qubit that is coupled
+to a dissipative bosonic mode in both superconducting-circuit and trapped-
+ion architectures, the best of the two approaches depends on whether we are
+in the Markovian or the non-Markovian regime. The Bayesian approach
+yields much better results in the non-Markovian regime, showing that it is
+able to automatically adapt to the particularities of the non-Markovian
+evolution to make much better estimations with a limited number of shots.
+Moreover, we also compare to more standard schemes considered in the
+context of Lindbladian quantum tomography, in which the measurements
+are distributed uniformly (see Supplementary Material). In this case we
+show an advantage of our schemes that again becomes more appreciable in
+the non-Markovian regime for the Bayesian approach. However, we also
+ﬁnd that for the frequentist approac h, the optimal distribution of mea-
+surements does not always outperformthe uniform distribution when the
+number of measurments is small and the asymptotic regime has not yet been
+reached. These results may suggest that the observed patterns extend to
+other similar cases, but further exploration would be required to
+conﬁrm this.
+The semi-classical dephasing model we have discussed has also been
+considered in the context of central spin models, where the central spin/
+qubit is dipolarly-coupled to an ensemble of environmental spins that play
+the role of a mesoscopic bath. For the case of NV centers in diamond
+130,t h e
+bath corresponds to nearby substitutional nitrogen atoms, also known as P1
+centers, which have a much smaller splitting than the qubit. Due to the
+mismatch, energy exchange processes can be neglected, and only long-
+itudinal ones survive leading to a time-correlated dephasing. For these
+systems, assuming incoherent dynamics of different bath spins and negli-
+gible back action is a good approximation, such that the above semi-classical
+model with an Ornstein-Uhlenbeck process turns out to be a reasonably-
+Fig. 10 | Ratio between determinants of covariance matrices of frequentist and
+Bayesian approaches. The ratio of Eq. (47) computed for different parameter values
+τc⋆ and Δc⋆, and a ﬁxed number of total measurements Nshot =2 ⋅104. The dashed
+white line separates the Markovian from the non-Markovian regime, with the non-
+Markovian region located in the upper right corner. The continuous white line
+indicates the level where the ratio equals 1. 5000 frequentist runs were done to
+estimate det Covð^θ
+F;optÞ, while 30 Bayesian runs were done to estimate det Σ‘max
+for
+each point (τc⋆, Δc⋆). In the Bayesian approach 100 shots were taken at each step and
+the prior is a continuous uniform distribution withθ∈ [θ⋆/3, 3θ⋆]. Analogously, for
+the least-squares minimization used in the frequentist approach (trust-region
+reﬂective algorithm), we set the same parameter bounds as the ones of the uniform
+distribution.
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 14
+
+=== Page 15 ===
+good approximation. More generally, if the bath consists of weakly-
+interacting nuclear spins that get dipolarly-coupled to the qubit, bath cor-
+relations might be relevant. Although this is not generally valid, when the
+leading bath correlations can be reduced to pairs of spins, a similar Gaussian
+semi-classical model can still be used
+131, albeit considering other PSDs. In
+more general situations, one should c onsider larger groups of spins, and
+explore other spin-bath dephasing models. Although this goes beyond the
+scope of this work, we believe that incorporating a detailed microscopically-
+motivated parametrization of this type of non-Markovian dephasing should
+allow for a more ef ﬁcient parametrization of the noise that could be
+incorporated in a L ℓQT that is similar in spirit to the one considered in
+this work.
+Future research shall explore the e xtension of these non-Markovian
+characterization techniques to larger quantum systems, combining the
+effect of spatial and temporal correlations. More importantly, our work sets
+the stage to generalize to more complex situations beyond pure dephasing,
+specially focusing on scalability and robustness, and eventually targeting the
+noise in full universal gate sets of QIPs.
+Methods
+Time-local master equation for pure dephasing
+For the sake of completeness, we present here a derivation of the time-local
+master equation in Eq. (20) for a qubit subjected to time-correlated dephasing
+noise, both in a semi-classical and a fully quantum-mechanical model. This
+serves to introduce well-known concepts and set our notation following
+77.
+a. Semi-classical time-correlated dephasing.-The qubit evolves under a
+stochastic rotating-frame Hamiltonian
+~HðtÞ¼ 1
+2 δ~ω ðtÞσz ; ð48Þ
+where δ~ω ðtÞ is the detuning of the qubit with respect to the frequency of a
+driving used in the initialization/measurement stages with respect to, and we
+have setℏ = 1. We use a tilde to highlight the random nature ofδ~ω ðtÞ,w h i c h
+is modeled as a stochastic process with zero mean E½δ~ω ðtÞ/C138 ¼0, thus
+assuming that the driving frequency is resonant with the qubit transition on
+average. We recall that the averages are taken with respect to the underlying
+joint PDF of the process for any ﬁnite set of times
+p
+δ~ω ðδωÞ¼ pt1 ;t2 ;/C1/C1/C1;tn
+ðδω1; δω2; /C1/C1/C1; δωnÞ, 8n 2 Zþ : δωn ¼ δωðtnÞ
+2 R; ftign
+i¼1 2 T,w h i c hf u l ﬁlls the conditions pδ~ω ðδωÞ ≥ 0a n dRQ
+ndδωnpδ~ω ðδωÞ¼ 1121,132. Physically, these stochastic ﬂuctuations can
+either stem from frequency/phase noise of the drive, or from additional
+external ﬁelds that shift the energy of the qubit. For each individual tra-
+jectory of the noise δ~ω ðtÞ,t h ee v o l u t i o no fa ni n i t i a lq u b i ts t a t eρ0 ¼
+∣ψ 0
+/C11
+ψ 0
+/C10
+∣in the rotating frame is purely unitary but random, giving rise to
+~ρðtÞ, and expectation values will thus depend on stochastic averages E,
+leading to a completely-positive trace-preserving (CPTP) map after
+averagingρðtÞ¼ E½~ρðtÞ/C138 ¼E
+t;t0
+ðρ0Þ1,64,133,134. The corresponding stochastic
+differential equations are
+d~ρ
+dt ¼ ~Lt ð~ρðtÞÞ; ~Lt ð/C15Þ ¼ /C0i½ ~HðtÞ; /C15/C138; ð49Þ
+where one sees that the noise δ~ω ðtÞ thus enters multiplicatively. Using the
+Nakajima-Zwanzig74 projection operatorsP ¼ E,a n dQ ¼ 1 /C0P,w ec a n
+ﬁnd differential equations for the averaged density matrix using
+ρðtÞ¼ Pð~ρðtÞÞ : Qðρ0Þ¼ 0 ¼ Pð ~Lt Þ: ð50Þ
+In fact, this averaged evolution can be written as a time-local master
+equation99,135,136,n a m e l y
+dρ
+dt ¼ KðtÞρðtÞ; ð51Þ
+where KðtÞ is the so-called time-convolutionless kernel that encapsulates
+the effects that the ﬁnite memory of the time-correlated noise has on the
+qubit. In particular, this kernel can be expressed as follows
+KðtÞ¼ P ~Lt ð1 /C0~ΣðtÞÞ
+/C01
+; ð52Þ
+where we have used a super-operator playing the role of a ‘self-energy’,
+which can be expanded as
+~ΣðtÞ¼
+X
+m
+αm ~ΣmðtÞ; KðtÞ¼
+X
+n
+P ~Lt
+X
+m
+αm ~ΣmðtÞ
+ ! n
+: ð53Þ
+In this way, the kernel is organised in a power series of a microscopic
+couplingα that characterizes the order of magnitude of the coupling of the
+system to the external noise, and Eq. (50) can be used to show that only even
+terms contribute
+KðtÞ¼
+X
+n
+K2nðtÞ: ð54Þ
+This series agrees with the Kubo and Van Kampen cumulant
+expansion137,138,a n do n eﬁnds that the n-th order term can be expressed in
+terms of n − 1 nested time-ordered integrals 74, being the lowest-order
+contribution K2ðtÞ¼
+R t
+0 dt0Pð ~Lt ~Lt0 Þ.T h i st e r mi sc o n t r o l l e db yt h e
+auto-correlation of the stochastic process, leading to
+dρ
+dt ¼ 1
+4
+Z t
+0
+dt0 Cðt; t0Þþ Cðt0; tÞðÞ σz ρðtÞσz /C0ρðtÞ
+/C0/C1
+; ð55Þ
+which, for wide-sense stationary processes, can be expressed in terms of the
+PSD of the stochastic process
+Cðt /C0t0Þ¼ E½δ~ω ðtÞδ~ω ðt0Þ/C138 ¼
+Z 1
+/C01
+dω
+2π Sðω Þ eiω ðt/C0t0 Þ: ð56Þ
+We note that for any wide-sense stationary classical noise, the PSD is even
+S(ω )= S(− ω)123,a n d Cðt; t0Þ¼ Cðjt /C0t0jÞ ¼ Cðt0; tÞ such that the
+symmetrized autocorrelation function and the symmetrized PSD intro-
+duced below Eq. (24) already contain all of the required information for a
+second-order approximation. The truncation at this order is justiﬁed byﬁrst
+noting that the autocorrelationis typically concentrated withinjt /C0t
+0j ≤ τc,
+whereτc is a characteristic correlation time. Due to the cluster property135,139,
+one ﬁnds that K2ðtÞ/C24αζ with α ¼
+ﬃﬃﬃﬃﬃﬃﬃﬃﬃ
+Cð0Þ
+p
+and a small parameter
+ζ ¼ ατc ¼
+ﬃﬃﬃﬃﬃﬃτc
+T2
+r
+; ð57Þ
+w h e r ew eh a v ed eﬁned a characteristic time as T2 =2 / S(0). The cluster
+property for the highern-th order contributions, which have (n − 1) nested
+integrals, states that the corresponding kernels scale withKnðtÞ/C24αζn/C01,
+justifying a low-order truncation whenever the conditionζ≪ 1 is met. This
+i sk n o w na saf a s t -ﬂuctuation expansion and, back from the rotating frame,
+yields the time-local master equation in Eq. (20).
+L e tu sn o t et h a tt h ea b o v et r u n c a t i o nr e s t so nt h ei m p o r t a n c eo ft h e
+memory effects τcwithin the T2 t i m e .A sd i s c u s s e di nm o r ed e t a i li nt h e
+“Results”,t h i sT2 time controls the time scale for the decay of coherences
+hσx ðtÞi /C25e/C0t=T2 in a long-time Lindbladian limit t ≫ τc. However, for
+shorter times, the structure of the noise can actually lead to deviations from
+this limit, leading to a coherence decay that is not exponential. As empha-
+sized in the main text, this is not an univocal signal of non-Markovianity for
+the qubit evolution. We note th at there is an exception to the τc ≪ T2
+requirement for Gaussian random processes, which are deﬁned by a joint
+PDF that is a multivariate normal distribution for any set of times. In this
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 15
+
+=== Page 16 ===
+case, the time-local master equation in Eq. (20) is actually an exact result,
+independently of the value ofζ. In fact, the higher-order contributions to the
+kernel74 vanish identicallyKnðtÞ¼ 0; 8n > 2, due to Isserlis’ theorem, most
+commonly referred to as Wick ’s theorem in the context of physics
+E½δ~ω ðt1Þδ~ω ðt2Þ/C1/C1/C1δ~ω ðtnÞ/C138 ¼P
+σ2Sn
+E½δ~ω ðtσð1ÞÞδ~ω ðtσð2ÞÞ /C138/C1/C1/C1E½δ~ω ðtσðn/C01ÞÞ
+δ~ω ðtσðnÞÞ/C138,w h e r eSn is the group of all possible permutations ofn elements,
+e.g. σ(1, 2, ⋯ , n − 1, n)=( n,1 ,2 , ⋯ , n − 1).
+b. Quantum-mechanical time-correlated dephasing.- We consider a
+single qubit coupled to an environment, and evolving dρSB=dt ¼ Lt ðρSBÞ
+under the following Liouvillian
+Lt ¼ LSB þ LB; LSBð/C15Þ ¼ /C0i
+2 ω 0 þ BðtÞ
+/C0/C1
+σz ; /C15
+/C2/C3
+; ð58Þ
+where B(t) is an environment/bath operator that introducesﬂuctuations on
+the qubit frequency, andLBð/C15Þis the Liouvillian of the bath. In the standard
+description of quantum master equa tions, the environment is macro-
+scopically large and subject t o a purely-unitary evolution
+LBð/C15Þ ¼ /C0i½HB; /C15/C138. When the system-environment coupling is weak,
+one can assume that the environment remains unaltered, such that the
+e v o l u t i o nt a k e sp l a c eo nt h eq u b i tb u tt h e r ei sn ob a c ka c t i o nρ
+SB = ρ(t) ⊗ ρB.
+A Born-Markov approximation then yields a non-unitary master equation
+for the qubit
+129. This can be expressed as a time convolutionless master
+equation as the one discussed in the previous subsection in Eq. ( 51), also
+truncated at second order, whereP is now a super-operator tracing over the
+bath degrees of freedom PðρSBÞ¼ TrBðρSBÞ¼ ρ74. The non-unitary
+evolution of the qubit results from the large number of degrees of freedom
+in the environment, such that the purity of the state can only decrease with
+no recurrences.
+Let us note, however, that the conditions under which these
+assumptions are made can be more general, and the degrees of freedom
+playing the role of an environment need not be macroscopically large.
+The crucial requirement is that the time with which the effective envir-
+onment reaches its steady state L
+Bðρss
+B Þ¼ 0 must be much shorter than
+the timescale of interest in which the system evolves ρ(t). In the present
+context, this is the case of a single bosonic mode that exchanges energy
+with a larger electromagnetic bath with a certain rate κ. The bath Liou-
+villian reads
+L
+Bð/C15Þ ¼ /C0i½ HBðtÞ; /C15/C138þκ aρay /C01
+2 faya; /C15g
+/C18/C19
+; ð59Þ
+where HB(t) is the bosonic mode Hamiltonian, which can include
+external drivings, and a†, a are the bosonic creation and annihilation
+operators, respectively. The condition for this single driven-dissipative
+mode to act as an environment is that κ must be much larger than the
+coupling strength inside B(t). In the context of the superconducting
+circuits discussed in the main text, κ is the rate of photon loss in a
+resonator, and HB must contain a linear resonant microwave driving of
+the resonator that controls the non-zero number of photons in the steady
+state
+124. For trapped ions, κ will be the rate of sympathetic cooling of a
+vibrational model in a two-ion crystal, which will also be supplemented
+with a smaller heating rate
+126. The difference of these two rates controls
+the population of phonons in the steady state, and can be controlled by an
+external laser.
+We now move to the interaction picture with respect to the bare system
+Liouvillian ρ
+I ðtÞ¼ etLS ðρðtÞÞ with LSð/C15Þ ¼ /C0i½1
+2 ω 0σz ; /C15/C138,a n dt h eb a r e
+bath Liouvillian, i.e.,BI ðtÞ¼ etLB ðBðtÞÞ. The key step is that, due to the fast
+decay of the bath, for the timescales of interestt ≫ 1/κ, one can assume that
+ρSBðtÞ¼ ρðtÞ/C10ρss
+B , the second-order time-convolutionless master equa-
+tion can be expressed as in Eq. (55)w i t h
+Cðt; t0Þ¼ E½BI ðtÞBI ðt0Þ/C138 ¼TrBfBI ðtÞBI ðt0Þρss
+B g: ð60Þ
+H e r e ,w eh a v ea s s u m e dt h a tPðBI ðtÞÞ ¼ 0 ,a n dw en o t et h a tB(t) need not
+commute with itself at different times. Once more, if these quantum-
+mechanical auto-correlation functions are wide-sense stationary,
+Cðt; t
+0Þ¼ Cðt /C0t0Þ. We note that, in contrast to the semi-classical case
+where S(ω)= S(− ω), this is not necessarily the case in the quantum-
+mechanical caseS(ω) ≠ S(− ω)123. However, in the case of pure dephasing, the
+t i m ee v o l u t i o ni nE q .(55) only depends on the symmetrized auto-correlation
+function /C22Cðt; t0Þ¼ 1
+2 ðCðt; t0Þþ Cðt0; tÞÞ and therefore only the symmetric
+part of the auto-correlation function inﬂu e n c e st h et i m ee v o l u t i o n
+dρ
+dt ¼ 1
+2
+Z t
+0
+dt0 /C22Cðt; t0Þ σz ρðtÞσz /C0ρðtÞ
+/C0/C1
+: ð61Þ
+Moving back to the Schrödinger picture, we obtain the master equation in
+Eq. (20), which will only depend on the symmetrized noise PSD de ﬁned
+below Eq. (24).
+Error analysis and asymptotic statistics
+We show here the asymptotic normality of the maximum-likelihood esti-
+m a t o ri nE q .(9)w h e nNshot tends to inﬁnity and how this is related to the
+Fisher information in Eq. (13). The asymptotic covariance matrix is used in
+the main text to obtain the optimal times of the frequentist estimator and
+c a nb eu s e dt oo b t a i na p p r o x i m a t ec o nﬁdence intervals of estimations. To
+simplify the notation and reduce complexity, we consider the pure
+dephasing case here, where the cost function is simpli ﬁed. However, the
+conclusions remain the same, and the general case can be recovered by
+substitutingi → i, s, b and mx → mb. In this case, instead of considering only
+measurement points in time, we account for measurement conﬁgurations,
+including evolution times, initial states, measurement bases, and measure-
+ment outcomes.
+Our estimation ^θ
+F is affected by the limited number of measurement
+shots Ni at each point in time ti, which will cause ~f i to behave as a normal
+random variable and will produce a random error in theﬁnal estimation of
+the parameters. The maximum-likelihood cost function reads
+Cpd
+TLðθÞ¼/C0
+X
+i;mx
+Ni ~f i;mx
+log piðmx jθÞ; ð62Þ
+where ~f i;mx
+denotes~f iðmx jθ?Þ and pi(mx∣θ)d e n o t e spTL
+i ðmx jθÞ.T h em i n i -
+mum of the cost function satisﬁes
+∂θCpd
+TL ¼/C0
+X
+i;mx
+Ni ~f i;mx
+∂θpiðmx jθÞ
+piðmx jθÞ ¼ 0: ð63Þ
+Since ~f i;mx
+¼ piðmx jθ?Þþ Δ~f i;mx
+,w i t hΔ~f i;mx
+small, the minimum of the
+cost function is slightly displaced from the true minimum θ⋆ to θ⋆ + Δθ.
+Taylor expanding Eq. (63)a r o u n dθ⋆ to ﬁrst order we have
+∂θj
+Cpd
+TL /C25/C0P
+i;mx
+Ni piðmx jθÞþ Δ~f i;mx
+hi ∂θj pi ðmx jθÞ
+pi ðmx jθÞ
+/C12/C12/C12
+θ¼θ?
+/C20
+þP
+k
+∂θk
+∂θj pi ðmx jθÞ
+pi ðmx jθÞ
+/C12/C12
+/C12
+θ¼θ?
+Δθk
+/C21
+¼ 0:
+ð64Þ
+Keeping onlyﬁrst-order terms inΔθ and Δ~f i;mx
+and simplifying we obtain
+X
+i;j
+ΔθjNi½Iiðθ?Þ/C138jk ¼
+X
+i;mx
+NiΔ~f i;mx
+∂θk
+piðmx jθÞ
+piðmx jθÞ
+/C12/C12/C12/C12
+θ¼θ?
+; ð65Þ
+w h e r ew eh a v ed eﬁned the matrix
+½Iiðθ?Þ/C138jk ¼
+P
+mx
+piðmxjθ?Þ∂θj
+log piðmx jθÞ∂θk
+log piðmx jθÞjθ¼θ?
+: ð66Þ
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 16
+
+=== Page 17 ===
+Note that this is the Fisher i nformation given in Eq. ( 12). Taking into
+account that Δ~f i;1 ¼/C0Δ~f i;0 and ~f i;1 ¼ 1 /C0~f i;0,a n dd eﬁning the matrices
+Jjk ¼
+X
+i
+Ni½Iiðθ?Þ/C138jk; Fji ¼ Ni
+∂θj
+pið0jθÞ∣
+θ¼θ?
+pið0jθ?Þð1 /C0pið0jθ?ÞÞ ; ð67Þ
+we arrive at the expression
+Δθk ¼
+X
+i;j
+J/C01
+jk FjiΔ~f i;0; ð68Þ
+which relates differences between the expected and measured values
+Δ~f i;mx
+¼ ~f i;mx
+/C0piðmx jθ?Þ to differences between the estimated and the
+true parametersΔθk.W h e nNi is sufﬁciently large,~f i;0 b e h a v e sa st h en o r m a l
+distributionN μ ¼ pið0jθ?Þ; σ2
+f ¼ pið0jθ?Þpið1jθ?Þ=Ni
+hi
+.T h u s ,w eh a v e
+Δ~f i;0 /C24N μ ¼ 0; σ2
+f i
+¼ pið0jθ?Þpið1jθ?Þ=Ni
+hi
+: ð69Þ
+After the linear transformation of Eq. (68), we obtain that Δθ behaves as
+Δθ /C24N μ ¼ 0; Σ^θ ¼ J/C01/C2/C3
+; ð70Þ
+w h e r ew eh a v eu s e dt h a tJ/C01Fdiagðσ2
+f ÞFT ðJ/C01ÞT ¼ J/C01. Thus, the shot noise
+produces a normal random error with covariance matrix Σθ = J−1 which
+scales as 1/Nshot,w i t hNshot = ∑iNi, which is the result presented in Eq. (13).
+Data availability
+The following GitHub repository co ntains the code to reproduce our
+ﬁndings: https://github.com/varona/llqt.
+Code availability
+The code used to conduct the analyses and generate the results presented in
+this work is openly accessible athttps://github.com/varona/llqt.
+Received: 29 May 2024; Accepted: 11 May 2025;
+References
+1. Nielsen, M. A. & Chuang, I. L. Quantum Computation and Quantum
+Information: 10th Anniversary Edition (Cambridge University Press,
+2010).
+2. Bruzewicz, C. D., Chiaverini, J., McConnell, R. & Sage, J. M.
+Trapped-ion quantum computing: Progress and challenges. Appl.
+Phys. Rev. 6, 021314 (2019).
+3. Morgado, M. & Whitlock, S. Quantum simulation and computing with
+Rydberg-interacting qubits. AVS Quantum Sci. 3, 023501 (2021).
+4. Wendin, G. Quantum information processing with superconducting
+circuits: a review. Rep. Prog. Phys. 80, 106001 (2017).
+5. Arute, F. et al. Quantum supremacy using a programmable
+superconducting processor. Nature 574, 505–510 (2019).
+6. Zhong, H.-S. et al. Quantum computational advantage using
+photons. Science 370, 1460–1463 (2020).
+7. Pino, J. M. et al. Demonstration of the trapped-ion quantum CCD
+computer architecture. Nature 592, 209–213 (2021).
+8. Egan, L. et al. Fault-tolerant control of an error-corrected qubit.
+Nature 598, 281–286 (2021).
+9. Postler, L. et al. Demonstration of fault-tolerant universal quantum
+gate operations. Nature 605, 675–680 (2022).
+10. Krinner, S. et al. Realizing repeated quantum error correction in a
+distance-three surface code. Nature 605, 669–674 (2022).
+11. Zhao, Y. et al. Realization of an error-correcting surface code with
+superconducting qubits. Phys. Rev. Lett. 129, 030501 (2022).
+12. Acharya, R. et al. Suppressing quantum errors by scaling a surface
+code logical qubit. Nature 614, 676–681 (2023).
+13. Kim, Y. et al. Evidence for the utility of quantum computing before
+fault tolerance. Nature 618, 500–505 (2023).
+14. Bluvstein, D. et al. Logical quantum processor based on
+reconﬁgurable atom arrays. Nature 626,5 8–65 (2024).
+15. Gupta, R. S. et al. Encoding a magic state with beyond break-even
+ﬁdelity. Nature 625, 259–263 (2024).
+16. Wang, Y. et al. Fault-tolerant one-bit addition with the smallest
+interesting colour code 2309.09893 (2023).
+17. Yamamoto, K., Duf ﬁeld, S., Kikuchi, Y. & Muñoz Ramo, D.
+Demonstrating Bayesian quantum phase estimation with quantum
+error detection. Physical Review Research 6 https://doi.org/10.
+1103/PhysRevResearch.6.013221 (2024).
+18. Ryan-Anderson, C. et al. Implementing fault-tolerant entangling
+gates on the ﬁve-qubit code and the color code https://arxiv.org/
+abs/2208.01863 (2022).
+19. Dalzell, A. M. et al. Quantum algorithms: A survey of applications and
+end-to-end complexities 2310.03011 (2023).
+20. Viola, L., Knill, E. & Lloyd, S. Dynamical decoupling of open quantum
+systems. Phys. Rev. Lett. 82, 2417–2421 (1999).
+21. Khodjasteh, K. & Lidar, D. A. Fault-tolerant quantum dynamical
+decoupling. Phys. Rev. Lett. 95, 180501 (2005).
+22. Khodjasteh, K. & Viola, L. Dynamically error-corrected gates for
+universal quantum computation. Phys. Rev. Lett. 102, 080501
+(2009).
+23. Lidar, D. A. Review of Decoherence-Free Subspaces, Noiseless
+Subsystems, and Dynamical Decoupling , 295–354 (John Wiley &
+Sons, Ltd, 2014). https://doi.org/10.1002/9781118742631.ch11.
+24. Temme, K., Bravyi, S. & Gambetta, J. M. Error mitigation for short-
+depth quantum circuits. Phys. Rev. Lett. 119, 180509 (2017).
+25. Nation, P. D., Kang, H., Sundaresan, N. & Gambetta, J. M. Scalable
+mitigation of measurement errors on quantum computers. PRX
+Quantum 2, 040326 (2021).
+26. van den Berg, E., Minev, Z. K., Kandala, A. & Temme, K. Probabilistic
+error cancellation with sparse Pauli –Lindblad models on noisy
+quantum processors. Nat. Phys. 19, 1116–1121 (2023).
+27. Cai, Z. et al. Quantum error mitigation. Rev. Mod. Phys. 95, 045005
+(2023).
+28. Calderbank, A. R. & Shor, P. W. Good quantum error-correcting
+codes exist. Phys. Rev. A 54, 1098–1105 (1996).
+29. Steane, A. M. Error correcting codes in quantum theory. Phys. Rev.
+Lett. 77, 793–797 (1996).
+30. Terhal, B. M. Quantum error correction for quantum memories. Rev.
+Mod. Phys. 87, 307–346 (2015).
+31. Eisert, J. et al. Quantum certi ﬁcation and benchmarking. Nat. Rev.
+Phys. 2, 382–390 (2020).
+32. Kliesch, M. & Roth, I. Theory of quantum system certi
+ﬁcation. PRX
+Quantum 2, 010201 (2021).
+33. Gebhart, V. et al. Learning quantum systems. Nat. Rev. Phys. 5,
+141–156 (2023).
+34. Zanardi, P. & Rasetti, M. Noiseless quantum codes. Phys. Rev. Lett.
+79, 3306–3309 (1997).
+35. Lidar, D. A., Chuang, I. L. & Whaley, K. B. Decoherence-free
+subspaces for quantum computation. Phys. Rev. Lett. 81,
+2594–2597 (1998).
+36. Knill, E., La ﬂamme, R. & Viola, L. Theory of quantum error correction
+for general noise. Phys. Rev. Lett. 84, 2525–2528 (2000).
+37. Kempe, J., Bacon, D., Lidar, D. A. & Whaley, K. B. Theory of
+decoherence-free fault-tolerant universal quantum computation.
+Phys. Rev. A 63, 042307 (2001).
+38. Lidar, D. A. & Birgitta Whaley, K. Decoherence-Free Subspaces and
+Subsystems, 83-120 (Springer Berlin Heidelberg, 2003). https://doi.
+org/10.1007/3-540-44874-8_5.
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 17
+
+=== Page 18 ===
+39. Viola, L. & Lloyd, S. Dynamical suppression of decoherence in two-
+state quantum systems. Phys. Rev. A 58, 2733–2744 (1998).
+40. Kofman, A. G. & Kurizki, G. Uni ﬁed theory of dynamically suppressed
+qubit decoherence in thermal baths. Phys. Rev. Lett. 93, 130406
+(2004).
+41. Gordon, G., Erez, N. & Kurizki, G. Universal dynamical decoherence
+control of noisy single- and multi-qubit systems.J. Phys. B: At., Mol.
+Optical Phys. 40, S75 (2007).
+42. Uhrig, G. S. Keeping a quantum bit alive by optimized π-pulse
+sequences. Phys. Rev. Lett. 98, 100504 (2007).
+43. Cywi ński, L., Lutchyn, R. M., Nave, C. P. & Das Sarma, S. How to
+enhance dephasing time in superconducting qubits. Phys. Rev. B
+77, 174509 (2008).
+44. Biercuk, M. J., Doherty, A. C. & Uys, H. Dynamical decoupling
+sequence construction as a ﬁlter-design problem. J. Phys. B: At.,
+Mol. Optical Phys. 44, 154002 (2011).
+45. Clemens, J. P., Siddiqui, S. & Gea-Banacloche, J. Quantum error
+correction against correlated noise. Phys. Rev. A 69, 062313 (2004).
+46. Klesse, R. & Frank, S. Quantum error correction in spatially
+correlated quantum noise. Phys. Rev. Lett. 95, 230503 (2005).
+47. Aharonov, D., Kitaev, A. & Preskill, J. Fault-tolerant quantum
+computation with long-range correlated noise. Phys. Rev. Lett. 96,
+050504 (2006).
+48. Terhal, B. M. & Burkard, G. Fault-tolerant quantum computation for
+local non-Markovian noise. Phys. Rev. A 71, 012336 (2005).
+49. Aliferis, P., Gottesman, D. & Preskill, J. Quantum accuracy threshold
+for concatenated distance-3 codes. Quantum Info Comput. 6,
+97–165 (2006).
+50. Ng, H. K. & Preskill, J. Fault-tolerant quantum computation versus
+Gaussian noise. Phys. Rev. A 79, 032318 (2009).
+51. Ángel, R., Huelga, S. F. & Plenio, M. B. Quantum non-Markovianity:
+characterization, quantiﬁcation and detection. Rep. Prog. Phys. 77,
+094001 (2014).
+52. Breuer, H.-P., Laine, E.-M., Piilo, J. & Vacchini, B. Colloquium: Non-
+Markovian dynamics in open quantum systems.Rev. Mod. Phys.88,
+021002 (2016).
+53. Li, L., Hall, M. J. & Wiseman, H. M. Concepts of quantum non-
+Markovianity: A hierarchy. Phys. Rep. 759,1 –51 (2018).
+54. Addis, C., Ciccarello, F., Cascio, M., Palma, G. M. & Maniscalco, S.
+Dynamical decoupling efﬁciency versus quantum non-Markovianity.
+N. J. Phys. 17, 123004 (2015).
+55. Berk, G. D., Milz, S., Pollock, F. A. & Modi, K. Extracting quantum
+dynamical resources: consumption of non-Markovianity for noise
+reduction. npj Quantum Inf. 9, 104 (2023).
+56. Hakoshima, H., Matsuzaki, Y. & Endo, S. Relationship between
+costs for quantum error mitigation and non-Markovian measures.
+Phys. Rev. A 103, 012611 (2021).
+57. Donvil, B. I. C., Lechler, R., Ankerhold, J. & Muratore-Ginanneschi, P.
+Quantum trajectory approach to error mitigation 2305.19874 (2023).
+58. Chuang, I. L. & Nielsen, M. A. Prescription for experimental
+determination of the dynamics of a quantum black box.J. Mod. Opt.
+44, 2455–2467 (1997).
+59. Poyatos, J. F., Cirac, J. I. & Zoller, P. Complete characterization of a
+quantum process: The two-bit quantum gate. Phys. Rev. Lett. 78,
+390–393 (1997).
+60. Fiurá šek, J. & Hradil, Zcv Maximum-likelihood estimation of
+quantum processes. Phys. Rev. A 63, 020101 (2001).
+61. Sacchi, M. F. Maximum-likelihood reconstruction of completely
+positive maps. Phys. Rev. A 63, 054104 (2001).
+62. Je žek, M., Fiurášek, J. & Hradil, Zcv Quantum inference of states and
+processes. Phys. Rev. A 68, 012305 (2003).
+63. Nielsen, M. A. & Chuang, I. L. Quantum Computation and Quantum
+Information (Cambridge University Press, 2000).
+64. Watrous, J. The Theory of Quantum Information (Cambridge
+University Press, 2018).
+65. Childs, A. M., Chuang, I. L. & Leung, D. W. Realization of quantum
+process tomography in NMR. Phys. Rev. A 64, 012314 (2001).
+66. Weinstein, Y. S. et al. Quantum process tomography of the quantum
+Fourier transform. J. Chem. Phys. 121, 6117–6133 (2004).
+67. Mitchell, M. W., Ellenor, C. W., Schneider, S. & Steinberg, A. M.
+Diagnosis, prescription, and prognosis of a Bell-state ﬁlter by
+quantum process tomography. Phys. Rev. Lett. 91, 120402 (2003).
+68. O ’Brien, J. L. et al. Quantum process tomography of a controlled-not
+gate. Phys. Rev. Lett. 93, 080502 (2004).
+69. Riebe, M. et al. Process tomography of ion trap quantum gates.
+Phys. Rev. Lett. 97, 220407 (2006).
+70. Home, J. P. et al. Complete methods set for scalable ion trap
+quantum information processing. Science 325, 1227–1230 (2009).
+71. Monz, T. et al. Realization of the quantum Toffoli gate with trapped
+ions. Phys. Rev. Lett. 102
+, 040501 (2009).
+72. Bialczak, R. C. et al. Quantum process tomography of a universal
+entangling gate implemented with Josephson phase qubits. Nat.
+Phys. 6, 409–413 (2010).
+73. Poletto, S. et al. Entanglement of two superconducting qubits in a
+waveguide cavity via monochromatic two-photon excitation. Phys.
+Rev. Lett. 109, 240505 (2012).
+74. Breuer, H. P. & Petruccione, F. The theory of open quantum systems
+(Oxford University Press, Great Clarendon Street, 2002).
+75. de Vega, I. & Alonso, D. Dynamics of non-Markovian open quantum
+systems. Rev. Mod. Phys. 89, 015001 (2017).
+76. Chru ściński, D. Dynamical maps beyond Markovian regime
+2209.14902 (2022).
+77. Velázquez, J. M. S. et al. Dynamical quantum maps for single-qubit
+gates under non-Markovian phase noise 2402.14530 (2024).
+78. Lindblad, G. On the generators of quantum dynamical semigroups.
+Commun. Math. Phys. 48, 119–130 (1976).
+79. Gorini, V., Kossakowski, A. & Sudarshan, E. C. G. Completely
+positive dynamical semigroups of n level systems.J. Math. Phys. 17,
+821–825 (1976).
+80. Wolf, M. M., Eisert, J., Cubitt, T. S. & Cirac, J. I. Assessing non-
+Markovian quantum dynamics. Physical Review Letters 101 https://
+doi.org/10.1103/PhysRevLett.101.150402 (2008).
+81. Boulant, N., Havel, T. F., Pravia, M. A. & Cory, D. G. Robust method
+for estimating the Lindblad operators of a dissipative quantum
+process from measurements of the density operator at multiple time
+points. Phys. Rev. A 67, 042322 (2003).
+82. Howard, M. et al. Quantum process tomography and Linblad
+estimation of a solid-state qubit. N. J. Phys. 8, 33 (2006).
+83. Onorati, E., Kohler, T. & Cubitt, T. Fitting quantum noise models to
+tomography data 2103.17243 (2021).
+84. Bairey, E., Guo, C., Poletti, D., Lindner, N. H. & Arad, I. Learning the
+dynamics of open quantum systems from their steady states. N. J.
+Phys. 22, 032001 (2020).
+85. Pastori, L., Olsacher, T., Kokail, C. & Zoller, P. Characterization and
+veriﬁcation of Trotterized digital quantum simulation via Hamiltonian
+and Liouvillian learning. PRX Quantum 3, 030324 (2022).
+86. França, D. S., Markovich, L. A., Dobrovitski, V. V., Werner, A. H. &
+Borregaard, J. Efﬁcient and robust estimation of many-qubit
+Hamiltonians 2205.09567 (2022).
+87. Samach, G. O. et al. Lindblad tomography of a superconducting
+quantum processor. Phys. Rev. Appl. 18, 064056 (2022).
+88. Zhang, H., Pokharel, B., Levenson-Falk, E. & Lidar, D. Predicting
+non-Markovian superconducting-qubit dynamics from tomographic
+reconstruction. Phys. Rev. Appl. 17, 054018 (2022).
+89. Ben Av, E., Shapira, Y., Akerman, N. & Ozeri, R. Direct reconstruction
+of the quantum-master-equation dynamics of a trapped-ion qubit.
+Phys. Rev. A 101, 062305 (2020).
+90. Dobrynin, D., Cardarelli, L., Müller, M. & Bermudez, A. Compressed-
+sensing Lindbladian quantum tomography with trapped ions
+2403.07462 (2024).
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 18
+
+=== Page 19 ===
+91. Álvarez, G. A. & Suter, D. Measuring the Spectrum of Colored Noise
+by Dynamical Decoupling. Phys. Rev. Lett. 107, 230501 (2011).
+92. Yuge, T., Sasaki, S. & Hirayama, Y. Measurement of the Noise
+Spectrum Using a Multiple-Pulse Sequence. Phys. Rev. Lett. 107,
+170504 (2011).
+93. Chalermpusitarak, T. et al. Frame-based ﬁlter-function formalism for
+quantum characterization and control. PRX Quantum 2, 030315
+(2021).
+94. Pollock, F. A., Rodríguez-Rosario, C., Frauenheim, T., Paternostro, M. &
+Modi, K. Non-markovian quantum processes: Complete framework
+and efﬁcient characterization.P h y s .R e v .A97, 012127 (2018).
+95. White, G., Pollock, F., Hollenberg, L., Modi, K. & Hill, C. Non-
+markovian quantum process tomography. PRX Quantum 3, 020344
+(2022).
+96. White, G. A. L., Jurcevic, P., Hill, C. D. & Modi, K. Unifying non-
+Markovian characterisation with an ef ﬁcient and self-consistent
+framework 2312.08454 (2023).
+97. Wei, K. X., Pritchett, E., Zajac, D. M., McKay, D. C. & Merkel, S.
+Characterizing non-markovian off-resonant errors in quantum
+gates. Phys. Rev. Appl. 21, 024018 (2024).
+98. Gullans, M., Caranti, M., Mills, A. & Petta, J. Compressed gate
+characterization for quantum devices with time-correlated noise.
+PRX Quantum 5, 010306 (2024).
+99. Chaturvedi, S. & Shibata, F. Time-convolutionless projection operator
+formalism for elimination of fast variables. Applications to Brownian
+motion. Z. f.ür. Phys. B Condens. Matter35,2 9 7–308 (1979).
+100. Nakajima, S. On Quantum Theory of Transport Phenomena: Steady
+Diffusion. Prog. Theor. Phys. 20, 948–959 (1958).
+101. Zwanzig, R. Ensemble Method in the Theory of Irreversibility. J.
+Chem. Phys. 33, 1338–1341 (2004).
+102. Hall, M. J. W., Cresser, J. D., Li, L. & Andersson, E. Canonical form of
+master equations and characterization of non-Markovianity. Phys.
+Rev. A 89, 042120 (2014).
+103. Bu žek, V. Reconstruction of Liouvillian superoperators.Phys. Rev. A
+58, 1723–1727 (1998).
+104. Rossi, R. J. Mathematical statistics an introduction to likelihood
+based inference / by Richard J. Rossi. (John Wiley & Sons, Hoboken,
+NJ, 2018), 1st edition. edn.
+105. Rivas, A., Huelga, S. F. & Plenio, M. B. Entanglement and non-
+Markovianity of quantum evolutions. Phys. Rev. Lett. 105, 050403
+(2010).
+106. Kullback, S. & Leibler, R. A. On information and suf ﬁciency. Ann.
+Math. Stat. 22,7 9–86 (1951).
+107. Mogilevtsev, D., R^ehá ček, J. & Hradil, Z. Self-calibration for self-
+consistent tomography. N. J. Phys. 14, 095001 (2012).
+108. James, F. Statistical Methods in Experimental Physics (WORLD
+SCIENTIFIC, 2006), 2nd edn. https://doi.org/10.1142/6096.
+109. Hoadley, B. Asymptotic Properties of Maximum Likelihood
+Estimators for the Independent Not Identically Distributed Case.
+Ann. Math. Stat. 42, 1977 – 1991 (1971).
+110. Blume-Kohout, R. Robust error bars for quantum tomography
+1202.5270 (2012).
+111. Thinh, L. P., Faist, P., Helsen, J., Elkouss, D. & Wehner, S. Practical
+and reliable error bars for quantum process tomography. Phys. Rev.
+A 99, 052311 (2019).
+112. Doucet, A., de Freitas, N. & Gordon, N. J. (eds.)Sequential Monte Carlo
+Methods in Practice. Statistics for Engineering and Information Science
+(Springer, 2001).https://doi.org/10.1007/978-1-4757-3437-9.
+113. Gerster, L. et al. Experimental Bayesian calibration of trapped-ion
+entangling operations. PRX Quantum 3, 020350 (2022).
+114. Kofman, A. G. & Kurizki, G. Acceleration of quantum decay
+processes by frequent observations. Nature 405, 546–550 (2000).
+115. Kofman, A. G. & Kurizki, G. Universal dynamical control of quantum
+mechanical decay: Modulation of the coupling to the continuum.
+Phys. Rev. Lett. 87, 270405 (2001).
+116. Uhrig, G. S. Exact results on dynamical decoupling by π pulses in
+quantum information processes. N. J. Phys. 10, 083024 (2008).
+117. Almog, I. et al. Direct measurement of the system-environment
+coupling as a tool for understanding decoherence and dynamical
+decoupling. J. Phys. B: At., Mol. Optical Phys. 44, 154006 (2011).
+118. Rivas, Á., Huelga, S. F. & Plenio, M. B. Quantum non-Markovianity:
+Characterization, quantiﬁcation and detection. Rep. Prog. Phys. 77,
+094001 (2014).
+119. Granade, C. et al. QInfer: Statistical inference software for quantum
+applications. Quantum 1, 5 (2017).
+120. Virtanen, P. et al. SciPy 1.0: Fundamental Algorithms for Scienti ﬁc
+Computing in Python. Nat. Methods 17, 261–272 (2020).
+121. Gardiner, C. W. Handbook of stochastic methods for physics,
+chemistry and the natural sciences , vol. 13 of Springer Series in
+Synergetics (Springer-Verlag, Berlin, 2004), third edn.
+122. Gillespie, D. T. The mathematics of Brownian motion and Johnson
+noise. Am. J. Phys. 64, 225 (1996).
+123. Clerk, A. A., Devoret, M. H., Girvin, S. M., Marquardt, F. &
+Schoelkopf, R. J. Introduction to quantum noise, measurement, and
+ampliﬁ
+cation. Rev. Mod. Phys. 82, 1155–1208 (2010).
+124. von Lüpke, U. et al. Two-qubit spectroscopy of spatiotemporally
+correlated quantum noise in superconducting qubits.PRX Quantum
+1, 010305 (2020).
+125. Bermudez, A., Schaetz, T. & Plenio, M. B. Dissipation-assisted
+quantum information processing with trapped ions. Phys. Rev. Lett.
+110, 110502 (2013).
+126. Cirac, J. I., Blatt, R., Zoller, P. & Phillips, W. D. Laser cooling of
+trapped ions in a standing wave.Phys. Rev. A 46, 2668–2681 (1992).
+127. Cormick, C., Bermudez, A., Huelga, S. F. & Plenio, M. B. Dissipative
+ground-state preparation of a spin chain by a structured
+environment. N. J. Phys. 15, 073027 (2013).
+128. Bermudez, A. & Schaetz, T. Quantum transport of energy in
+controlled synthetic quantum magnets. N. J. Phys. 18, 083006
+(2016).
+129. Carmichael, H. J. An open systems approach to quantum optics
+(Springer-Verlag, Berlin Heidelberg, 1993).
+130. de Lange, G., Wang, Z. H., Risté, D., Dobrovitski, V. V. & Hanson, R.
+Universal dynamical decoupling of a single solid-state spin from a
+spin bath. Science 330,6 0–63 (2010).
+131. Cywi ński, L., Witzel, W. M. & Das Sarma, S. Pure quantum dephasing
+of a solid-state electron spin qubit in a large nuclear spin bath
+coupled by long-range hyperﬁne-mediated interactions. Phys. Rev.
+B 79, 245314 (2009).
+132. Kampen, N. V. Stochastic processes in physics and chemistry (North
+Holland, 2007).
+133. Kraus, K. General state changes in quantum theory. Ann. Phys. 64,
+311–335 (1971).
+134. Choi, M.-D. Completely positive linear maps on complex matrices.
+Linear Algebra its Appl. 10, 285–290 (1975).
+135. Terwiel, R. Projection operator method applied to stochastic linear
+differential equations. Physica 74, 248–265 (1974).
+136. Zoller, P. Theoretical Quantum Optics: A practical guide to
+stochastic processes & calculus (Master and PhD Course, University
+of Innsbruck) (2018).
+137. Kubo, R. Generalized cumulant expansion method. J. Phys. Soc.
+Jpn. 17, 1100–1120 (1962).
+138. Van Kampen, N. A cumulant expansion for stochastic linear
+differential equations. i. Physica 74, 215–238 (1974).
+139. Fox, R. F. Critique of the generalized cumulant expansion method. J.
+Math. Phys. 17, 1148–
+1153 (2008).
+Acknowledgements
+The project leading to this publication has received funding from the US
+Army Research Ofﬁce through Grant No. W911NF-21-1-0007. A.B
+acknowledges support from PID2021-127726NB- I00 (MCIU/AEI/FEDER,
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 19
+
+=== Page 20 ===
+UE), from the Grant IFT Centro de Excelencia Severo Ochoa CEX2020-
+001007-S, funded by MCIN/AEI/10.13039/501100011033, from the CSIC
+Research Platform on Quantum Technologies PTI-001, and from the Eur-
+opean Union’s Horizon Europe research and innovation programme under
+grant agreement No 101114305 (-MILLENION-SGA1- EU Project). M.M.
+furthermore acknowledges support by the European Union’s Horizon Eur-
+ope research and innovation program under Grant Agreement No.
+101046968 (BRISQ), the ERC Starting Grant QNets through Grant No.
+804247, by the Germany ministry of science and education (BMBF) via the
+VDI within the project IQuAn, and by the Deutsche Forschungsgemeinschaft
+(DFG, German Research Foundation) under Germany’s Excellence Strategy
+-Cluster of Excellence Matter and Light for Quantum Computing (ML4Q)
+EXC 2004/1- 390534769. This research is also part of the Munich Quantum
+Valley (K-8), which is supported by the Bavarian state government with funds
+from the Hightech Agenda Bayern Plus.
+Author contributions
+S.V. adapted LℓQT to the frequentist and Bayesian approaches, studying the
+theoretical characteristics and performing the numerical simulations. A.B.
+and M.M. conceptualized the initial ideas and theoretical tools, and
+supervised the theoretical work and the writing of the manuscript. All authors
+contributed to the review of the manuscript.
+Funding
+Open Access funding enabled and organized by Projekt DEAL.
+Competing interests
+The authors declare no competing interests.
+Additional information
+Supplementary informationThe online version contains
+supplementary material available at
+https://doi.org/10.1038/s41534-025-01044-7
+.
+Correspondenceand requests for materials should be addressed to
+S. Varona.
+Reprints and permissions informationis available at
+http://www.nature.com/reprints
+Publisher’s note Springer Nature remains neutral with regard to
+jurisdictional claims in published maps and institutional afﬁliations.
+Open Access This article is licensed under a Creative Commons
+Attribution 4.0 International License, which permits use, sharing,
+adaptation, distribution and reproduction in any medium or format, as long
+as you give appropriate credit to the original author(s) and the source,
+provide a link to the Creative Commons licence, and indicate if changes
+were made. The images or other third party material in this article are
+included in the article ’s Creative Commons licence, unless indicated
+otherwise in a credit line to the material. If material is not included in the
+article’s Creative Commons licence and your intended use is not permitted
+by statutory regulation or exceeds the permitted use, you will need to
+obtain permission directly from the copyright holder. To view a copy of this
+licence, visit http://creativecommons.org/licenses/by/4.0/
+.
+© The Author(s) 2025
+https://doi.org/10.1038/s41534-025-01044-7 Article
+npj Quantum Information |           (2025) 11:96 20
