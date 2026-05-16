@@ -1,0 +1,3 @@
+https://docs.dart.ucar.edu/en/latest/models/lorenz_96/readme.html
+
+https://doi.org/10.1016/j.physleta.2020.126595
