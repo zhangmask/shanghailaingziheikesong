@@ -21,10 +21,12 @@ wheels/
 *.egg
 
 # Virtual environments
+.venv
+env/
 venv/
 ENV/
-env/
-.venv/
+env.bak/
+venv.bak/
 
 # IDE
 .vscode/
@@ -37,14 +39,19 @@ env/
 .DS_Store
 Thumbs.db
 
-# Large data files
+# Jupyter
+.ipynb_checkpoints/
+
+# Data files (keep structure but ignore large outputs)
+*.csv
 *.h5
+*.hdf5
 *.nc
 *.npy
 *.npz
 *.pkl
 *.pickle
-*.hdf5
+*.dat
 
 # Experiments outputs (keep structure but ignore large outputs)
 experiments/*/summary.json
@@ -60,10 +67,20 @@ experiments/*/figures/
 *.temp
 .cache/
 
-# Jupyter
-.ipynb_checkpoints/
-
 # Remote SSH scripts
 /tmp/*.py
 run_*.py
 debug_*.py
+
+# Images (optional - uncomment if you don't want to track images)
+# *.png
+# *.jpg
+# *.jpeg
+# *.gif
+# *.svg
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+*.7z

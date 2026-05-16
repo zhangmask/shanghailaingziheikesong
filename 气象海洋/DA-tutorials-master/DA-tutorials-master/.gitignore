@@ -1,0 +1,65 @@
+# See more at https://www.gitignore.io
+
+##############################
+### macOS ###
+.DS_Store
+._*
+
+##############################
+### Windows ###
+##############################
+Thumbs.db
+[Dd]esktop.ini
+
+##############################
+### Python ###
+##############################
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Sphinx documentation
+docs/_build/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+
+##########
+# Custom #
+##########
+tests/T1*.py
+tests/T2*.py
+tests/T3*.py
+tests/T4*.py
+tests/T5*.py
+tests/T6*.py
+tests/T7*.py
+tests/T8*.py
+tests/T9*.py
+notebooks/resources/illust_EnKF/from_Matlab
