@@ -488,3 +488,31 @@ lunwenfenxi/3/
 - 本地实验文档：
   - `d:\Desktop\laingzimuxi\气象海洋\shiyan\实验5_量子核混合权重验证.md`
   - `d:\Desktop\laingzimuxi\气象海洋\shiyan\exp5_quantum_mixed_weight_letkf.py`
+
+### 2026-05-16：双线并行量子 LETKF 落地实施设计定稿
+
+- 已完成对 `lunwenfenxi/2` 另一套方法的工程可落地评估。
+- 当前判断：
+  - 不适合整体替换当前主线；
+  - 最值得吸收的是：
+    - 量子核用于局部结构表达
+    - 降阶 / 分组 / 子块组织
+    - 稀疏量子结构信号交给经典稳健更新完成最终分析
+- 已确定采用“双线并行”推进，而不是继续在单一脚本中叠加所有想法：
+  - `exp8_quantum_block_mix_letkf.py`
+    - 短期稳妥线
+    - 基于 `exp5`
+    - 目标是让量子核只做 `block` 级结构调制，不直接决定单观测点权重
+  - `exp9_quantum_reduced_group_letkf.py`
+    - 中期创新线
+    - 基于 `exp7`
+    - 目标是让量子核先做表示层分组 / 降阶，再由经典规则做稳健更新
+  - `compare_quantum_variants.py`
+    - 统一比较 `fixed`、`corr`、`exp5` 最优、`exp8` 最优、`exp9` 最优
+- 已新增文档：
+  - `d:\Desktop\laingzimuxi\docs\plans\2026-05-16-双线并行量子letkf落地实施-design.md`
+  - `d:\Desktop\laingzimuxi\docs\plans\2026-05-16-双线并行量子letkf落地实施.md`
+- 当前执行建议：
+  - 先实现 `exp8`，验证 `block` 级弱调制是否比 `exp5` 更稳
+  - 再实现 `exp9`，验证表示层分组是否比权重层量子接入更合理
+  - 只有当 `exp8` 或 `exp9` 出现积极信号，才继续做“可信度特征 + 分组”的交叉版本

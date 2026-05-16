@@ -84,3 +84,15 @@ debug_*.py
 *.tar.gz
 *.rar
 *.7z
+
+# PDF files (论文PDF很大)
+*.pdf
+
+# Keep paper PDFs but exclude from tracking
+!lunwenfenxi/4/papers/01*.pdf
+!lunwenfenxi/4/papers/02*.pdf
+!lunwenfenxi/4/papers/03*.pdf
+!lunwenfenxi/4/papers/08*.pdf
+!lunwenfenxi/4/papers/09*.pdf
+!lunwenfenxi/4/papers/10*.pdf
+!lunwenfenxi/4/papers/11*.pdf
