@@ -396,6 +396,8 @@ method,lambda_rho,lambda_j,support_radius,train_rmse,train_mae,train_count,test_
 
 - `paper_cvpr_report.tex`
   - 主论文 LaTeX 文件
+- `tijiao/paper_cvpr_report.pdf`
+  - 最终报告论文 PDF 文件
 - `paper_sections/`
   - 分章节 LaTeX 文件
 - `docs/root_md/`
