@@ -1,0 +1,8 @@
+# 推荐 Python 版本：3.10.x
+# 主实验与结果出图的最小依赖集合
+
+numpy==2.2.6
+scipy==1.15.3
+qiskit==2.4.0
+pandas==2.2.3
+matplotlib==3.10.0
