@@ -335,6 +335,27 @@
   - 再把图分析全部定量化
   - 最后统一收紧摘要、结论与标题
 
+### 2026-05-17：补正文引用与参考文献
+
+- 已在论文正文中补入行文内引用，当前至少覆盖：
+  - 经典 LETKF 基线
+  - 量子数据同化/算子代数路线
+  - 量子核与量子特征映射路线
+  - 量子增强混沌动力学建模路线
+- 已新增参考文献章节文件：
+  - `tijiao/paper_sections/09_references.tex`
+- 当前纳入的主要参考文献包括：
+  - Hunt et al. 2007 LETKF
+  - Kotsuki et al. 2024 NPG Quantum Data Assimilation
+  - Giannakis et al. 2022 Data Assimilation in Operator Algebras
+  - Felix et al. 2024 Quantum Reservoir
+  - Yin et al. 2025 Nature Photonics Quantum Kernel
+  - Altmann et al. 2025 Quantum Generator Kernels
+  - Sáez-Ortuño et al. 2025 Quantum Kernel Methods
+  - Bansal \& Rajput 2025 QML Bibliometric
+- 已重新两遍 `xelatex` 编译，引用号与参考文献列表已正常生成到：
+  - `tijiao/paper_cvpr_report.pdf`
+
 ### 2026-05-17：按问题清单完成报告主干硬改
 
 - 已围绕 `exp37` 当前受控实验脚本，完成报告主干的结构性修订，重点不再是“多加几段说明”，而是把可检验定义、实验透明度和定量证据真正补齐。
