@@ -1,3 +1,5 @@
+项目提交文件目录在 `d:\Desktop\laingzimuxi\tijiao`，最终报告论文路径为 `tijiao/paper_cvpr_report.pdf`。
+
 # 量子数据同化项目提交说明
 
 本目录按官方提交要求整理，覆盖以下四类内容：
