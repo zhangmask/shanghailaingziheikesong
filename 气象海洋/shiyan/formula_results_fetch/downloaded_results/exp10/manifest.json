@@ -1,0 +1,10 @@
+{
+  "name": "exp10",
+  "output_dir": "/home/infra/qda_competition/experiments/quantum_structured_R_letkf",
+  "written": [
+    "summary.json",
+    "summary.csv",
+    "result.csv"
+  ],
+  "missing": []
+}

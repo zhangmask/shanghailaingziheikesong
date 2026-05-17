@@ -1,0 +1,9 @@
+')
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> print(json.dumps(rows, ensure_ascii=False))
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> print('

@@ -1,0 +1,10 @@
+{
+  "name": "exp19",
+  "output_dir": "/home/infra/qda_competition/experiments/quantum_gain_regularized_letkf",
+  "written": [
+    "summary.json",
+    "summary.csv",
+    "result.csv"
+  ],
+  "missing": []
+}

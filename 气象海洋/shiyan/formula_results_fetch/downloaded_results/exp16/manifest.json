@@ -1,0 +1,10 @@
+{
+  "name": "exp16",
+  "output_dir": "/home/infra/qda_competition/experiments/quantum_transform_letkf",
+  "written": [
+    "summary.json",
+    "summary.csv",
+    "result.csv"
+  ],
+  "missing": []
+}

@@ -1,0 +1,10 @@
+{
+  "name": "exp11",
+  "output_dir": "/home/infra/qda_competition/experiments/quantum_S_operator_letkf",
+  "written": [
+    "summary.json",
+    "summary.csv",
+    "result.csv"
+  ],
+  "missing": []
+}

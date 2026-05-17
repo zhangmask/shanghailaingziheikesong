@@ -1,0 +1,47 @@
+\documentclass[12pt,a4paper]{ctexart}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{fontspec}
+\usepackage{caption}
+
+\setmainfont{Times New Roman}
+\setCJKmainfont{SimSun}
+\hypersetup{hidelinks}
+\setlist[itemize]{leftmargin=1.2em}
+\linespread{1.2}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\captionsetup{font=small}
+\ctexset{section={beforeskip=1.0ex plus 0.3ex minus 0.2ex,afterskip=0.8ex plus 0.2ex minus 0.2ex}}
+
+\title{\textbf{Lorenz96 数据同化中的量子弱融合受控实验研究}}
+\author{项目组}
+\date{}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\zihao{-4}
+
+\input{paper_sections/00_abstract.tex}
+\input{paper_sections/01_problem_analysis.tex}
+\input{paper_sections/02_modeling.tex}
+\input{paper_sections/03_quantum_algorithm.tex}
+\input{paper_sections/04_circuit.tex}
+\input{paper_sections/05_results.tex}
+\input{paper_sections/06_innovations.tex}
+\input{paper_sections/07_comparison.tex}
+\input{paper_sections/08_summary.tex}
+
+\end{document}

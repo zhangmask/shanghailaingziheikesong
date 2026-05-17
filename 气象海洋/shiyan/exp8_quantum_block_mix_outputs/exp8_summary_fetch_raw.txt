@@ -1,0 +1,110 @@
+ python3 -c "from pathlib import Path; p=Path('/home/infra/qda_competition/experiments/quantum_block_mix_letkf/summary.json'); print('__BEGIN__'); print(p.read_text() if p.exists() else 'NO_SUMMARY_YET'); print('__END__')"
+[?2004l
+__BEGIN__
+{
+  "config": {
+    "ens_size": 40,
+    "infl": 1.02,
+    "obs_std": 0.5,
+    "dt": 0.05,
+    "forcing": 8.0,
+    "seed": 2,
+    "support_radius": 20,
+    "window_size": 4,
+    "block_size": 4,
+    "n_qubits": 4,
+    "lambdas": [
+      0.02,
+      0.05,
+      0.08,
+      0.1
+    ]
+  },
+  "results": [
+    {
+      "method": "fixed",
+      "lambda": null,
+      "support_radius": 20,
+      "block_size": 4,
+      "train_rmse": 0.12119744865851713,
+      "train_mae": 0.08530481315167075,
+      "train_count": 20000,
+      "test_1_rmse": 0.12872791254901936,
+      "test_1_mae": 0.08922490241131598,
+      "test_1_count": 20000
+    },
+    {
+      "method": "corr",
+      "lambda": null,
+      "support_radius": 20,
+      "block_size": 4,
+      "train_rmse": 0.14145548885983802,
+      "train_mae": 0.10347842399249621,
+      "train_count": 20000,
+      "test_1_rmse": 0.14279455390011997,
+      "test_1_mae": 0.10202452522506597,
+      "test_1_count": 20000
+    },
+    {
+      "method": "block_quantum_mix",
+      "lambda": 0.02,
+      "support_radius": 20,
+      "block_size": 4,
+      "train_rmse": 0.11971311361966878,
+      "train_mae": 0.08467568920312563,
+      "train_count": 20000,
+      "test_1_rmse": 0.12921233753417694,
+      "test_1_mae": 0.08978903188979889,
+      "test_1_count": 20000
+    },
+    {
+      "method": "block_quantum_mix",
+      "lambda": 0.05,
+      "support_radius": 20,
+      "block_size": 4,
+      "train_rmse": 0.11967653034326815,
+      "train_mae": 0.08464939378730488,
+      "train_count": 20000,
+      "test_1_rmse": 0.12933902549533371,
+      "test_1_mae": 0.08991258815114243,
+      "test_1_count": 20000
+    },
+    {
+      "method": "block_quantum_mix",
+      "lambda": 0.08,
+      "support_radius": 20,
+      "block_size": 4,
+      "train_rmse": 0.11955220250617003,
+      "train_mae": 0.08454692019413096,
+      "train_count": 20000,
+      "test_1_rmse": 0.12965329030325004,
+      "test_1_mae": 0.09017676450027505,
+      "test_1_count": 20000
+    },
+    {
+      "method": "block_quantum_mix",
+      "lambda": 0.1,
+      "support_radius": 20,
+      "block_size": 4,
+      "train_rmse": 0.11941083215380642,
+      "train_mae": 0.0844208645281632,
+      "train_count": 20000,
+      "test_1_rmse": 0.12996006719691625,
+      "test_1_mae": 0.09042445581905287,
+      "test_1_count": 20000
+    }
+  ],
+  "best_test": {
+    "method": "fixed",
+    "lambda": null,
+    "support_radius": 20,
+    "block_size": 4,
+    "train_rmse": 0.12119744865851713,
+    "train_mae": 0.08530481315167075,
+    "train_count": 20000,
+    "test_1_rmse": 0.12872791254901936,
+    "test_1_mae": 0.08922490241131598,
+    "test_1_count": 20000
+  }
+}
+__END__

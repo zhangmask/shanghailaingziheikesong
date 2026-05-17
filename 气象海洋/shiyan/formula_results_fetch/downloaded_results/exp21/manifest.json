@@ -1,0 +1,10 @@
+{
+  "name": "exp21",
+  "output_dir": "/home/infra/qda_competition/experiments/iterative_quantum_letkf",
+  "written": [],
+  "missing": [
+    "summary.json",
+    "summary.csv",
+    "result.csv"
+  ]
+}

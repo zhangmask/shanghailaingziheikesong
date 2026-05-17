@@ -1,0 +1,68 @@
+[?2004l
+__BEGIN__
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ hostname
+[?2004l
+qiskit-metax-gpu-12
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ date
+[?2004l
+Sat May 16 09:12:55 PM CST 2026
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ nproc
+[?2004l
+64
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ uptime
+[?2004l
+ 21:12:56 up 7 days, 6 min,  1 user,  load average: 0.00, 0.19, 0.46
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ top -bn1 | head -n 20
+[?2004l
+top - 21:12:56 up 7 days, 6 min,  1 user,  load average: 0.00, 0.19, 0.46
+Tasks: 754 total,   1 running, 753 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.2 sy,  0.0 ni, 99.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem : 515724.2 total, 500006.6 free,   1436.4 used,  14281.2 buff/cache
+MiB Swap:      0.0 total,      0.0 free,      0.0 used. 510296.7 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+ 215094 infra     20   0   11140   4660   3300 R   6.2   0.0   0:00.01 top
+      1 root      20   0  167736  13332   8560 S   0.0   0.0   0:23.35 systemd
+      2 root      20   0       0      0      0 S   0.0   0.0   0:00.15 kthreadd
+      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp
+      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par+
+      5 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 slub_fl+
+      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 netns
+      8 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker+
+     10 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 mm_perc+
+     11 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tas+
+     12 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tas+
+     13 root      20   0       0      0      0 S   0.0   0.0   0:00.13 ksoftir+
+     14 root      20   0       0      0      0 I   0.0   0.0   0:04.42 rcu_sch+
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ ps -eo pid,ppid,pcpu,pmem,etime,cmd --sort=-pcpu | head -n 15
+[?2004l
+    PID    PPID %CPU %MEM     ELAPSED CMD
+ 215016       1  1.7  0.0       00:04 /lib/systemd/systemd --user
+ 215013   31213  0.7  0.0       00:04 sshd: infra [priv]
+ 215081  215080  0.3  0.0       00:03 -bash
+      1       0  0.0  0.0  7-00:06:35 /lib/systemd/systemd --system --deserialize 46
+      2       0  0.0  0.0  7-00:06:35 [kthreadd]
+      3       2  0.0  0.0  7-00:06:35 [rcu_gp]
+      4       2  0.0  0.0  7-00:06:35 [rcu_par_gp]
+      5       2  0.0  0.0  7-00:06:35 [slub_flushwq]
+      6       2  0.0  0.0  7-00:06:35 [netns]
+      8       2  0.0  0.0  7-00:06:35 [kworker/0:0H-events_highpri]
+     10       2  0.0  0.0  7-00:06:35 [mm_percpu_wq]
+     11       2  0.0  0.0  7-00:06:35 [rcu_tasks_rude_]
+     12       2  0.0  0.0  7-00:06:35 [rcu_tasks_trace]
+     13       2  0.0  0.0  7-00:06:35 [ksoftirqd/0]
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ echo

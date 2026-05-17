@@ -1,0 +1,71 @@
+[?2004l
+__BEGIN__
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ hostname
+[?2004l
+qiskit-metax-gpu-12
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ date
+[?2004l
+Sat May 16 09:10:50 PM CST 2026
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ which mx-smi || true
+[?2004l
+/usr/bin/mx-smi
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ which mthreads-gmi || true
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ which maca-smi || true
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ which nvidia-smi || true
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ if command -v mx-smi >/dev/null 2>&1; then mx-smi; elif command -v mthreads-gmi >/dev/null 2>&1; then mthreads-gmi; elif command -v maca-smi >/dev/null 2>&1; then maca-smi; elif command -v nvidia-smi >/dev/null 2>&1; then nvidia-smi; else echo NO_GPU_STATUS_COMMAND; fi
+[?2004l
+mx-smi  version: 2.2.9
+
+=================== MetaX System Management Interface Log ===================
+Timestamp                                         : Sat May 16 21:10:53 2026
+
+Attached GPUs                                     : 4
++---------------------------------------------------------------------------------+
+| MX-SMI 2.2.9                       Kernel Mode Driver Version: 3.4.4            |
+| MACA Version: 3.3.0.15             BIOS Version: 1.25.2.0                       |
+|------------------+-----------------+---------------------+----------------------|
+| Board       Name | GPU   Persist-M | Bus-id              | GPU-Util      sGPU-M |
+| Pwr:Usage/Cap    | Temp       Perf | Memory-Usage        | GPU-State            |
+|==================+=================+=====================+======================|
+| 0    MetaX C500X | 0           Off | 0000:0b:00.0        | 0%          Disabled |
+| 64W / 350W       | 36C          P0 | 874/65536 MiB       | Available            |
++------------------+-----------------+---------------------+----------------------+
+| 1    MetaX C500X | 1           Off | 0000:0c:00.0        | 0%          Disabled |
+| 66W / 350W       | 40C          P0 | 874/65536 MiB       | Available            |
++------------------+-----------------+---------------------+----------------------+
+| 2    MetaX C500X | 2           Off | 0000:0d:00.0        | 0%          Disabled |
+| 62W / 350W       | 34C          P0 | 874/65536 MiB       | Available            |
++------------------+-----------------+---------------------+----------------------+
+| 3    MetaX C500X | 3           Off | 0000:0e:00.0        | 0%          Disabled |
+| 62W / 350W       | 35C          P0 | 874/65536 MiB       | Available            |
++------------------+-----------------+---------------------+----------------------+
+
++---------------------------------------------------------------------------------+
+| Process:                                                                        |
+|  GPU                    PID         Process Name                 GPU Memory     |
+|                                                                  Usage(MiB)     |
+|=================================================================================|
+|  no process found                                                               |
++---------------------------------------------------------------------------------+
+
+End of Log
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ echo

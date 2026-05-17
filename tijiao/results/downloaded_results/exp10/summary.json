@@ -1,0 +1,86 @@
+{
+  "config": {
+    "ens_size": 40,
+    "infl": 1.02,
+    "obs_std": 0.5,
+    "dt": 0.05,
+    "forcing": 8.0,
+    "seed": 2,
+    "support_radius": 20,
+    "window_size": 4,
+    "n_qubits": 4,
+    "lambdas": [
+      0.02,
+      0.05,
+      0.1
+    ]
+  },
+  "results": [
+    {
+      "method": "fixed",
+      "lambda": null,
+      "support_radius": 20,
+      "train_rmse": 0.12119744865851713,
+      "train_mae": 0.08530481315167075,
+      "train_count": 20000,
+      "test_1_rmse": 0.12872791254901936,
+      "test_1_mae": 0.08922490241131598,
+      "test_1_count": 20000
+    },
+    {
+      "method": "corr",
+      "lambda": null,
+      "support_radius": 20,
+      "train_rmse": 0.14145548885983802,
+      "train_mae": 0.10347842399249621,
+      "train_count": 20000,
+      "test_1_rmse": 0.14279455390011997,
+      "test_1_mae": 0.10202452522506597,
+      "test_1_count": 20000
+    },
+    {
+      "method": "quantum_structured_r",
+      "lambda": 0.02,
+      "support_radius": 20,
+      "train_rmse": 0.12143577051535419,
+      "train_mae": 0.08558658882685599,
+      "train_count": 20000,
+      "test_1_rmse": 0.12868826611939788,
+      "test_1_mae": 0.08936945786776133,
+      "test_1_count": 20000
+    },
+    {
+      "method": "quantum_structured_r",
+      "lambda": 0.05,
+      "support_radius": 20,
+      "train_rmse": 0.12318391807759783,
+      "train_mae": 0.08717110538231194,
+      "train_count": 20000,
+      "test_1_rmse": 0.1282514860637445,
+      "test_1_mae": 0.08897467875691467,
+      "test_1_count": 20000
+    },
+    {
+      "method": "quantum_structured_r",
+      "lambda": 0.1,
+      "support_radius": 20,
+      "train_rmse": 0.1240885023642815,
+      "train_mae": 0.08798078889058193,
+      "train_count": 20000,
+      "test_1_rmse": 0.12961937652315297,
+      "test_1_mae": 0.09023648459385902,
+      "test_1_count": 20000
+    }
+  ],
+  "best_test": {
+    "method": "quantum_structured_r",
+    "lambda": 0.05,
+    "support_radius": 20,
+    "train_rmse": 0.12318391807759783,
+    "train_mae": 0.08717110538231194,
+    "train_count": 20000,
+    "test_1_rmse": 0.1282514860637445,
+    "test_1_mae": 0.08897467875691467,
+    "test_1_count": 20000
+  }
+}

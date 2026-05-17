@@ -1,0 +1,10 @@
+{
+  "name": "exp12",
+  "output_dir": "/home/infra/qda_competition/experiments/quantum_reduced_analysis_space_letkf",
+  "written": [
+    "summary.json",
+    "summary.csv",
+    "result.csv"
+  ],
+  "missing": []
+}

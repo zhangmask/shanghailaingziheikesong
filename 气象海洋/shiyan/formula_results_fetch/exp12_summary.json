@@ -1,0 +1,78 @@
+{
+  "config": {
+    "ens_size": 40,
+    "infl": 1.02,
+    "obs_std": 0.5,
+    "dt": 0.05,
+    "forcing": 8.0,
+    "seed": 2,
+    "support_radius": 20,
+    "window_size": 4,
+    "n_qubits": 4,
+    "reduced_dims": [
+      2,
+      3
+    ]
+  },
+  "results": [
+    {
+      "method": "fixed",
+      "lambda": null,
+      "support_radius": 20,
+      "train_rmse": 0.12119744865851713,
+      "train_mae": 0.08530481315167075,
+      "train_count": 20000,
+      "test_1_rmse": 0.12872791254901936,
+      "test_1_mae": 0.08922490241131598,
+      "test_1_count": 20000
+    },
+    {
+      "method": "corr",
+      "lambda": null,
+      "support_radius": 20,
+      "train_rmse": 0.14145548885983802,
+      "train_mae": 0.10347842399249621,
+      "train_count": 20000,
+      "test_1_rmse": 0.14279455390011997,
+      "test_1_mae": 0.10202452522506597,
+      "test_1_count": 20000
+    },
+    {
+      "method": "quantum_reduced_analysis_space",
+      "lambda": 2,
+      "support_radius": 20,
+      "train_rmse": NaN,
+      "train_mae": NaN,
+      "train_count": 20000,
+      "train_avg_reduced_dim": 2.0,
+      "test_1_rmse": NaN,
+      "test_1_mae": NaN,
+      "test_1_count": 20000,
+      "test_1_avg_reduced_dim": 2.0
+    },
+    {
+      "method": "quantum_reduced_analysis_space",
+      "lambda": 3,
+      "support_radius": 20,
+      "train_rmse": NaN,
+      "train_mae": NaN,
+      "train_count": 20000,
+      "train_avg_reduced_dim": 3.0,
+      "test_1_rmse": NaN,
+      "test_1_mae": NaN,
+      "test_1_count": 20000,
+      "test_1_avg_reduced_dim": 3.0
+    }
+  ],
+  "best_test": {
+    "method": "fixed",
+    "lambda": null,
+    "support_radius": 20,
+    "train_rmse": 0.12119744865851713,
+    "train_mae": 0.08530481315167075,
+    "train_count": 20000,
+    "test_1_rmse": 0.12872791254901936,
+    "test_1_mae": 0.08922490241131598,
+    "test_1_count": 20000
+  }
+}

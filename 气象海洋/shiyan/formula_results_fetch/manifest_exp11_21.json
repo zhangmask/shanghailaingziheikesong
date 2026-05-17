@@ -1,0 +1,82 @@
+[
+  {
+    "name": "exp11",
+    "output_dir": "/home/infra/qda_competition/experiments/quantum_S_operator_letkf",
+    "summary_exists": true,
+    "summary_csv_exists": true,
+    "result_exists": true,
+    "summary_text": "{\n  \"config\": {\n    \"ens_size\": 40,\n    \"infl\": 1.02,\n    \"obs_std\": 0.5,\n    \"dt\": 0.05,\n    \"forcing\": 8.0,\n    \"seed\": 2,\n    \"support_radius\": 20,\n    \"window_size\": 4,\n    \"n_qubits\": 4,\n    \"lambdas\": [\n      0.02,\n      0.05,\n      0.1\n    ]\n  },\n  \"results\": [\n    {\n      \"method\": \"fixed\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12119744865851713,\n      \"train_mae\": 0.08530481315167075,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.12872791254901936,\n      \"test_1_mae\": 0.08922490241131598,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"corr\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.14145548885983802,\n      \"train_mae\": 0.10347842399249621,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.14279455390011997,\n      \"test_1_mae\": 0.10202452522506597,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_s_operator\",\n      \"lambda\": 0.02,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12114520955484534,\n      \"train_mae\": 0.08536244161710195,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.13121399698239877,\n      \"test_1_mae\": 0.0908024755351292,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_s_operator\",\n      \"lambda\": 0.05,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12144751349960087,\n      \"train_mae\": 0.0854273652414312,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.1292968501583463,\n      \"test_1_mae\": 0.08909699737849548,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_s_operator\",\n      \"lambda\": 0.1,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.1248242572859259,\n      \"train_mae\": 0.08795810426684772,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.13327088206092821,\n      \"test_1_mae\": 0.09252461128500485,\n      \"test_1_count\": 20000\n    }\n  ],\n  \"best_test\": {\n    \"method\": \"fixed\",\n    \"lambda\": null,\n    \"support_radius\": 20,\n    \"train_rmse\": 0.12119744865851713,\n    \"train_mae\": 0.08530481315167075,\n    \"train_count\": 20000,\n    \"test_1_rmse\": 0.12872791254901936,\n    \"test_1_mae\": 0.08922490241131598,\n    \"test_1_count\": 20000\n  }\n}"
+  },
+  {
+    "name": "exp13",
+    "output_dir": "/home/infra/qda_competition/experiments/quantum_localization_letkf",
+    "summary_exists": false,
+    "summary_csv_exists": false,
+    "result_exists": false,
+    "summary_text": null
+  },
+  {
+    "name": "exp14",
+    "output_dir": "/home/infra/qda_competition/experiments/quantum_inflation_letkf",
+    "summary_exists": false,
+    "summary_csv_exists": false,
+    "result_exists": false,
+    "summary_text": null
+  },
+  {
+    "name": "exp15",
+    "output_dir": "/home/infra/qda_competition/experiments/quantum_robust_innovation_letkf",
+    "summary_exists": false,
+    "summary_csv_exists": false,
+    "result_exists": false,
+    "summary_text": null
+  },
+  {
+    "name": "exp16",
+    "output_dir": "/home/infra/qda_competition/experiments/quantum_transform_letkf",
+    "summary_exists": true,
+    "summary_csv_exists": true,
+    "result_exists": true,
+    "summary_text": "{\n  \"config\": {\n    \"ens_size\": 40,\n    \"infl\": 1.02,\n    \"obs_std\": 0.5,\n    \"dt\": 0.05,\n    \"forcing\": 8.0,\n    \"seed\": 2,\n    \"support_radius\": 20,\n    \"window_size\": 4,\n    \"n_qubits\": 4,\n    \"lambdas\": [\n      0.02,\n      0.05,\n      0.1\n    ]\n  },\n  \"results\": [\n    {\n      \"method\": \"fixed\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12119744865851713,\n      \"train_mae\": 0.08530481315167075,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.12872791254901936,\n      \"test_1_mae\": 0.08922490241131598,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"corr\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.14145548885983802,\n      \"train_mae\": 0.10347842399249621,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.14279455390011997,\n      \"test_1_mae\": 0.10202452522506597,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_transform\",\n      \"lambda\": 0.02,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12554342915561914,\n      \"train_mae\": 0.0889443029986778,\n      \"train_count\": 20000,\n      \"train_avg_transform_scale\": 1.0003735643919243,\n      \"test_1_rmse\": 0.1309777051705835,\n      \"test_1_mae\": 0.09145263582519252,\n      \"test_1_count\": 20000,\n      \"test_1_avg_transform_scale\": 1.000400454068789\n    },\n    {\n      \"method\": \"quantum_transform\",\n      \"lambda\": 0.05,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12952245990782682,\n      \"train_mae\": 0.09195747652584488,\n      \"train_count\": 20000,\n      \"train_avg_transform_scale\": 0.9964580215656362,\n      \"test_1_rmse\": 0.1346338899238277,\n      \"test_1_mae\": 0.09467192764202825,\n      \"test_1_count\": 20000,\n      \"test_1_avg_transform_scale\": 0.9967145417767321\n    },\n    {\n      \"method\": \"quantum_transform\",\n      \"lambda\": 0.1,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.13925985996008058,\n      \"train_mae\": 0.10059631625626139,\n      \"train_count\": 20000,\n      \"train_avg_transform_scale\": 0.9798267766895102,\n      \"test_1_rmse\": 0.14490893107605224,\n      \"test_1_mae\": 0.1039606250897476,\n      \"test_1_count\": 20000,\n      \"test_1_avg_transform_scale\": 0.9807406774146146\n    }\n  ],\n  \"best_test\": {\n    \"method\": \"fixed\",\n    \"lambda\": null,\n    \"support_radius\": 20,\n    \"train_rmse\": 0.12119744865851713,\n    \"train_mae\": 0.08530481315167075,\n    \"train_count\": 20000,\n    \"test_1_rmse\": 0.12872791254901936,\n    \"test_1_mae\": 0.08922490241131598,\n    \"test_1_count\": 20000\n  }\n}"
+  },
+  {
+    "name": "exp17",
+    "output_dir": "/home/infra/qda_competition/experiments/quantum_B_correction_letkf",
+    "summary_exists": false,
+    "summary_csv_exists": false,
+    "result_exists": false,
+    "summary_text": null
+  },
+  {
+    "name": "exp18",
+    "output_dir": "/home/infra/qda_competition/experiments/quantum_J_operator_letkf",
+    "summary_exists": false,
+    "summary_csv_exists": false,
+    "result_exists": false,
+    "summary_text": null
+  },
+  {
+    "name": "exp19",
+    "output_dir": "/home/infra/qda_competition/experiments/quantum_gain_regularized_letkf",
+    "summary_exists": true,
+    "summary_csv_exists": true,
+    "result_exists": true,
+    "summary_text": "{\n  \"config\": {\n    \"ens_size\": 40,\n    \"infl\": 1.02,\n    \"obs_std\": 0.5,\n    \"dt\": 0.05,\n    \"forcing\": 8.0,\n    \"seed\": 2,\n    \"support_radius\": 20,\n    \"window_size\": 4,\n    \"n_qubits\": 4,\n    \"lambdas\": [\n      0.02,\n      0.05,\n      0.1\n    ]\n  },\n  \"results\": [\n    {\n      \"method\": \"fixed\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12119744865851713,\n      \"train_mae\": 0.08530481315167075,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.12872791254901936,\n      \"test_1_mae\": 0.08922490241131598,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"corr\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.14145548885983802,\n      \"train_mae\": 0.10347842399249621,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.14279455390011997,\n      \"test_1_mae\": 0.10202452522506597,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_gain_regularized\",\n      \"lambda\": 0.02,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12405434715793577,\n      \"train_mae\": 0.08710925310668931,\n      \"train_count\": 20000,\n      \"train_avg_gain_smoothness\": 8.601400889940038,\n      \"test_1_rmse\": 0.13820689437598419,\n      \"test_1_mae\": 0.09548561221134992,\n      \"test_1_count\": 20000,\n      \"test_1_avg_gain_smoothness\": 8.504641162610051\n    },\n    {\n      \"method\": \"quantum_gain_regularized\",\n      \"lambda\": 0.05,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.14299274605181816,\n      \"train_mae\": 0.09908719749421106,\n      \"train_count\": 20000,\n      \"train_avg_gain_smoothness\": 8.17749883390955,\n      \"test_1_rmse\": 0.17933288747776288,\n      \"test_1_mae\": 0.12444050243679314,\n      \"test_1_count\": 20000,\n      \"test_1_avg_gain_smoothness\": 8.087425679648158\n    },\n    {\n      \"method\": \"quantum_gain_regularized\",\n      \"lambda\": 0.1,\n      \"support_radius\": 20,\n      \"train_rmse\": 3.7782161588851273,\n      \"train_mae\": 2.6525766074144252,\n      \"train_count\": 20000,\n      \"train_avg_gain_smoothness\": 7.250497138474064,\n      \"test_1_rmse\": 3.954467670219915,\n      \"test_1_mae\": 2.9375987242877635,\n      \"test_1_count\": 20000,\n      \"test_1_avg_gain_smoothness\": 7.156192546668711\n    }\n  ],\n  \"best_test\": {\n    \"method\": \"fixed\",\n    \"lambda\": null,\n    \"support_radius\": 20,\n    \"train_rmse\": 0.12119744865851713,\n    \"train_mae\": 0.08530481315167075,\n    \"train_count\": 20000,\n    \"test_1_rmse\": 0.12872791254901936,\n    \"test_1_mae\": 0.08922490241131598,\n    \"test_1_count\": 20000\n  }\n}"
+  },
+  {
+    "name": "exp20",
+    "output_dir": "/home/infra/qda_competition/experiments/quantum_H_representation_letkf",
+    "summary_exists": true,
+    "summary_csv_exists": true,
+    "result_exists": true,
+    "summary_text": "{\n  \"config\": {\n    \"ens_size\": 40,\n    \"infl\": 1.02,\n    \"obs_std\": 0.5,\n    \"dt\": 0.05,\n    \"forcing\": 8.0,\n    \"seed\": 2,\n    \"support_radius\": 20,\n    \"window_size\": 4,\n    \"n_qubits\": 4,\n    \"phi_dims\": [\n      2,\n      4\n    ]\n  },\n  \"results\": [\n    {\n      \"method\": \"fixed\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12119744865851713,\n      \"train_mae\": 0.08530481315167075,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.12872791254901936,\n      \"test_1_mae\": 0.08922490241131598,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"corr\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.14145548885983802,\n      \"train_mae\": 0.10347842399249621,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.14279455390011997,\n      \"test_1_mae\": 0.10202452522506597,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_h_representation\",\n      \"lambda\": 2,\n      \"support_radius\": 20,\n      \"train_rmse\": NaN,\n      \"train_mae\": NaN,\n      \"train_count\": 20000,\n      \"train_avg_phi_dim\": 2.0,\n      \"test_1_rmse\": NaN,\n      \"test_1_mae\": NaN,\n      \"test_1_count\": 20000,\n      \"test_1_avg_phi_dim\": 2.0\n    },\n    {\n      \"method\": \"quantum_h_representation\",\n      \"lambda\": 4,\n      \"support_radius\": 20,\n      \"train_rmse\": NaN,\n      \"train_mae\": NaN,\n      \"train_count\": 20000,\n      \"train_avg_phi_dim\": 4.0,\n      \"test_1_rmse\": NaN,\n      \"test_1_mae\": NaN,\n      \"test_1_count\": 20000,\n      \"test_1_avg_phi_dim\": 4.0\n    }\n  ],\n  \"best_test\": {\n    \"method\": \"fixed\",\n    \"lambda\": null,\n    \"support_radius\": 20,\n    \"train_rmse\": 0.12119744865851713,\n    \"train_mae\": 0.08530481315167075,\n    \"train_count\": 20000,\n    \"test_1_rmse\": 0.12872791254901936,\n    \"test_1_mae\": 0.08922490241131598,\n    \"test_1_count\": 20000\n  }\n}"
+  },
+  {
+    "name": "exp21",
+    "output_dir": "/home/infra/qda_competition/experiments/iterative_quantum_letkf",
+    "summary_exists": false,
+    "summary_csv_exists": false,
+    "result_exists": false,
+    "summary_text": null
+  }
+]

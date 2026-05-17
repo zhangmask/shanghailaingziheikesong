@@ -1,0 +1,28 @@
+# 可视化图说明
+
+- `best_model_rmse_comparison.png`：当前主线与高分候选的 test_1 RMSE 对比。
+- `exp37_param_heatmap.png`：exp37 在不同 `lambda_rho` / `lambda_j` 下的 test_1 RMSE 热图。
+- `exp37_j_strength_vs_rmse.png`：exp37 的平均 J 修正强度与 test_1 RMSE 关系图。
+- `exp37_error_distribution.png`：exp37 与 `fixed` 在测试集上的绝对误差分布对比。
+- `exp37_error_improvement_heatmap.png`：exp37 相对 `fixed` 的逐时间步、逐维度误差改善热力图。
+- `exp37_parameter_profiles.png`：固定一个参数时，另一个参数对 RMSE 的敏感性剖面图。
+- `exp37_prediction_scatter.png`：`truth-prediction` 散点图，对比 `fixed` 与 exp37 最优结果的贴合程度。
+- `exp37_dimension_gain.png`：exp37 相对 `fixed` 的分维度平均绝对误差改善条形图。
+- `exp37_time_rmse_trend.png`：逐时间步 RMSE 趋势，对比 `fixed` 与 exp37 在时间轴上的稳定性。
+- `exp37_case_slices.png`：选取代表性时间片，画 `truth / fixed / exp37` 三条状态曲线的对比图。
+- `exp37_observed_truth_fixed_best_slice.png`：选取代表性高收益时间片，画 `truth / observed / fixed / exp37` 四条曲线，直接展示当前最优方案相对观测和基线的贴合关系。
+- `exp37_timestep_distribution.png`：逐时间步 RMSE 分布和时间步平均改善分布，用于说明收益是否稳定。
+- `exp37_quantum_circuit_schematic.png`：exp37 中 4-qubit 量子特征映射电路示意图。
+- `exp37_method_flowchart.png`：从比赛 CSV 到量子相似度、再到 LETKF 更新和输出文件的完整流程图。
+- `exp37_local_window_explanation.png`：围绕一个代表性局地窗口，展示状态窗口与典型观测窗口的模式匹配，以及 `J` 修正前后的集合方向变化。
+- `exp37_quantum_similarity_matrix.png`：代表性时间步下，局地状态窗口中心与观测窗口中心之间的量子相似度矩阵热图。
+- `exp37_rho_vs_corr_weights.png`：同一局地窗口内 `rho` 融合权重与 `corr` 权重的逐观测对比图，并附距离先验曲线。
+- `exp37_residual_distribution.png`：残差分布图，对比 exp37 与 `fixed` 的偏差中心和分布宽度。
+- `exp37_bias_variance_analysis.png`：分维度偏置和残差标准差分析图。
+- `exp37_topk_dimension_gain.png`：exp37 相对 `fixed` 收益最大和退化最大的维度 Top-K 图。
+- `exp37_method_schematic.png`：exp37 的方法结构示意图，说明 `rho` 主导、`J` 弱修正的接入方式。
+- `quantum_ablation_logic.png`：从 `fixed`、`rho` 到多种融合方法的消融逻辑总图。
+- `quantum_qubit_compliance.png`：量子比特合规图，说明当前方案使用 4 qubits，低于 30 qubits 限制。
+- `rmse_gain_over_fixed.png`：各高分方法相对 `fixed` 的 test_1 RMSE 提升幅度。
+- `train_test_rmse_grouped.png`：高分方法的 train/test RMSE 分组柱状图。
+- `train_test_scatter_best_models.png`：高分方法的 train/test RMSE 散点分布。

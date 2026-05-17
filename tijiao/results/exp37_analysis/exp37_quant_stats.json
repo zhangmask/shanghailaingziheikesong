@@ -1,0 +1,156 @@
+{
+  "test_rmse_fixed": 0.12872791254901936,
+  "test_rmse_best": 0.12698476904637393,
+  "test_rmse_corr": 0.14279455390011997,
+  "time_steps_better_than_fixed": 250,
+  "time_steps_total": 999,
+  "time_steps_worse_than_fixed": 250,
+  "time_steps_equal_or_close": 499,
+  "better_time_step_ratio": 0.2502502502502503,
+  "improved_dimensions": 25,
+  "total_dimensions": 40,
+  "tail_p90_fixed": 0.2055054722431441,
+  "tail_p90_best": 0.20303404012872753,
+  "tail_p90_drop_pct": 1.2026113404379346,
+  "tail_p95_fixed": 0.27041841599783717,
+  "tail_p95_best": 0.26737960655051846,
+  "tail_p95_drop_pct": 1.1237435276386716,
+  "residual_mean_fixed": 0.0007079985515615825,
+  "residual_mean_best": 0.0005587225742829671,
+  "residual_std_fixed": 0.1287259655519389,
+  "residual_std_best": 0.12698353987366204,
+  "best_gain_slice_time": 672,
+  "best_gain_slice_rmse_fixed": 0.12292489009370107,
+  "best_gain_slice_rmse_best": 0.07805635752079955,
+  "best_gain_slice_delta": 0.04486853257290152,
+  "top_improved_dims": [
+    [
+      25,
+      0.006035057337373029
+    ],
+    [
+      22,
+      0.00565409352436709
+    ],
+    [
+      24,
+      0.00477836714742523
+    ],
+    [
+      23,
+      0.004128655693400873
+    ],
+    [
+      21,
+      0.0037569627225022134
+    ]
+  ],
+  "worst_dims": [
+    [
+      7,
+      -0.003702645384055653
+    ],
+    [
+      6,
+      -0.003297127648294776
+    ],
+    [
+      4,
+      -0.0019088822084641632
+    ],
+    [
+      1,
+      -0.0016073034076206083
+    ],
+    [
+      31,
+      -0.0012793101041038285
+    ]
+  ],
+  "ablation_sorted": [
+    {
+      "method": "rho_j_weak_fusion",
+      "lambda_rho": 0.02,
+      "lambda_j": 0.003,
+      "support_radius": 20.0,
+      "train_rmse": 0.1184377294107623,
+      "train_mae": 0.08359912432429135,
+      "train_count": 20000.0,
+      "train_avg_j_correction_strength": 0.002504486970882952,
+      "test_1_rmse": 0.12698476904637393,
+      "test_1_mae": 0.08798977862604991,
+      "test_1_count": 20000.0,
+      "test_1_avg_j_correction_strength": 0.002460753442238544
+    },
+    {
+      "method": "rho_j_weak_fusion",
+      "lambda_rho": 0.03,
+      "lambda_j": 0.003,
+      "support_radius": 20.0,
+      "train_rmse": 0.11869922734916885,
+      "train_mae": 0.08381046430066671,
+      "train_count": 20000.0,
+      "train_avg_j_correction_strength": 0.0025078542355541104,
+      "test_1_rmse": 0.12705508297572754,
+      "test_1_mae": 0.08806517785192215,
+      "test_1_count": 20000.0,
+      "test_1_avg_j_correction_strength": 0.0024641540059821315
+    },
+    {
+      "method": "rho_j_weak_fusion",
+      "lambda_rho": 0.02,
+      "lambda_j": 0.005,
+      "support_radius": 20.0,
+      "train_rmse": 0.11858973739684561,
+      "train_mae": 0.08370472392653419,
+      "train_count": 20000.0,
+      "train_avg_j_correction_strength": 0.004160904454695976,
+      "test_1_rmse": 0.1272409954863512,
+      "test_1_mae": 0.08832841680500111,
+      "test_1_count": 20000.0,
+      "test_1_avg_j_correction_strength": 0.004081457465905827
+    },
+    {
+      "method": "rho_j_weak_fusion",
+      "lambda_rho": 0.03,
+      "lambda_j": 0.005,
+      "support_radius": 20.0,
+      "train_rmse": 0.11876664101273596,
+      "train_mae": 0.08385708569341149,
+      "train_count": 20000.0,
+      "train_avg_j_correction_strength": 0.004167823752890137,
+      "test_1_rmse": 0.12745175589974886,
+      "test_1_mae": 0.0884961851890939,
+      "test_1_count": 20000.0,
+      "test_1_avg_j_correction_strength": 0.004091040968379764
+    },
+    {
+      "method": "fixed",
+      "lambda_rho": null,
+      "lambda_j": null,
+      "support_radius": 20.0,
+      "train_rmse": 0.12119744865851713,
+      "train_mae": 0.08530481315167075,
+      "train_count": 20000.0,
+      "train_avg_j_correction_strength": null,
+      "test_1_rmse": 0.12872791254901936,
+      "test_1_mae": 0.08922490241131598,
+      "test_1_count": 20000.0,
+      "test_1_avg_j_correction_strength": null
+    },
+    {
+      "method": "corr",
+      "lambda_rho": null,
+      "lambda_j": null,
+      "support_radius": 20.0,
+      "train_rmse": 0.14145548885983802,
+      "train_mae": 0.10347842399249621,
+      "train_count": 20000.0,
+      "train_avg_j_correction_strength": null,
+      "test_1_rmse": 0.14279455390011997,
+      "test_1_mae": 0.10202452522506597,
+      "test_1_count": 20000.0,
+      "test_1_avg_j_correction_strength": null
+    }
+  ]
+}

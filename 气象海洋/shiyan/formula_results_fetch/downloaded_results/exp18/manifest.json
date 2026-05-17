@@ -1,0 +1,10 @@
+{
+  "name": "exp18",
+  "output_dir": "/home/infra/qda_competition/experiments/quantum_J_operator_letkf",
+  "written": [],
+  "missing": [
+    "summary.json",
+    "summary.csv",
+    "result.csv"
+  ]
+}

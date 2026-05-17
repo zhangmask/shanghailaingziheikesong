@@ -1,0 +1,92 @@
+{
+  "config": {
+    "ens_size": 40,
+    "infl": 1.02,
+    "obs_std": 0.5,
+    "dt": 0.05,
+    "forcing": 8.0,
+    "seed": 2,
+    "support_radius": 20,
+    "window_size": 4,
+    "n_qubits": 4,
+    "lambdas": [
+      0.02,
+      0.05,
+      0.1
+    ]
+  },
+  "results": [
+    {
+      "method": "fixed",
+      "lambda": null,
+      "support_radius": 20,
+      "train_rmse": 0.12119744865851713,
+      "train_mae": 0.08530481315167075,
+      "train_count": 20000,
+      "test_1_rmse": 0.12872791254901936,
+      "test_1_mae": 0.08922490241131598,
+      "test_1_count": 20000
+    },
+    {
+      "method": "corr",
+      "lambda": null,
+      "support_radius": 20,
+      "train_rmse": 0.14145548885983802,
+      "train_mae": 0.10347842399249621,
+      "train_count": 20000,
+      "test_1_rmse": 0.14279455390011997,
+      "test_1_mae": 0.10202452522506597,
+      "test_1_count": 20000
+    },
+    {
+      "method": "quantum_gain_regularized",
+      "lambda": 0.02,
+      "support_radius": 20,
+      "train_rmse": 0.12405434715793577,
+      "train_mae": 0.08710925310668931,
+      "train_count": 20000,
+      "train_avg_gain_smoothness": 8.601400889940038,
+      "test_1_rmse": 0.13820689437598419,
+      "test_1_mae": 0.09548561221134992,
+      "test_1_count": 20000,
+      "test_1_avg_gain_smoothness": 8.504641162610051
+    },
+    {
+      "method": "quantum_gain_regularized",
+      "lambda": 0.05,
+      "support_radius": 20,
+      "train_rmse": 0.14299274605181816,
+      "train_mae": 0.09908719749421106,
+      "train_count": 20000,
+      "train_avg_gain_smoothness": 8.17749883390955,
+      "test_1_rmse": 0.17933288747776288,
+      "test_1_mae": 0.12444050243679314,
+      "test_1_count": 20000,
+      "test_1_avg_gain_smoothness": 8.087425679648158
+    },
+    {
+      "method": "quantum_gain_regularized",
+      "lambda": 0.1,
+      "support_radius": 20,
+      "train_rmse": 3.7782161588851273,
+      "train_mae": 2.6525766074144252,
+      "train_count": 20000,
+      "train_avg_gain_smoothness": 7.250497138474064,
+      "test_1_rmse": 3.954467670219915,
+      "test_1_mae": 2.9375987242877635,
+      "test_1_count": 20000,
+      "test_1_avg_gain_smoothness": 7.156192546668711
+    }
+  ],
+  "best_test": {
+    "method": "fixed",
+    "lambda": null,
+    "support_radius": 20,
+    "train_rmse": 0.12119744865851713,
+    "train_mae": 0.08530481315167075,
+    "train_count": 20000,
+    "test_1_rmse": 0.12872791254901936,
+    "test_1_mae": 0.08922490241131598,
+    "test_1_count": 20000
+  }
+}

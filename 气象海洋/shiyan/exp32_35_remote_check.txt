@@ -1,0 +1,152 @@
+]0;yangzhao@10.10.192.55]0;yangzhao@10.10.192.55********************************************************************************
+*                             齐治交互终端 v3.3.13                             *
+*             版权所有(c)浙江齐治科技股份有限公司。保留一切权利。              *
+********************************************************************************
+
+The account is about to expire.
+
+
+WARNING: Terminal type 'xterm-256color' is not supported, 'xterm' will be used as default.
+
+Connecting to infra@qiskit-metax-gpu-12(10.9.202.91) ...
+]0;infra@qiskit-metax-gpu-12Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 5.15.0-119-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sun May 17 12:47:15 AM CST 2026
+
+  System load:  4.96                Processes:               753
+  Usage of /:   12.2% of 491.02GB   Users logged in:         1
+  Memory usage: 0%                  IPv4 address for enp1s0: 10.16.0.76
+  Swap usage:   0%
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+88 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+
+*** System restart required ***
+Last login: Sun May 17 00:43:46 2026 from 100.64.0.2
+
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ python3 - <<'PY'
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> import json, pathlib
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> exps = {"exp32": "/home/infra/qda_competition/experiments/joint_quantum_rho_R_letkf", "exp33": "/home/infra/qda_competition/experiments/adaptive_lambda_localization_letkf", "exp34": "/home/infra/qda_competition/experiments/adaptive_lambda_structured_R_letkf", "exp35": "/home/infra/qda_competition/experiments/triply_fused_rho_R_B_letkf"}
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> out = {}
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> for name, p in exps.items():
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     path = pathlib.Path(p)
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     item = {"exists": path.exists()}
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     if path.exists():
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         files = sorted(x.name for x in path.iterdir())
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         item["files"] = files
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         summary = path / "summary.json"
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         if summary.exists():
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>             try:
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>                 item["summary"] = json.loads(summary.read_text(encoding="utf-8"))
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>             except Exception as e:
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>                 item["summary_error"] = str(e)
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         runlog = path / "run.log"
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         if runlog.exists():
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>             try:
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>                 text = runlog.read_text(encoding="utf-8", errors="replace")
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>                 item["runlog_tail"] = text[-4000:]
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>             except Exception as e:
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>                 item["runlog_error"] = str(e)
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     out[name] = item
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> print(json.dumps(out, ensure_ascii=False))
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> PY
+[?2004l
+{"exp32": {"exists": true, "files": ["run.log", "test_1_corr.csv", "test_1_fixed.csv", "train_corr.csv", "train_fixed.csv", "train_joint_quantum_rho_r_rho_0_02_r_0_02.csv"], "runlog_tail": "DONE {\"method\": \"fixed\", \"lambda_rho\": null, \"lambda_r\": null, \"support_radius\": 20, \"train_rmse\": 0.12119744865851713, \"train_mae\": 0.08530481315167075, \"train_count\": 20000, \"test_1_rmse\": 0.12872791254901936, \"test_1_mae\": 0.08922490241131598, \"test_1_count\": 20000}\nDONE {\"method\": \"corr\", \"lambda_rho\": null, \"lambda_r\": null, \"support_radius\": 20, \"train_rmse\": 0.14145548885983802, \"train_mae\": 0.10347842399249621, \"train_count\": 20000, \"test_1_rmse\": 0.14279455390011997, \"test_1_mae\": 0.10202452522506597, \"test_1_count\": 20000}\n"}, "exp33": {"exists": true, "files": ["run.log", "test_1_corr.csv", "test_1_fixed.csv", "train_adaptive_quantum_localization.csv", "train_corr.csv", "train_fixed.csv"], "runlog_tail": "DONE {\"method\": \"fixed\", \"lambda\": null, \"support_radius\": 20, \"train_rmse\": 0.12119744865851713, \"train_mae\": 0.08530481315167075, \"train_count\": 20000, \"test_1_rmse\": 0.12872791254901936, \"test_1_mae\": 0.08922490241131598, \"test_1_count\": 20000}\nDONE {\"method\": \"corr\", \"lambda\": null, \"support_radius\": 20, \"train_rmse\": 0.14145548885983802, \"train_mae\": 0.10347842399249621, \"train_count\": 20000, \"test_1_rmse\": 0.14279455390011997, \"test_1_mae\": 0.10202452522506597, \"test_1_count\": 20000}\n"}, "exp34": {"exists": true, "files": ["best_test_prediction.csv", "result.csv", "run.log", "summary.csv", "summary.json", "test_1_adaptive_structured_r.csv", "test_1_corr.csv", "test_1_fixed.csv", "train_adaptive_structured_r.csv", "train_corr.csv", "train_fixed.csv"], "summary": {"config": {"ens_size": 40, "infl": 1.02, "obs_std": 0.5, "dt": 0.05, "forcing": 8.0, "seed": 2, "support_radius": 20, "window_size": 4, "n_qubits": 4, "lambda_bounds": [0.01, 0.08], "adaptive_rule": {"base": 0.015, "corr_strength_coeff": 0.03, "quantum_consistency_coeff": 0.02}}, "results": [{"method": "fixed", "lambda": null, "support_radius": 20, "train_rmse": 0.12119744865851713, "train_mae": 0.08530481315167075, "train_count": 20000, "test_1_rmse": 0.12872791254901936, "test_1_mae": 0.08922490241131598, "test_1_count": 20000}, {"method": "corr", "lambda": null, "support_radius": 20, "train_rmse": 0.14145548885983802, "train_mae": 0.10347842399249621, "train_count": 20000, "test_1_rmse": 0.14279455390011997, "test_1_mae": 0.10202452522506597, "test_1_count": 20000}, {"method": "adaptive_structured_r", "lambda": null, "support_radius": 20, "train_rmse": 0.12153209988409577, "train_mae": 0.08570036284930131, "train_count": 20000, "train_lambda_mean": 0.025851440982775035, "train_lambda_min": 0.023068625982169265, "train_lambda_max": 0.030092177509476712, "train_lambda_count": 20000, "test_1_rmse": 0.1285685946005093, "test_1_mae": 0.08932354522740851, "test_1_count": 20000, "test_1_lambda_mean": 0.025707492262476966, "test_1_lambda_min": 0.023290939703937998, "test_1_lambda_max": 0.02871221452877711, "test_1_lambda_count": 20000}], "best_test": {"method": "adaptive_structured_r", "lambda": null, "support_radius": 20, "train_rmse": 0.12153209988409577, "train_mae": 0.08570036284930131, "train_count": 20000, "train_lambda_mean": 0.025851440982775035, "train_lambda_min": 0.023068625982169265, "train_lambda_max": 0.030092177509476712, "train_lambda_count": 20000, "test_1_rmse": 0.1285685946005093, "test_1_mae": 0.08932354522740851, "test_1_count": 20000, "test_1_lambda_mean": 0.025707492262476966, "test_1_lambda_min": 0.023290939703937998, "test_1_lambda_max": 0.02871221452877711, "test_1_lambda_count": 20000}}, "runlog_tail": "DONE {\"method\": \"fixed\", \"lambda\": null, \"support_radius\": 20, \"train_rmse\": 0.12119744865851713, \"train_mae\": 0.08530481315167075, \"train_count\": 20000, \"test_1_rmse\": 0.12872791254901936, \"test_1_mae\": 0.08922490241131598, \"test_1_count\": 20000}\nDONE {\"method\": \"corr\", \"lambda\": null, \"support_radius\": 20, \"train_rmse\": 0.14145548885983802, \"train_mae\": 0.10347842399249621, \"train_count\": 20000, \"test_1_rmse\": 0.14279455390011997, \"test_1_mae\": 0.10202452522506597, \"test_1_count\": 20000}\nDONE {\"method\": \"adaptive_structured_r\", \"lambda\": null, \"support_radius\": 20, \"train_rmse\": 0.12153209988409577, \"train_mae\": 0.08570036284930131, \"train_count\": 20000, \"train_lambda_mean\": 0.025851440982775035, \"train_lambda_min\": 0.023068625982169265, \"train_lambda_max\": 0.030092177509476712, \"train_lambda_count\": 20000, \"test_1_rmse\": 0.1285685946005093, \"test_1_mae\": 0.08932354522740851, \"test_1_count\": 20000, \"test_1_lambda_mean\": 0.025707492262476966, \"test_1_lambda_min\": 0.023290939703937998, \"test_1_lambda_max\": 0.02871221452877711, \"test_1_lambda_count\": 20000}\nBEST_TEST {\"method\": \"adaptive_structured_r\", \"lambda\": null, \"support_radius\": 20, \"train_rmse\": 0.12153209988409577, \"train_mae\": 0.08570036284930131, \"train_count\": 20000, \"train_lambda_mean\": 0.025851440982775035, \"train_lambda_min\": 0.023068625982169265, \"train_lambda_max\": 0.030092177509476712, \"train_lambda_count\": 20000, \"test_1_rmse\": 0.1285685946005093, \"test_1_mae\": 0.08932354522740851, \"test_1_count\": 20000, \"test_1_lambda_mean\": 0.025707492262476966, \"test_1_lambda_min\": 0.023290939703937998, \"test_1_lambda_max\": 0.02871221452877711, \"test_1_lambda_count\": 20000}\n"}, "exp35": {"exists": true, "files": ["run.log", "test_1_corr.csv", "test_1_fixed.csv", "train_corr.csv", "train_fixed.csv"], "runlog_tail": "DONE {\"method\": \"fixed\", \"lambda_rho\": null, \"lambda_r\": null, \"lambda_b\": null, \"support_radius\": 20, \"train_rmse\": 0.12119744865851713, \"train_mae\": 0.08530481315167075, \"train_count\": 20000, \"test_1_rmse\": 0.12872791254901936, \"test_1_mae\": 0.08922490241131598, \"test_1_count\": 20000}\nDONE {\"method\": \"corr\", \"lambda_rho\": null, \"lambda_r\": null, \"lambda_b\": null, \"support_radius\": 20, \"train_rmse\": 0.14145548885983802, \"train_mae\": 0.10347842399249621, \"train_count\": 20000, \"test_1_rmse\": 0.14279455390011997, \"test_1_mae\": 0.10202452522506597, \"test_1_count\": 20000}\n"}}
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ exit
+[?2004l
+logout
+]0;yangzhao@10.10.192.55Connection closed for infra@10.9.202.91:31012
+
+会话已结束。按下 ENTER 继续连接其他会话，按 'r' 重新连接当前会话，或按 'q' 键退出。
+Warning: Permanently added 'jump.zs.shaipower.online' (RSA) to the list of known hosts.
+Connection to jump.zs.shaipower.online closed.

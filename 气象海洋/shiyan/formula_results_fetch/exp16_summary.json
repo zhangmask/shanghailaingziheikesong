@@ -1,0 +1,92 @@
+{
+  "config": {
+    "ens_size": 40,
+    "infl": 1.02,
+    "obs_std": 0.5,
+    "dt": 0.05,
+    "forcing": 8.0,
+    "seed": 2,
+    "support_radius": 20,
+    "window_size": 4,
+    "n_qubits": 4,
+    "lambdas": [
+      0.02,
+      0.05,
+      0.1
+    ]
+  },
+  "results": [
+    {
+      "method": "fixed",
+      "lambda": null,
+      "support_radius": 20,
+      "train_rmse": 0.12119744865851713,
+      "train_mae": 0.08530481315167075,
+      "train_count": 20000,
+      "test_1_rmse": 0.12872791254901936,
+      "test_1_mae": 0.08922490241131598,
+      "test_1_count": 20000
+    },
+    {
+      "method": "corr",
+      "lambda": null,
+      "support_radius": 20,
+      "train_rmse": 0.14145548885983802,
+      "train_mae": 0.10347842399249621,
+      "train_count": 20000,
+      "test_1_rmse": 0.14279455390011997,
+      "test_1_mae": 0.10202452522506597,
+      "test_1_count": 20000
+    },
+    {
+      "method": "quantum_transform",
+      "lambda": 0.02,
+      "support_radius": 20,
+      "train_rmse": 0.12554342915561914,
+      "train_mae": 0.0889443029986778,
+      "train_count": 20000,
+      "train_avg_transform_scale": 1.0003735643919243,
+      "test_1_rmse": 0.1309777051705835,
+      "test_1_mae": 0.09145263582519252,
+      "test_1_count": 20000,
+      "test_1_avg_transform_scale": 1.000400454068789
+    },
+    {
+      "method": "quantum_transform",
+      "lambda": 0.05,
+      "support_radius": 20,
+      "train_rmse": 0.12952245990782682,
+      "train_mae": 0.09195747652584488,
+      "train_count": 20000,
+      "train_avg_transform_scale": 0.9964580215656362,
+      "test_1_rmse": 0.1346338899238277,
+      "test_1_mae": 0.09467192764202825,
+      "test_1_count": 20000,
+      "test_1_avg_transform_scale": 0.9967145417767321
+    },
+    {
+      "method": "quantum_transform",
+      "lambda": 0.1,
+      "support_radius": 20,
+      "train_rmse": 0.13925985996008058,
+      "train_mae": 0.10059631625626139,
+      "train_count": 20000,
+      "train_avg_transform_scale": 0.9798267766895102,
+      "test_1_rmse": 0.14490893107605224,
+      "test_1_mae": 0.1039606250897476,
+      "test_1_count": 20000,
+      "test_1_avg_transform_scale": 0.9807406774146146
+    }
+  ],
+  "best_test": {
+    "method": "fixed",
+    "lambda": null,
+    "support_radius": 20,
+    "train_rmse": 0.12119744865851713,
+    "train_mae": 0.08530481315167075,
+    "train_count": 20000,
+    "test_1_rmse": 0.12872791254901936,
+    "test_1_mae": 0.08922490241131598,
+    "test_1_count": 20000
+  }
+}

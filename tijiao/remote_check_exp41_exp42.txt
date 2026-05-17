@@ -1,0 +1,104 @@
+]0;yangzhao@10.10.192.55]0;yangzhao@10.10.192.55********************************************************************************
+*                             齐治交互终端 v3.3.13                             *
+*             版权所有(c)浙江齐治科技股份有限公司。保留一切权利。              *
+********************************************************************************
+
+The account is about to expire.
+
+
+WARNING: Terminal type 'xterm-256color' is not supported, 'xterm' will be used as default.
+
+Connecting to infra@qiskit-metax-gpu-12(10.9.202.91) ...
+]0;infra@qiskit-metax-gpu-12Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 5.15.0-119-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sun May 17 08:43:37 AM CST 2026
+
+  System load:  2.0                 Processes:               750
+  Usage of /:   12.3% of 491.02GB   Users logged in:         1
+  Memory usage: 0%                  IPv4 address for enp1s0: 10.16.0.76
+  Swap usage:   0%
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+88 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+
+*** System restart required ***
+Last login: Sun May 17 08:42:30 2026 from 100.64.0.2
+
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ echo ==== CHECK_START ====
+[?2004l
+==== CHECK_START ====
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ for d in /home/infra/qda_competition/experiments/rho_J_confidence_gated_letkf /home/infra/qda_competition/experiments/rho_J_adaptive_B_gated_letkf; do
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>   echo ==== DIR:$d ====
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>   test -f $d/summary.json && echo SUMMARY_EXISTS || echo SUMMARY_MISSING
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>   test -f $d/summary.csv && echo SUMMARY_CSV_EXISTS || echo SUMMARY_CSV_MISSING
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>   test -f $d/result.csv && echo RESULT_EXISTS || echo RESULT_MISSING
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>   ps -ef | grep -E 'exp41_rho_J_confidence_gated_letkf.py|exp42_rho_J_adaptive_B_gated_letkf.py' | grep -v grep || true
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>   tail -n 20 $d/run.log 2>/dev/null || true
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>  done
+[?2004l
+==== DIR:/home/infra/qda_competition/experiments/rho_J_confidence_gated_letkf ====
+SUMMARY_MISSING
+SUMMARY_CSV_MISSING
+RESULT_MISSING
+infra     224617       1 99 08:24 ?        00:19:15 python3 /tmp/exp41_rho_J_confidence_gated_letkf.py --output-dir /home/infra/qda_competition/experiments/rho_J_confidence_gated_letkf
+infra     224681       1 99 08:24 ?        00:19:14 python3 /tmp/exp42_rho_J_adaptive_B_gated_letkf.py --output-dir /home/infra/qda_competition/experiments/rho_J_adaptive_B_gated_letkf
+DONE {"method": "fixed", "lambda_rho": null, "lambda_j": null, "support_radius": 20, "train_rmse": 0.12119744865851713, "train_mae": 0.08530481315167075, "train_count": 20000, "test_1_rmse": 0.12872791254901936, "test_1_mae": 0.08922490241131598, "test_1_count": 20000}
+DONE {"method": "corr", "lambda_rho": null, "lambda_j": null, "support_radius": 20, "train_rmse": 0.14145548885983802, "train_mae": 0.10347842399249621, "train_count": 20000, "test_1_rmse": 0.14279455390011997, "test_1_mae": 0.10202452522506597, "test_1_count": 20000}
+==== DIR:/home/infra/qda_competition/experiments/rho_J_adaptive_B_gated_letkf ====
+SUMMARY_MISSING
+SUMMARY_CSV_MISSING
+RESULT_MISSING
+infra     224617       1 99 08:24 ?        00:19:15 python3 /tmp/exp41_rho_J_confidence_gated_letkf.py --output-dir /home/infra/qda_competition/experiments/rho_J_confidence_gated_letkf
+infra     224681       1 99 08:24 ?        00:19:14 python3 /tmp/exp42_rho_J_adaptive_B_gated_letkf.py --output-dir /home/infra/qda_competition/experiments/rho_J_adaptive_B_gated_letkf
+DONE {"method": "fixed", "lambda_rho": null, "lambda_j": null, "support_radius": 20, "train_rmse": 0.12119744865851713, "train_mae": 0.08530481315167075, "train_count": 20000, "test_1_rmse": 0.12872791254901936, "test_1_mae": 0.08922490241131598, "test_1_count": 20000}
+DONE {"method": "corr", "lambda_rho": null, "lambda_j": null, "support_radius": 20, "train_rmse": 0.14145548885983802, "train_mae": 0.10347842399249621, "train_count": 20000, "test_1_rmse": 0.14279455390011997, "test_1_mae": 0.10202452522506597, "test_1_count": 20000}
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ exit
+[?2004l
+logout
+]0;yangzhao@10.10.192.55Connection closed for infra@10.9.202.91:31012
+
+会话已结束。按下 ENTER 继续连接其他会话，按 'r' 重新连接当前会话，或按 'q' 键退出。
+Warning: Permanently added 'jump.zs.shaipower.online' (RSA) to the list of known hosts.
+Connection to jump.zs.shaipower.online closed.

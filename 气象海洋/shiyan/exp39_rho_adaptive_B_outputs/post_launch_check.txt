@@ -1,0 +1,70 @@
+Warning: Permanently added 'jump.zs.shaipower.online' (RSA) to the list of known hosts.
+]0;yangzhao@10.10.192.55]0;yangzhao@10.10.192.55********************************************************************************
+*                             齐治交互终端 v3.3.13                             *
+*             版权所有(c)浙江齐治科技股份有限公司。保留一切权利。              *
+********************************************************************************
+
+The account is about to expire.
+
+
+WARNING: Terminal type 'xterm-256color' is not supported, 'xterm' will be used as default.
+
+Connecting to infra@qiskit-metax-gpu-12(10.9.202.91) ...
+]0;infra@qiskit-metax-gpu-12Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 5.15.0-119-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sun May 17 01:20:59 AM CST 2026
+
+  System load:  6.87                Processes:               758
+  Usage of /:   12.3% of 491.02GB   Users logged in:         1
+  Memory usage: 0%                  IPv4 address for enp1s0: 10.16.0.76
+  Swap usage:   0%
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+88 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+
+*** System restart required ***
+Last login: Sun May 17 01:21:02 2026 from 100.64.0.2
+
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ echo CHECK:exp39
+[?2004l
+CHECK:exp39
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ ps -p 222920 -o pid=,stat=,cmd= || true
+[?2004l
+ 222920 Rl   python3 /tmp/exp39_rho_adaptive_B_letkf.py --output-dir /home/infra
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ ls -l /home/infra/qda_competition/experiments/rho_adaptive_B_letkf || true
+[?2004l
+total 4132
+-rw-rw-r-- 1 infra infra     539 May 17 01:20 run.log
+-rw-rw-r-- 1 infra infra 1055813 May 17 01:20 test_1_corr.csv
+-rw-rw-r-- 1 infra infra 1055948 May 17 01:20 test_1_fixed.csv
+-rw-rw-r-- 1 infra infra 1055670 May 17 01:20 train_corr.csv
+-rw-rw-r-- 1 infra infra 1055624 May 17 01:20 train_fixed.csv
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ tail -n 20 /home/infra/qda_competition/experiments/rho_adaptive_B_letkf/run.log || true
+[?2004l
+DONE {"method": "fixed", "lambda_rho": null, "lambda_b": null, "support_radius": 20, "train_rmse": 0.12119744865851713, "train_mae": 0.08530481315167075, "train_count": 20000, "test_1_rmse": 0.12872791254901936, "test_1_mae": 0.08922490241131598, "test_1_count": 20000}
+DONE {"method": "corr", "lambda_rho": null, "lambda_b": null, "support_radius": 20, "train_rmse": 0.14145548885983802, "train_mae": 0.10347842399249621, "train_count": 20000, "test_1_rmse": 0.14279455390011997, "test_1_mae": 0.10202452522506597, "test_1_count": 20000}
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ exit
+[?2004l
+logout
+]0;yangzhao@10.10.192.55Connection closed for

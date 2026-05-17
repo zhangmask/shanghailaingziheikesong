@@ -1,0 +1,10 @@
+{
+  "name": "exp20",
+  "output_dir": "/home/infra/qda_competition/experiments/quantum_H_representation_letkf",
+  "written": [
+    "summary.json",
+    "summary.csv",
+    "result.csv"
+  ],
+  "missing": []
+}

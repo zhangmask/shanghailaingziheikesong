@@ -1,0 +1,119 @@
+ python3 - <<'PY'
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> import json
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> from pathlib import Path
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> experiments = [
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     ('exp9', '/home/infra/qda_competition/experiments/quantum_reduced_group_letkf'),
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     ('exp10', '/home/infra/qda_competition/experiments/quantum_structured_R_letkf'),
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     ('exp11', '/home/infra/qda_competition/experiments/quantum_S_operator_letkf'),
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     ('exp12', '/home/infra/qda_competition/experiments/quantum_reduced_analysis_space_letkf'),
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> ]
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> rows = []
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> for name, out_dir in experiments:
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     path = Path(out_dir)
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     summary = path / 'summary.json'
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     summary_csv = path / 'summary.csv'
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     result_csv = path / 'result.csv'
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     row = {
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         'name': name,
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         'output_dir': out_dir,
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         'summary_exists': summary.exists(),
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         'summary_csv_exists': summary_csv.exists(),
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         'result_exists': result_csv.exists(),
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>         'summary_text': summary.read_text(encoding='utf-8') if summary.exists() else None,
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     }
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h>     rows.append(row)
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> print('__JSON_BEGIN__')
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> print(json.dumps(rows, ensure_ascii=False))
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> print('__JSON_END__')
+[?2004l
+[?2004h> 
+[?2004l
+[?2004h> PY
+[?2004l
+__JSON_BEGIN__
+[{"name": "exp9", "output_dir": "/home/infra/qda_competition/experiments/quantum_reduced_group_letkf", "summary_exists": true, "summary_csv_exists": true, "result_exists": true, "summary_text": "{\n  \"config\": {\n    \"ens_size\": 40,\n    \"infl\": 1.02,\n    \"obs_std\": 0.5,\n    \"dt\": 0.05,\n    \"forcing\": 8.0,\n    \"seed\": 2,\n    \"support_radius\": 20,\n    \"window_size\": 4,\n    \"n_qubits\": 4,\n    \"group_threshold\": 0.9,\n    \"max_groups\": 3,\n    \"max_representatives\": 2\n  },\n  \"results\": [\n    {\n      \"method\": \"fixed\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12119744865851713,\n      \"train_mae\": 0.08530481315167075,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.12872791254901936,\n      \"test_1_mae\": 0.08922490241131598,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"corr\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.14145548885983802,\n      \"train_mae\": 0.10347842399249621,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.14279455390011997,\n      \"test_1_mae\": 0.10202452522506597,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_reduced_group_update\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 2.7047558869134645,\n      \"train_mae\": 1.963088710035671,\n      \"train_count\": 20000,\n      \"train_avg_group_count\": 3.0,\n      \"train_avg_group_size\": 13.333333333333254,\n      \"train_max_group_count\": 3,\n      \"test_1_rmse\": 2.627723588182084,\n      \"test_1_mae\": 1.9123948776953235,\n      \"test_1_count\": 20000,\n      \"test_1_avg_group_count\": 3.0,\n      \"test_1_avg_group_size\": 13.333333333333254,\n      \"test_1_max_group_count\": 3\n    }\n  ],\n  \"best_test\": {\n    \"method\": \"fixed\",\n    \"lambda\": null,\n    \"support_radius\": 20,\n    \"train_rmse\": 0.12119744865851713,\n    \"train_mae\": 0.08530481315167075,\n    \"train_count\": 20000,\n    \"test_1_rmse\": 0.12872791254901936,\n    \"test_1_mae\": 0.08922490241131598,\n    \"test_1_count\": 20000\n  }\n}"}, {"name": "exp10", "output_dir": "/home/infra/qda_competition/experiments/quantum_structured_R_letkf", "summary_exists": true, "summary_csv_exists": true, "result_exists": true, "summary_text": "{\n  \"config\": {\n    \"ens_size\": 40,\n    \"infl\": 1.02,\n    \"obs_std\": 0.5,\n    \"dt\": 0.05,\n    \"forcing\": 8.0,\n    \"seed\": 2,\n    \"support_radius\": 20,\n    \"window_size\": 4,\n    \"n_qubits\": 4,\n    \"lambdas\": [\n      0.02,\n      0.05,\n      0.1\n    ]\n  },\n  \"results\": [\n    {\n      \"method\": \"fixed\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12119744865851713,\n      \"train_mae\": 0.08530481315167075,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.12872791254901936,\n      \"test_1_mae\": 0.08922490241131598,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"corr\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.14145548885983802,\n      \"train_mae\": 0.10347842399249621,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.14279455390011997,\n      \"test_1_mae\": 0.10202452522506597,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_structured_r\",\n      \"lambda\": 0.02,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12143577051535419,\n      \"train_mae\": 0.08558658882685599,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.12868826611939788,\n      \"test_1_mae\": 0.08936945786776133,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_structured_r\",\n      \"lambda\": 0.05,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12318391807759783,\n      \"train_mae\": 0.08717110538231194,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.1282514860637445,\n      \"test_1_mae\": 0.08897467875691467,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_structured_r\",\n      \"lambda\": 0.1,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.1240885023642815,\n      \"train_mae\": 0.08798078889058193,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.12961937652315297,\n      \"test_1_mae\": 0.09023648459385902,\n      \"test_1_count\": 20000\n    }\n  ],\n  \"best_test\": {\n    \"method\": \"quantum_structured_r\",\n    \"lambda\": 0.05,\n    \"support_radius\": 20,\n    \"train_rmse\": 0.12318391807759783,\n    \"train_mae\": 0.08717110538231194,\n    \"train_count\": 20000,\n    \"test_1_rmse\": 0.1282514860637445,\n    \"test_1_mae\": 0.08897467875691467,\n    \"test_1_count\": 20000\n  }\n}"}, {"name": "exp11", "output_dir": "/home/infra/qda_competition/experiments/quantum_S_operator_letkf", "summary_exists": false, "summary_csv_exists": false, "result_exists": false, "summary_text": null}, {"name": "exp12", "output_dir": "/home/infra/qda_competition/experiments/quantum_reduced_analysis_space_letkf", "summary_exists": true, "summary_csv_exists": true, "result_exists": true, "summary_text": "{\n  \"config\": {\n    \"ens_size\": 40,\n    \"infl\": 1.02,\n    \"obs_std\": 0.5,\n    \"dt\": 0.05,\n    \"forcing\": 8.0,\n    \"seed\": 2,\n    \"support_radius\": 20,\n    \"window_size\": 4,\n    \"n_qubits\": 4,\n    \"reduced_dims\": [\n      2,\n      3\n    ]\n  },\n  \"results\": [\n    {\n      \"method\": \"fixed\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.12119744865851713,\n      \"train_mae\": 0.08530481315167075,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.12872791254901936,\n      \"test_1_mae\": 0.08922490241131598,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"corr\",\n      \"lambda\": null,\n      \"support_radius\": 20,\n      \"train_rmse\": 0.14145548885983802,\n      \"train_mae\": 0.10347842399249621,\n      \"train_count\": 20000,\n      \"test_1_rmse\": 0.14279455390011997,\n      \"test_1_mae\": 0.10202452522506597,\n      \"test_1_count\": 20000\n    },\n    {\n      \"method\": \"quantum_reduced_analysis_space\",\n      \"lambda\": 2,\n      \"support_radius\": 20,\n      \"train_rmse\": NaN,\n      \"train_mae\": NaN,\n      \"train_count\": 20000,\n      \"train_avg_reduced_dim\": 2.0,\n      \"test_1_rmse\": NaN,\n      \"test_1_mae\": NaN,\n      \"test_1_count\": 20000,\n      \"test_1_avg_reduced_dim\": 2.0\n    },\n    {\n      \"method\": \"quantum_reduced_analysis_space\",\n      \"lambda\": 3,\n      \"support_radius\": 20,\n      \"train_rmse\": NaN,\n      \"train_mae\": NaN,\n      \"train_count\": 20000,\n      \"train_avg_reduced_dim\": 3.0,\n      \"test_1_rmse\": NaN,\n      \"test_1_mae\": NaN,\n      \"test_1_count\": 20000,\n      \"test_1_avg_reduced_dim\": 3.0\n    }\n  ],\n  \"best_test\": {\n    \"method\": \"fixed\",\n    \"lambda\": null,\n    \"support_radius\": 20,\n    \"train_rmse\": 0.12119744865851713,\n    \"train_mae\": 0.08530481315167075,\n    \"train_count\": 20000,\n    \"test_1_rmse\": 0.12872791254901936,\n    \"test_1_mae\": 0.08922490241131598,\n    \"test_1_count\": 20000\n  }\n}"}]
+__JSON_END__
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ 
+[?2004l
+[?2004h]0;infra@qiskit-metax-gpu-12: ~infra@qiskit-metax-gpu-12:~$ exit
+[?2004l
+logout
+]0;yangzhao@10.10.192.55Connection closed

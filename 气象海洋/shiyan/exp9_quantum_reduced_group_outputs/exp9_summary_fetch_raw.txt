@@ -1,0 +1,5 @@
+ python3 -c "from pathlib import Path; p=Path('/home/infra/qda_competition/experiments/quantum_reduced_group_letkf/summary.json'); print('__BEGIN__'); print(p.read_text() if p.exists() else 'NO_SUMMARY_YET'); print('__END__')"
+[?2004l
+__BEGIN__
+NO_SUMMARY_YET
+__END__
